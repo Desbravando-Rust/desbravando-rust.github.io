@@ -1,4 +1,17 @@
-# desbravando-rust.github.io
+**Um guia prático para pythonistas explorarem novos horizontes**
+
+[![Comprar Livro](https://img.shields.io/badge/Comprar-R$_89,90-orange?style=for-the-badge)](https://desbravandorust.com.br)
+[![Site Oficial](https://img.shields.io/badge/Site_Oficial-desbravandorust.com.br-blue?style=for-the-badge)](https://desbravandorust.com.br)
+
+## Sobre o Livro
+
+<img src="imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left">
+
+**Desbravando Rust** é um guia técnico completo desenvolvido especialmente para desenvolvedores Python que desejam expandir suas habilidades para uma linguagem de alto desempenho e segurança: Rust.
+
+Este livro oferece uma transição didática e prática, comparando conceitos, sintaxes e melhores práticas entre Python e Rust, permitindo que você aproveite seu conhecimento existente enquanto domina uma das linguagens mais admiradas da atualidade.
+
+Se você busca otimizar performance, explorar concorrência de forma segura ou simplesmente ampliar seu conjunto de habilidades técnicas, este livro foi feito para você.
 
 ## Últimos posts:
 
