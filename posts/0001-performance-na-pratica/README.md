@@ -1,4 +1,5 @@
 # Performance na prática: Um exemplo de real onde o Axum supera o FastAPI
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Nov 16, 2025
 
 Qual a stack perfeita para desenvolvimento? Essa é uma pergunta simples porém que trás muitas dúvidas, principalmente para quem está começando e a resposta nem sempre é óbvia: É a que resolve o problema da melhor maneira possível, consumindo menos recursos.
 
