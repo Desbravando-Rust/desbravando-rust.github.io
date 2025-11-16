@@ -161,7 +161,7 @@ async def get_cep(cep: str):
         raise HTTPException(status_code=503, detail=f"Erro ao consultar ViaCEP: {str(e)}")
 ```
 
-### ###
+### Características técnicas:
 - Validação e serialização automática via Pydantic
 - Type hints opcionais verificados em runtime
 - Tratamento de exceções com try/except
