@@ -3,7 +3,9 @@
 
 Recentemente caiu na minha timeline um vídeo do [Lewis](https://www.youtube.com/c/codingwithlewis) apresentando um pacote do python que ele classificou como incrível:
 
-[![Polars](https://img.youtube.com/vi/3Re64c90ZnM/0.jpg)](https://www.youtube.com/watch?v=3Re64c90ZnM)
+<a href="https://www.youtube.com/watch?v=3Re64c90ZnM" target="_blank">
+<img src="https://img.youtube.com/vi/3Re64c90ZnM/0.jpg">
+</a>
 
 O pacote em questão é o [Polars](https://pola.rs/). Como o próprio site oficial diz:
 > Polars is an open-source library for data manipulation, known for being one of the fastest data processing solutions on a single machine. It features a well-structured, typed API that is both expressive and easy to use.
