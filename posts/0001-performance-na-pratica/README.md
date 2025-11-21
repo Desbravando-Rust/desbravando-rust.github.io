@@ -5,7 +5,7 @@ Qual a stack perfeita para desenvolvimento? Essa é uma pergunta simples porém 
 
 Claro que sempre existirão trade-offs, como por exemplo a curva de aprendizado, que pode ser maior uma determinada linguagem, principalmente quando esta é o Rust devido a sua forma única de trabalhar e as decisões de design da própria linguagem que é bem única em alguns pontos.
 
-Neste post, a ideia é apresentar um exemplo prático onde atráves de um benchmark simples, é possível ver a diferença entre as duas.
+Neste post, a ideia é apresentar um exemplo prático onde através de um benchmark simples, é possível ver a diferença entre as duas.
 
 ## O escopo do projeto
 
@@ -97,7 +97,7 @@ Ambas as implementações utilizam I/O assíncrono, mas o ecossistema Rust (Toki
 
 ## Estrutura dos Handlers
 
-### Implementaçao com FastAPI**
+### Implementação com FastAPI**
 
 ```python
 
@@ -168,7 +168,7 @@ async def get_cep(cep: str):
 - Syntax concisa e expressiva
 
 
-## Implementaçao com Axum
+## Implementação com Axum
 
 ```rust
 pub async fn get_zipcode_handler(
@@ -348,9 +348,121 @@ pub async fn search_in_database(state: &AppState, cep: &str) -> SearchResult {
 
 **Otimização de Custos:** Ambientes onde a redução do número de servidores ou instâncias cloud resulta em economia significativa.
 
-## Conclusões
-Os testes demonstram que Rust com Axum oferece throughput duas vezes superior e latência mediana três vezes menor comparado a Python com FastAPI, em hardware e arquitetura idênticos.​
+---
 
-No entanto, a escolha entre as duas stacks deve considerar fatores além de performance bruta. Python oferece vantagens em velocidade de desenvolvimento, amplitude de ecossistema e curva de aprendizado. Rust se destaca quando escalabilidade, eficiência de recursos e confiabilidade são requisitos críticos.​
+## Reteste com FastAPI + Gunicorn (8 Workers)
 
-A decisão técnica adequada depende do contexto específico de cada projeto: volume esperado de tráfego, requisitos de latência, expertise da equipe, velocidade de iteração necessária e restrições de custo operacional.
+Após a publicação inicial, o [@gleberdiniz](https://github.com/gleberdiniz), depois de revisar o material,  sugeriu testar a implementação FastAPI com configuração de produção usando Gunicorn com múltiplos workers, argumentando que a comparação seria mais justa ao explorar melhor o paralelismo disponível no hardware de 8 núcleos.
+
+### Configuração do Teste Revisado
+
+**Instalação das dependências:**
+```bash
+pipenv install gunicorn uvicorn
+```
+
+**Comando de execução:**
+```bash
+gunicorn app:app \
+  --workers 8 \
+  --worker-class uvicorn.workers.UvicornWorker \
+  --bind 0.0.0.0:8000
+```
+
+**Parâmetros do teste:**
+- Mesmos 20.000 requisições
+- Mesma concorrência de 50 conexões
+- Mesmo ambiente de hardware e banco de dados
+
+### Novos Resultados Quantitativos
+
+| Métrica                 | FastAPI (4 workers) | FastAPI (8 workers) | Axum (Rust) | Melhoria 8w vs 4w | Gap Axum vs 8w |
+| ----------------------- | ------------------- | ------------------- | ----------- | ----------------- | -------------- |
+| Requisições/segundo     | 1.356,92            | 2.470,25            | 2.773,98    | +82,0%            | 1,12x          |
+| Tempo total de execução | 14,7s               | 8,1s                | 7,2s        | -44,9%            | 1,12x          |
+| Tempo mediano           | 28ms                | 21ms                | 9ms         | -25,0%            | 2,33x          |
+| Tempo médio             | 36ms                | 20ms                | 18ms        | -44,4%            | 1,11x          |
+| Percentil 99            | 88ms                | 48ms                | 42ms        | -45,5%            | 1,14x          |
+| Percentil 99.5          | 103ms               | 56ms                | 51ms        | -45,6%            | 1,10x          |
+| Percentil 99.9          | 2.048ms             | 631ms               | 1.901ms     | -69,2%            | 3,01x          |
+| Desvio padrão           | 97ms                | 33ms                | 96ms        | -66,0%            | 2,91x          |
+
+### Análise dos Resultados Revisados
+
+**Throughput Comparável**
+Com 8 workers, FastAPI alcançou 2.470 req/s, reduzindo significativamente a diferença para o Axum (2.774 req/s). A vantagem do Rust diminuiu de 2,04x para apenas 1,12x em throughput bruto.
+
+**Latência Ainda Superior no Rust**
+Apesar do throughput próximo, a latência mediana do Axum (9ms) permanece 2,33x menor que o FastAPI com 8 workers (21ms). Esta diferença é crítica para aplicações sensíveis a tempo de resposta.
+
+**Percentis Altos Melhoraram Drasticamente**
+O P99.9 do FastAPI caiu de 2.048ms para 631ms, uma melhoria de 69%. Isto sugere que o gargalo anterior estava mais relacionado à saturação dos workers do que a limitações fundamentais da stack Python.
+
+**Estabilidade e Consistência**
+O desvio padrão do FastAPI caiu de 97ms para 33ms, indicando respostas mais consistentes. Curiosamente, o Axum manteve desvio padrão alto (96ms), provavelmente relacionado a outliers externos (banco de dados ou ViaCEP).
+
+![Comparativo FastAPI x Axum](fastapi-8workers-versus-axum.png)
+
+Também como sugestão do [@gleberdiniz](https://github.com/gleberdiniz), foi refeito ambos os testes (Axum e FastAPI com 8 workers) monitorando cpu e memória.
+
+Os três primeiros picos de CPU foram os testes com FastAPI e chegou até 90%, enqunto os três últimos foram com o Axum parando em 70% do consumo, uma diferença de 20% de CPU menor.
+
+Já memória não apresentou picos relavantes, além do platô quase no fim do gráfico quando foi aberto o editor para rodar os testes e se manteve bem estável com 25% de uso para ambos.
+
+### Problema Crítico Encontrado: Esgotamento de Conexões
+
+Ao final do teste com 8 workers, o seguinte erro foi registrado:
+
+```
+error connecting in 'pool-1': connection failed: connection to server at "127.0.0.1",
+port 5432 failed: FATAL: sorry, too many clients already
+```
+
+**Análise do Problema:**
+A configuração original do pool (`min_size=10, max_size=20`) multiplicada por 8 workers resulta em:
+- Mínimo: 80 conexões simultâneas
+- Máximo: 160 conexões simultâneas
+
+O PostgreSQL padrão limita conexões em 100, causando esgotamento sob carga. Este é um problema clássico de tuning que afeta qualquer stack ao escalar horizontalmente.
+
+**Recomendações:**
+1. Ajustar pool por worker: `min_size=2, max_size=5` (16-40 conexões totais)
+2. Aumentar limite do PostgreSQL: `max_connections=200` no postgresql.conf
+3. Considerar PgBouncer para pooling externo em produção
+
+### Implicações para a Comparação Original
+
+**O teste inicial não foi justo?**
+Parcialmente. Com 4 workers, o FastAPI não utilizava plenamente o hardware de 8 núcleos. No entanto, a escolha de 4 workers foi intencional e documentada, refletindo uma configuração comum em ambientes de produção.
+
+**Por que 4 workers era a configuração inicial?**
+A fórmula `(2 × núcleos) + 1` sugere 17 workers para 8 núcleos, mas na prática, desenvolvedores frequentemente usam configurações conservadoras para evitar contenção excessiva e simplificar debugging.
+
+**Qual configuração é mais realista?**
+Ambas são válidas dependendo do contexto:
+- **4 workers**: Mais estável, menor consumo de memória, debugging mais simples
+- **8 workers**: Maior throughput, requer tuning cuidadoso de recursos (conexões DB, file descriptors, memória)
+
+### Conclusão Revisada
+
+Com configuração otimizada de 8 workers, o FastAPI demonstrou que Python pode alcançar throughput competitivo com Rust em aplicações I/O bound. A diferença de 12% em requisições por segundo torna-se marginal para muitas aplicações.
+
+No entanto, três vantagens fundamentais do Axum permanecem:
+
+1. **Latência consistentemente menor**: 2,33x melhor na mediana, crítico para APIs de baixa latência
+2. **Configuração mais simples**: Não requer tuning complexo de workers e pools de conexão
+3. **Eficiência de recursos**: Menor consumo de memória e CPU por requisição
+
+A escolha entre as stacks deve considerar:
+- **FastAPI**: Ideal quando throughput é suficiente e velocidade de desenvolvimento/manutenção é prioritária
+- **Axum**: Necessário quando latência, eficiência de recursos ou escala extrema são requisitos críticos
+
+O benchmark revisado reforça que otimização de deployment é tão importante quanto a escolha da linguagem. Uma stack "inferior" bem configurada pode superar uma stack "superior" mal configurada.
+
+---
+
+## Conclusões Finais
+
+Os testes demonstram que Rust com Axum oferece vantagens mensuráveis de performance, mas o gap não é tão dramático quanto benchmarks sintéticos sugerem. Em aplicações I/O bound reais, a diferença entre stacks bem configuradas tende a ser menor que em CPU-bound workloads.​
+
+A decisão técnica adequada depende do contexto específico de cada projeto: volume esperado de tráfego, requisitos de latência, expertise da equipe, velocidade de iteração necessária e restrições de custo operacional. O reteste com 8 workers demonstra que tuning adequado é frequentemente mais impactante que a escolha da linguagem.
