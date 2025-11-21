@@ -61,7 +61,7 @@ Criar uma API Rest com um único endpoint `/api/v1/cep/{cep}` que receberá via 
 | Requisições falhadas    | 0                | 0           | Ambas 100% |
 
 
-![Comparativo FastAPI x Axum](fastapi-axum-latency-bench.png)
+![Comparativo FastAPI x Axum](imgs/fastapi-axum-latency-bench.png)
 
 
 
@@ -401,7 +401,7 @@ O P99.9 do FastAPI caiu de 2.048ms para 631ms, uma melhoria de 69%. Isto sugere 
 **Estabilidade e Consistência**
 O desvio padrão do FastAPI caiu de 97ms para 33ms, indicando respostas mais consistentes. Curiosamente, o Axum manteve desvio padrão alto (96ms), provavelmente relacionado a outliers externos (banco de dados ou ViaCEP).
 
-![Comparativo FastAPI x Axum](fastapi-8workers-versus-axum.png)
+![Comparativo FastAPI x Axum](imgs/fastapi-8workers-versus-axum.png)
 
 Também como sugestão do [@gleberdiniz](https://github.com/gleberdiniz), foi refeito ambos os testes (Axum e FastAPI com 8 workers) monitorando cpu e memória.
 
