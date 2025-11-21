@@ -1070,4 +1070,4 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 Se os números não mentem e o Polars é 11x mais rápido que Pandas,  imagine o que você pode construir quando entende a linguagem que torna isso possível.
 
 
-[<img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left">](https://desbravandorust.com.br)
+<a href="https://desbravandorust.com.br" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
