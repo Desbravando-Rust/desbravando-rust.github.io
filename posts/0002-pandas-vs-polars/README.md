@@ -641,6 +641,7 @@ if __name__ == "__main__":
 
 E por fim mas não menos importante, o exemplo em Rust com Polars que é praticamente uma F1 nessa corrida de velotrol:
 
+{% raw %}
 ```rust
 use polars::prelude::*;
 use std::time::Instant;
@@ -763,6 +764,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+{% endraw %}
 
 ### Resultados
 
