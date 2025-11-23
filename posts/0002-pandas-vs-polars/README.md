@@ -174,7 +174,9 @@ A sintaxe de Polars pode parecer mais verbosa no início, mas é:
 - Mais rápida: Evita loops implícitos
 
 ### 4. Paralelização e Concorrência
-**Pandas - Praticamente Single-Threaded**
+
+#### Pandas - Praticamente Single-Threaded
+
 Pandas roda majoritariamente em um único núcleo do seu processador:
 
 ```python
@@ -190,7 +192,8 @@ Para ter paralelismo real em Pandas, você precisa de bibliotecas externas como:
 - Modin: Drop-in replacement que paraleliza Pandas
 - Ray: Framework de computação distribuída
 
-**Polars - Paralelização Nativa**
+
+#### Polars - Paralelização Nativa
 Polars usa todos os núcleos disponíveis automaticamente:
 ```python
 # Usa todos os núcleos automaticamente
@@ -201,7 +204,7 @@ Além disso, Polars usa SIMD (Single Instruction, Multiple Data) - uma tecnologi
 
 ### 5. Tipos de Dados e Strictness
 
-**Pandas - Loose Typing (Tipagem Flexível)**
+#### Pandas - Loose Typing (Tipagem Flexível)
 
 Pandas faz conversões automáticas de tipos, o que pode parecer conveniente, mas gera bugs silenciosos:
 
@@ -215,7 +218,8 @@ print(df['valores'].dtype)  # float64 (converteu TODA a coluna!)
 
 O que aconteceu? Ao adicionar um `None` (que representa ausência de valor), Pandas converteu toda a coluna de inteiros para floats, porque inteiros não podem representar valores ausentes nativamente.
 
-**Polars - Strict Typing (Tipagem Estrita)**
+#### Polars - Strict Typing (Tipagem Estrita)
+
 Polars é rigoroso com tipos e te força a ser explícito:
 ```python
 df = pl.DataFrame({'valores': [1, 2, 3, 4, 5]})
@@ -232,7 +236,7 @@ Por que isso é bom? Porque erros explícitos são melhores que bugs silenciosos
 
 ### 6. Uso de Memória
 
-**Pandas - Guloso com RAM**
+#### Pandas - Guloso com RAM
 Pandas requer **5-10x** o tamanho do dataset em memória RAM:
 - Copia dados frequentemente entre operações
 - Não tem suporte nativo para datasets maiores que a memória
@@ -240,7 +244,7 @@ Pandas requer **5-10x** o tamanho do dataset em memória RAM:
 
 Se você tem um arquivo CSV de 1GB, pode precisar de 10GB de RAM para processá-lo com Pandas.
 
-**Polars - Eficiente e com Streaming**
+#### Polars - Eficiente e com Streaming
 Polars requer apenas **2-4x** o tamanho do dataset:
 
 - Usa zero-copy operations sempre que possível (reutiliza dados sem copiar)
@@ -260,7 +264,8 @@ Com Polars, você pode processar arquivos de 50GB em uma máquina com 8GB de RAM
 
 
 ### 7. Operações Complexas: Apply vs Expressões Nativas
-**Pandas - Dependente de .apply()**
+
+#### Pandas - Dependente de `.apply()`
 Para operações complexas, Pandas frequentemente te força a usar `.apply()`, que é lento:
 ```python
 # Loop implícito - processa linha por linha
@@ -276,7 +281,7 @@ O `.apply()` é lento porque:
 - Tem overhead do Python para cada linha
 - Não pode ser paralelizado facilmente
 
-**Polars - Métodos Nativos para Tudo**
+#### Polars - Métodos Nativos para Tudo
 Polars tem métodos nativos (escritos em Rust) para praticamente tudo:
 
 ```python
@@ -838,7 +843,7 @@ if __name__ == "__main__":
     compare_results()
 ```
 
-**Eis os números**:
+#### Eis os números:
 
 Para facilitar a execução de todos e coletar principalmente os picos de consumo de cpu e e memória de uma forma fácil, utilizei o seguinte `Makefile`:
 ```Makefile
@@ -1036,14 +1041,16 @@ Se você trabalha com dados e ainda usa apenas Pandas:
 - Para datasets grandes (>1GB): Polars não é opcional, é necessário
 - Para economia de recursos: 60% menos memória = custos menores
 
-**A Transição Vale a Pena?**
+###### A Transição Vale a Pena?
+
 A curva de aprendizado de Polars existe, sim. A sintaxe é diferente, o paradigma de expressões requer uma mudança de mentalidade. Mas os resultados falam por si:
 
 - 11x mais rápido significa que o tempo que você investe aprendendo Polars se paga na primeira semana de uso
 - 60% menos memória significa infraestrutura mais barata e capacidade de processar datasets maiores
 - API consistente e expressiva significa código mais limpo e manutenível a longo prazo
 
-**O Futuro é Rust, Mas Você Não Precisa Saber Rust**
+##### O Futuro é Rust, Mas Você Não Precisa Saber Rust
+
 A beleza de Polars é que você colhe todos os benefícios do Rust (velocidade, segurança de memória, paralelização) escrevendo Python. É o melhor dos dois mundos.
 
 E quando você realmente precisar daquele último bit de performance? A transição de Python para Rust com Polars é suave - a API é praticamente idêntica.
