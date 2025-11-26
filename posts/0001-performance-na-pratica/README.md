@@ -466,3 +466,23 @@ O benchmark revisado reforça que otimização de deployment é tão importante 
 Os testes demonstram que Rust com Axum oferece vantagens mensuráveis de performance, mas o gap não é tão dramático quanto benchmarks sintéticos sugerem. Em aplicações I/O bound reais, a diferença entre stacks bem configuradas tende a ser menor que em CPU-bound workloads.​
 
 A decisão técnica adequada depende do contexto específico de cada projeto: volume esperado de tráfego, requisitos de latência, expertise da equipe, velocidade de iteração necessária e restrições de custo operacional. O reteste com 8 workers demonstra que tuning adequado é frequentemente mais impactante que a escolha da linguagem.
+
+---
+
+## Quer Dominar Rust e Entender como uma API com Axum pode ajudar a aumentar a performance?
+
+Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rápido, ou se você quer entender por que Rust está revolucionando o mundo da programação, temos algo especial para você.
+"Desbravando Rust" é o guia definitivo para quem quer ir além do superficial e realmente dominar a linguagem que está por trás de ferramentas como Polars, Tokio, Servo e tantas outras que estão redefinindo performance e segurança.
+
+**O Que Você Vai Aprender:**
+- **Fundamentos sólidos**: Do zero ao avançado, sem pular etapas essenciais
+- **Performance real**: Entenda como Rust elimina o overhead que torna Python lento
+- **Safety sem garbage collector**: Como Rust garante segurança de memória em compile-time
+- **Concorrência sem medo**: Paralelização nativa sem data races (o que torna Polars tão rápido)
+- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
+
+
+### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br)
+
+
+<a href="https://desbravandorust.com.br" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
