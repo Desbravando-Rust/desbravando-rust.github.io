@@ -17,7 +17,7 @@ Este artigo nasceu da inspiração sobre o tema depois de uma aula de Pandas com
 Dado ambos com mais experiência que eu no assunto, achei por bem citá-los aqui e pedir para que fizessem uma revisão no material que compartilharei abaixo.
 
 Meu primeiro contato com o Pandas foi em um Nano Degree da Udacity:
-[Programming for Data Science with Python](https://www.udacity.com/course/programming-for-data-science-nanodegree--nd104) e de lá para cá não tive muita oportunidade de usá-lo. O material abaixo é fruto de uma pesquisa ao longo de alguns dias (deste a talk do Rafa), obviamente com algum viés para o bench entre os dois pacotes.
+[Programming for Data Science with Python](https://www.udacity.com/course/programming-for-data-science-nanodegree--nd104) e de lá para cá não tive muita oportunidade de usá-lo. O material abaixo é fruto de uma pesquisa ao longo de alguns dias (desde a talk do Rafa), obviamente com algum viés para o bench entre os dois pacotes.
 
 ## O que são DataFrames?
 Se você já trabalhou com planilhas do Excel ou Google Sheets, você já conhece o conceito de DataFrame sem saber. Um DataFrame é basicamente uma tabela de dados com:
@@ -180,7 +180,7 @@ A sintaxe de Polars pode parecer mais verbosa no início, mas é:
 Pandas roda majoritariamente em um único núcleo do seu processador:
 
 ```python
-# Usa apenas 1 núcleo por padrão
+# Pandas opera majoritariamente em um único núcleo, exceto por algumas operações vetorizadas que podem usar paralelismo interno do NumPy.
 df.groupby('categoria')['valor'].sum()
 ```
 
@@ -201,6 +201,12 @@ df.group_by('categoria').agg(pl.col('valor').sum())
 ```
 
 Além disso, Polars usa SIMD (Single Instruction, Multiple Data) - uma tecnologia que permite processar múltiplos valores com uma única instrução do processador. É como ter um supermercado com múltiplos caixas, todos trabalhando simultaneamente.
+
+Pandas também usa SIMD em algumas operações via NumPy. Exemplo: operações vetorizadas:
+```python
+df["price_with_tax"] = df["price"] * 1.12
+```
+
 
 ### 5. Tipos de Dados e Strictness
 
@@ -1040,6 +1046,17 @@ Se você trabalha com dados e ainda usa apenas Pandas:
 - Para qualquer coisa em produção: Polars deveria ser sua escolha padrão
 - Para datasets grandes (>1GB): Polars não é opcional, é necessário
 - Para economia de recursos: 60% menos memória = custos menores
+
+| Critério            | Pandas                      | Polars                                |
+| :------------------ | :-------------------------- | :------------------------------------ |
+| **Performance**     | Significativamente mais lenta | **Extremamente Rápida** (11x mais)    |
+| **Tipagem**         | Flexível (pode levar a erros) | Estrita (segurança e performance)     |
+| **Paralelismo**     | Limitado (single-core padrão) | Nativo (aproveita todos os cores)     |
+| **Lazy Evaluation** | ❌ (processamento imediato)   | ✔ (otimização e eficiência)           |
+| **Uso de RAM**      | Alto (782 MB)               | **Baixo** (311 MB, 60% menos)         |
+| **Streaming**       | ❌ (requer dados em memória)  | ✔ (via lazy, para datasets grandes)   |
+| **Ecossistema ML**  | Excelente (maduro)          | Bom (crescendo rapidamente)           |
+
 
 ###### A Transição Vale a Pena?
 
