@@ -15,5 +15,6 @@ Se você busca otimizar performance, explorar concorrência de forma segura ou s
 
 ## Últimos posts:
 
+- [0003 - Cargo contra rapa: Developer Tooling do jeito certo](./posts/0002-pandas-vs-polars)
 - [0002 - Pandas vs Polars: Benchmark com 3 Milhões de Registros](./posts/0002-pandas-vs-polars)
 - [0001 - Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](./posts/0001-performance-na-pratica)
