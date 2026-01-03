@@ -140,6 +140,6 @@ Se você está cansado de configurar Webpack, brigar com ambientes virtuais Pyth
 
 No livro **"Desbravando Rust"**, dedicamos capítulos inteiros para explorar o ecossistema do Cargo, ensinando não só a sintaxe da linguagem, mas como usar essas ferramentas para criar software robusto, testado e documentado desde o primeiro dia.
 
-### [Garanta seu exemplar e pare de brigar com configurações!](https://desbravandorust.com.br)
+### [Garanta seu exemplar e pare de brigar com configurações!](https://desbravando-rust.github.io/)
 
-<a href="https://desbravandorust.com.br" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
+<a href="https://desbravando-rust.github.io/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

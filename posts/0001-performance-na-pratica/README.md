@@ -482,7 +482,7 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 - **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
 
 
-### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br)
+### [Clique aqui e garanta seu exemplar agora!](https://desbravando-rust.github.io/)
 
 
-<a href="https://desbravandorust.com.br" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
+<a href="https://desbravando-rust.github.io/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
