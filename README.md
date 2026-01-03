@@ -64,7 +64,7 @@ Compre agora e receba o livro digital em PDF em até 2 dias úteis.
 00020126580014BR.GOV.BCB.PIX0136fb98188e-9e75-4c85-88bb-c3fbc12ffc47520400005303986540589.905802BR5924XWDEV WEB SOLUTIONS LTDA6009SAO PAULO61080540900062250521mhe8Msky7DWiKlB1h51126304063D
 ```
 
-Após o pagamento, mande um email com o comprovante e seus dados para desbravandorust@gmail.com com as seguintes informações:
+Após o pagamento, mande um email com o comprovante e seus dados para <b>desbravandorust@gmail.com</b> com as seguintes informações:
 - Nome Completo
 - CPF
 - Data de nascimento
