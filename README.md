@@ -56,7 +56,7 @@ claro e prático para desenvolvedores Python que desejam expandir seus horizonte
 
 Compre agora e receba o livro digital em PDF em até 2 dias úteis.
 
-##### QR Code para pagamento:
+###### QR Code para pagamento:
 <img class="pix-qrcode" src="imgs/venda_qr.png" alt="QR Code PIX para pré-venda">
 
 ###### Chave pix copie e cole:
