@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica](./posts/0004-django-orm-vs-sqlx)
 - [0003 - Cargo contra rapa: Developer Tooling do jeito certo](./posts/0003-cargo-contra-rapa)
 - [0002 - Pandas vs Polars: Benchmark com 3 Milhões de Registros](./posts/0002-pandas-vs-polars)
 - [0001 - Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](./posts/0001-performance-na-pratica)
