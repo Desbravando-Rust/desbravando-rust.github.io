@@ -1,18 +1,20 @@
 # De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Fev 16, 2026
 
-Passei mais de quase 20 anos confiando que Django fazia magia com bancos de dados. Eu estava errado - não era magia, era abstração. E abstrações, descobri da pior forma, têm custo.
+Este artigo é para quem viveu anos no conforto do Django ORM e está cogitando encarar SQLx em Rust. Vamos falar de produtividade, dor, performance e o que você realmente ganha (e perde) ao largar a ‘mágica’.
+
+Passei quase 20 anos confiando que o Django fazia magia com bancos de dados. Eu estava errado - não era magia, era abstração. E abstrações, descobri da pior forma, têm custo.
 
 Durante anos, escrevi código Python elegante que se transformava em SQL sem eu nem pensar nisso. `Produto.objects.filter(preco__gt=100).select_related('categoria')` - boom, query otimizada. Migrations automáticas com `makemigrations`. Admin de graça. CRUD em minutos. Era produtividade pura.
 
-Até o dia em que não era mais. Um endpoint de relatório começou a demorar 8 segundos. O Django Debug Toolbar mostrou 247 queries. Duzentas e quarenta e sete. Eu tinha acabado de criar o N+1 query mais épico da história da empresa, e o pior: o código Python parecia perfeitamente inocente. Foi quando comecei a questionar se eu realmente entendia o que estava acontecendo embaixo do capô.
+Até o dia em que isso deixou de ser verdade. Um endpoint de relatório começou a demorar 8 segundos. O Django Debug Toolbar mostrou 247 queries. Duzentas e quarenta e sete. Eu tinha acabado de criar o N+1 query mais épico da história da empresa, e o pior: o código Python parecia perfeitamente inocente. Foi quando comecei a questionar se eu realmente entendia o que estava acontecendo embaixo do capô.
 
 E foi assim que acabei conhecendo SQLx. Minha primeira reação? "Mano, eu tenho que escrever SQL na mão?!" Spoiler: sim. E isso mudou completamente como penso sobre bancos de dados.
 
 ## O Conforto (e o Preço) da Magia do Django ORM
-Vamos ser justos: Django ORM é espetacular para o que foi projetado. Não estou aqui para fazer bashing - usei Django por décadas e ainda uso em vários projetos. Mas preciso ser honesto sobre seus limites.
+Vamos ser justos: Django ORM é espetacular para o que foi projetado. Não estou aqui para fazer bashing - usei o Django por décadas e ainda uso em vários projetos. Mas preciso ser honesto sobre seus limites.
 
-### O Que Django ORM Faz de Genial
+### O Que o Django ORM Faz de Genial
 A produtividade é absurda. Você define seus modelos como classes Python normais e ganha de graça:
 
 ```python
@@ -42,7 +44,7 @@ for produto in produtos_caros:
     print(f"{produto.nome} - {produto.categoria.nome}")
 ```
 
-É lindo. É Pythônico. E funciona muito bem para 80% dos casos de uso. O sistema de migrations é quase mágico - você altera o modelo, roda makemigrations, e Django gera o SQL de migração automaticamente. O admin? Um CRUD completo e funcional sem escrever uma linha de HTML.
+É lindo. É Pythônico. E funciona muito bem para 80% dos casos de uso. O sistema de migrations é quase mágico - você altera o modelo, roda makemigrations, e o Django gera o SQL de migração automaticamente. O admin? Um CRUD completo e funcional sem escrever uma linha de HTML.
 
 Para MVPs, protótipos e aplicações CRUD tradicionais, Django ORM é imbatível em produtividade.
 
@@ -92,7 +94,7 @@ Olha, eu sei fazer isso. Mas na moral: você consegue ler essa query e saber exa
 
 **3. Controle Limitado**
 
-Às vezes você sabe a query SQL perfeita. Você testou no psql, otimizou os índices, usou CTEs, tudo lindo. Mas fazer Django gerar esse SQL específico? Boa sorte. Você acaba usando .raw() ou connection.cursor(), jogando fora todas as vantagens do ORM.
+Às vezes você sabe a query SQL perfeita. Você testou no psql, otimizou os índices, usou CTEs, tudo lindo. Mas fazer o Django gerar esse SQL específico? Boa sorte. Você acaba usando .raw() ou connection.cursor(), jogando fora todas as vantagens do ORM.
 
 **4. Performance Imprevisível**
 
@@ -396,7 +398,7 @@ Django também faz isso, mas você nunca vê. Em SQLx, é impossível não usar 
 
 
 Quando Usar Cada Um?
-Aqui está a verdade: eu não "abandonei" Django. Uso as duas ferramentas, para coisas diferentes.
+Aqui está a verdade: eu não "abandonei" o Django. Uso as duas ferramentas, para coisas diferentes.
 
 #### Use Django ORM quando:
 ✅ Você precisa de um MVP/protótipo RÁPIDO - Nada bate Django para validar uma ideia em 2 dias
@@ -441,7 +443,7 @@ Django te dá produtividade; SQLx te dá controle. Não existe almoço grátis. 
 
 **2. Saber SQL de Verdade Importa**
 
-SQLx me forçou a ser muito melhor em SQL. E isso é transferível para qualquer stack. Hoje, quando volto para Django, escrevo queries do ORM muito mais eficientes porque sei o SQL que vai ser gerado.
+SQLx me forçou a ser muito melhor em SQL. E isso é transferível para qualquer stack. Hoje, quando volto para o Django, escrevo queries do ORM muito mais eficientes porque sei o SQL que vai ser gerado.
 
 **3. Type Safety É Viciante**
 
@@ -453,18 +455,18 @@ Os primeiros dias foram duros. Muito. Mas depois da curva, você codifica mais r
 
 **5. Django Não É "Ruim"**
 
-Sério. Django é uma ferramenta incrível para o que foi projetado. Rust+SQLx é para cenários diferentes. Use a ferramenta certa para o problema certo.
+Sério. O Django é uma ferramenta incrível para o que foi projetado. Rust+SQLx é para cenários diferentes. Use a ferramenta certa para o problema certo.
 
 ## Conclusão
-Desaprender a confiar em magic foi doloroso. Teve dias que eu pensei "cara, por que não deixo Django fazer isso automaticamente?". Mas hoje, olhando para trás, valeu cada minuto de frustração.
+Desaprender a confiar em mágica foi doloroso. Teve dias que eu pensei "cara, por que não deixo o Django fazer isso automaticamente?". Mas hoje, olhando para trás, valeu cada minuto de frustração.
 
-Não é que SQLx seja "melhor" que Django ORM. É que eles resolvem problemas diferentes. Django maximiza produtividade para 80% dos casos. SQLx maximiza performance e controle para os 20% críticos.
+Não é que SQLx seja "melhor" que Django ORM. É que eles resolvem problemas diferentes. O Django maximiza produtividade para 80% dos casos. SQLx maximiza performance e controle para os 20% críticos.
 
-No fim das contas, eu não abandonei Django - eu só aprendi quando não usar ele. E isso, ironicamente, me tornou um desenvolvedor Django melhor também. Hoje, quando vejo um select_related, sei exatamente qual JOIN está rolando. Quando vejo um .annotate(), sei qual SQL será gerado. Quando vejo N+1 queries, identifico na hora.
+No fim das contas, eu não abandonei o Django - eu só aprendi quando não usar ele. E isso, ironicamente, me tornou um desenvolvedor Django melhor também. Hoje, quando vejo um select_related, sei exatamente qual JOIN está rolando. Quando vejo um .annotate(), sei qual SQL será gerado. Quando vejo N+1 queries, identifico na hora.
 
 A magia ainda está lá. Eu só entendo os truques agora.
 
-E você sabe o que descobri? Não precisa escolher um lado. Use Django para prototipar rápido. Use SQLx para otimizar gargalos. Use os dois no mesmo sistema. A melhor stack é a que resolve o problema do jeito mais eficiente, não a que te dá mais pontos de dogmatismo no Twitter.
+E você sabe o que descobri? Não precisa escolher um lado. Use o Django para prototipar rápido. Use SQLx para otimizar gargalos. Use os dois no mesmo sistema. A melhor stack é a que resolve o problema do jeito mais eficiente, não a que te dá mais pontos de dogmatismo no Twitter.
 
 Se você está confortável demais com seu ORM, talvez seja hora de se desconfortar um pouco. Escreva SQL na mão por algumas semanas. Veja o que você aprende. Não precisa migrar tudo - mas experimente.
 
