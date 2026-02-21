@@ -16,7 +16,7 @@ HF_TOKEN      = os.environ["HF_TOKEN"]
 REPO_NAME     = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
 POSTS_DIR     = "posts"
 MAIN_BRANCH   = "main"   # ou "master" se for o caso
-MODEL_ID      = "Qwen/Qwen2.5-72B-Instruct"
+MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 
 BLOG_CONTEXT = """
 Você é um escritor técnico especializado em Rust e Python.
@@ -259,7 +259,10 @@ def main():
     repo = g.get_repo(REPO_NAME)
     print(f"✅ GitHub: {repo.full_name}")
 
-    client = InferenceClient(token=HF_TOKEN)
+    client = InferenceClient(
+        provider="hf-inference",
+        api_key=HF_TOKEN,
+    )
     print(f"✅ HF Inference API: {MODEL_ID}\n")
 
     # Passo 1: Absorver contexto
