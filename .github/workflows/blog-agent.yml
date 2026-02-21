@@ -1,0 +1,38 @@
+name: 🤖 Blog Agent — Gerador de Posts
+
+on:
+  # ① Disparo manual pela UI do GitHub
+  workflow_dispatch:
+
+  # ② Agendado toda segunda-feira às 08h (horário de Brasília = 11h UTC)
+  schedule:
+    - cron: "0 11 * * 3"
+
+# Permissões necessárias para criar branch, arquivo e PR
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Instalar dependências
+        run: pip install -r scripts/requirements.txt
+
+      - name: 🤖 Executar Blog Agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # automático
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}            # o que você criou
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/blog_agent.py
