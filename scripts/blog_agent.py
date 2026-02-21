@@ -11,7 +11,7 @@ from huggingface_hub import InferenceClient
 # ─────────────────────────────────────────────────────────────
 # CONFIGURAÇÕES — ajuste conforme seu repositório
 # ─────────────────────────────────────────────────────────────
-GITHUB_TOKEN  = os.environ["GITHUB_TOKEN"]
+GITHUB_TOKEN  = os.environ.get("GH_PAT") or os.environ["GITHUB_TOKEN"]
 HF_TOKEN      = os.environ["HF_TOKEN"]
 REPO_NAME     = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
 POSTS_DIR     = "posts"

@@ -32,7 +32,7 @@ jobs:
 
       - name: 🤖 Executar Blog Agent
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # automático
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}   # automático
           HF_TOKEN: ${{ secrets.HF_TOKEN }}            # o que você criou
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python scripts/blog_agent.py
