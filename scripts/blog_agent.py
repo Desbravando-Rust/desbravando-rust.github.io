@@ -16,9 +16,13 @@ HF_TOKEN           = os.environ["HF_TOKEN"]
 REPO_NAME          = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
 POSTS_DIR          = "posts"
 MAIN_BRANCH        = "main"   # ou "master" se for o caso
-THEME_MAX_TOKENS   = os.environ.get("THEME_MAX_TOKENS") or 1024
-CONTENT_MAX_TOKENS = os.environ.get("CONTENT_MAX_TOKENS") or 8192
 
+try:
+    THEME_MAX_TOKENS   = int(os.environ.get("THEME_MAX_TOKENS")) or 1024
+    CONTENT_MAX_TOKENS = int(os.environ.get("CONTENT_MAX_TOKENS")) or 8192
+except ValueError:
+    THEME_MAX_TOKENS   = 1024
+    CONTENT_MAX_TOKENS = 8192
 
 # MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 # MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"

@@ -13,7 +13,11 @@ HF_TOKEN           = os.environ["HF_TOKEN"]
 REPO_NAME          = os.environ["GITHUB_REPOSITORY"]
 PR_NUMBER          = int(os.environ["PR_NUMBER"])
 MODEL_ID           = os.environ.get("MODEL_ID") or "deepseek-ai/DeepSeek-V3-0324"  # mesmo do agente
-CONTENT_MAX_TOKENS = os.environ.get("CONTENT_MAX_TOKENS") or 8192
+
+try:
+    CONTENT_MAX_TOKENS = int(os.environ.get("CONTENT_MAX_TOKENS")) or 8192
+except ValueError:
+    CONTENT_MAX_TOKENS = 8192
 
 REVIEW_PROMPT = """
 Você é um revisor técnico especializado em Rust e Python.
