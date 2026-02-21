@@ -17,7 +17,8 @@ REPO_NAME     = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
 POSTS_DIR     = "posts"
 MAIN_BRANCH   = "main"   # ou "master" se for o caso
 # MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
+# MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL_ID = "google/gemma-2-9b-it"
 POST_FILENAME = "README.md"   # padrão do repositório
 
 BLOG_CONTEXT = """
@@ -122,7 +123,7 @@ Responda SOMENTE com JSON válido, sem blocos de código markdown:
   ]
 }}
 """
-    resp = client.chat_completion(
+    resp = client.chat.completions.create(
         model=MODEL_ID,
         messages=[{"role": "user", "content": prompt}],
         max_tokens=600,
