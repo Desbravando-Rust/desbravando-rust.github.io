@@ -16,7 +16,8 @@ HF_TOKEN      = os.environ["HF_TOKEN"]
 REPO_NAME     = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
 POSTS_DIR     = "posts"
 MAIN_BRANCH   = "main"   # ou "master" se for o caso
-MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+# MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
 
 BLOG_CONTEXT = """
 Você é um escritor técnico especializado em Rust e Python.
