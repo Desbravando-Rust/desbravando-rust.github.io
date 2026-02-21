@@ -18,6 +18,7 @@ POSTS_DIR     = "posts"
 MAIN_BRANCH   = "main"   # ou "master" se for o caso
 # MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
+POST_FILENAME = "README.md"   # padrão do repositório
 
 BLOG_CONTEXT = """
 Você é um escritor técnico especializado em Rust e Python.
@@ -57,7 +58,7 @@ def get_existing_posts(repo) -> list:
         if item.type != "dir":
             continue
         try:
-            f = repo.get_contents(f"{POSTS_DIR}/{item.name}/index.md")
+            f = repo.get_contents(f"{POSTS_DIR}/{item.name}/{POST_FILENAME}")
             fm = parse_frontmatter(f.decoded_content.decode("utf-8"))
             posts.append({
                 "dirname":     item.name,
@@ -198,7 +199,7 @@ Escreva o post completo abaixo do frontmatter.
 def create_pull_request(repo, post_number: int, topic: dict, content: str) -> str:
     """Cria branch, commita o arquivo e abre o PR. Retorna URL do PR."""
     dirname    = f"{post_number:04d}-{topic['slug']}"
-    file_path  = f"{POSTS_DIR}/{dirname}/index.md"
+    file_path  = f"{POSTS_DIR}/{dirname}/{POST_FILENAME}"
     branch     = f"agent/post-{datetime.now().strftime('%Y%m%d')}-{topic['slug']}"
     today_br   = datetime.now().strftime("%d/%m/%Y")
 
