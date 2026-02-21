@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0005 -  Gerenciamento de Memória em Rust vs Python: Entendendo Ownership](./posts/0005-gerenciamento-memoria-rust-python)
 - [0004 - De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica](./posts/0004-django-orm-vs-sqlx)
 - [0003 - Cargo contra rapa: Developer Tooling do jeito certo](./posts/0003-cargo-contra-rapa)
 - [0002 - Pandas vs Polars: Benchmark com 3 Milhões de Registros](./posts/0002-pandas-vs-polars)
