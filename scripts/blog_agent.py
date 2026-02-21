@@ -18,7 +18,8 @@ POSTS_DIR     = "posts"
 MAIN_BRANCH   = "main"   # ou "master" se for o caso
 # MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 # MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
-MODEL_ID = "google/gemma-2-9b-it"
+MODEL_ID = "google/gemma-2-2b-it"
+# MODEL_ID = "deepseek-ai/DeepSeek-V3-0324"
 POST_FILENAME = "README.md"   # padrão do repositório
 
 BLOG_CONTEXT = """
@@ -262,10 +263,12 @@ def main():
     repo = g.get_repo(REPO_NAME)
     print(f"✅ GitHub: {repo.full_name}")
 
-    client = InferenceClient(
-        provider="hf-inference",
-        api_key=HF_TOKEN,
-    )
+    # client = InferenceClient(
+    #     provider="hf-inference",
+    #     api_key=HF_TOKEN,
+    # )
+    client = InferenceClient(api_key=HF_TOKEN)
+
     print(f"✅ HF Inference API: {MODEL_ID}\n")
 
     # Passo 1: Absorver contexto
