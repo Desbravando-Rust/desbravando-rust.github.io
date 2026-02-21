@@ -1,0 +1,40 @@
+name: 🔍 Revisor Automático de Posts
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review-post:
+    # Roda APENAS nos PRs criados pelo blog agent
+    if: startsWith(github.head_ref, 'agent/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Instalar dependências
+        run: pip install -r scripts/requirements.txt
+
+      - name: 🔍 Executar revisor
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          POST_PATH: ${{ github.event.pull_request.head.ref }}
+        run: python scripts/pr_reviewer.py

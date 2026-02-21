@@ -35,4 +35,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}   # automático
           HF_TOKEN: ${{ secrets.HF_TOKEN }}            # o que você criou
           GITHUB_REPOSITORY: ${{ github.repository }}
+          THEME_MAX_TOKENS: ${{ vars.THEME_MAX_TOKENS }}
+          CONTENT_MAX_TOKENS: ${{ vars.CONTENT_MAX_TOKENS }}
         run: python scripts/blog_agent.py

@@ -11,16 +11,21 @@ from huggingface_hub import InferenceClient
 # ─────────────────────────────────────────────────────────────
 # CONFIGURAÇÕES — ajuste conforme seu repositório
 # ─────────────────────────────────────────────────────────────
-GITHUB_TOKEN  = os.environ.get("GH_PAT") or os.environ["GITHUB_TOKEN"]
-HF_TOKEN      = os.environ["HF_TOKEN"]
-REPO_NAME     = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
-POSTS_DIR     = "posts"
-MAIN_BRANCH   = "main"   # ou "master" se for o caso
+GITHUB_TOKEN       = os.environ.get("GH_PAT") or os.environ["GITHUB_TOKEN"]
+HF_TOKEN           = os.environ["HF_TOKEN"]
+REPO_NAME          = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
+POSTS_DIR          = "posts"
+MAIN_BRANCH        = "main"   # ou "master" se for o caso
+THEME_MAX_TOKENS   = os.environ.get("THEME_MAX_TOKENS") or 1024
+CONTENT_MAX_TOKENS = os.environ.get("CONTENT_MAX_TOKENS") or 8192
+
+
 # MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 # MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
 # MODEL_ID = "google/gemma-2-2b-it"
-MODEL_ID = "deepseek-ai/DeepSeek-V3-0324"
+MODEL_ID = os.environ.get("MODEL_ID") or "deepseek-ai/DeepSeek-V3-0324"
 POST_FILENAME = "README.md"   # padrão do repositório
+
 
 BLOG_CONTEXT = """
 Você é um escritor técnico especializado em Rust e Python.
@@ -127,7 +132,7 @@ Responda SOMENTE com JSON válido, sem blocos de código markdown:
     resp = client.chat.completions.create(
         model=MODEL_ID,
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=600,
+        max_tokens=THEME_MAX_TOKENS,
         temperature=0.7,
     )
     raw = resp.choices[0].message.content.strip()
@@ -162,33 +167,29 @@ Outline sugerido:
 {outline}
 
 ## Regras de escrita:
-1. Linguagem acessível para quem tem pouco contexto em Rust
-2. Inclua blocos ```rust com comentários em PT-BR explicando cada parte
-3. Compare com Python (```python) sempre que facilitar o entendimento
-4. Use subtítulos (##, ###) para organizar o post
-5. Inclua uma introdução cativante e uma conclusão com resumo dos aprendizados
-6. Use emojis com moderação para deixar mais amigável
-7. O post deve ter profundidade suficiente para ser útil, sem ser excessivamente longo
+1. O post deve ter no mínimo 1500 palavras — prefira mais
+2. Linguagem acessível para quem tem pouco contexto em Rust
+3. Cada conceito novo deve ser introduzido com analogia ou contexto antes do código
+4. Inclua blocos ```rust extensos e comentados linha a linha em PT-BR
+5. Compare SEMPRE com Python (```python) — mostre o mesmo problema resolvido nas duas linguagens
+6. Use subtítulos (##, ###) para organizar o post em seções bem definidas
+7. Inclua uma seção "## O que aprendemos" ao final com bullet points dos conceitos cobertos
+8. Inclua pelo menos um exemplo prático completo e funcional, não apenas fragmentos
+9. Use emojis com moderação nos títulos para tornar mais amigável
+10. Explique os erros mais comuns que quem vem do Python comete nesse tema em Rust
+11. Inclua no final a chamada para compra do livro como nos demais posts com o link do site
+12. Atualize o README.md da raiz do repositório para incluir o link para o post recém criado.
 
 ## Formato de saída:
-Gere APENAS o conteúdo markdown, começando obrigatoriamente com o frontmatter:
+Gere APENAS o conteúdo markdown puro, começando diretamente com o título:
+# {topic['title']}
 
----
-title: "{topic['title']}"
-date: {today}
-slug: {topic['slug']}
-tags: {json.dumps(topic['tags'], ensure_ascii=False)}
-categories: {json.dumps(topic.get('categories', ['rust']), ensure_ascii=False)}
-description: "{topic['description']}"
-draft: false
----
-
-Escreva o post completo abaixo do frontmatter.
+Sem frontmatter, sem bloco de metadados, sem `---` no início.
 """
     resp = client.chat_completion(
         model=MODEL_ID,
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=4096,
+        max_tokens=CONTENT_MAX_TOKENS,
         temperature=0.75,
     )
     return resp.choices[0].message.content.strip()
