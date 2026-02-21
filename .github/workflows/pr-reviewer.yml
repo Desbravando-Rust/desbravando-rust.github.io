@@ -2,7 +2,7 @@ name: 🔍 Revisor Automático de Posts
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
     branches: [main]
 
 permissions:
@@ -37,4 +37,5 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           POST_PATH: ${{ github.event.pull_request.head.ref }}
+          CONTENT_MAX_TOKENS: ${{ vars.CONTENT_MAX_TOKENS }}
         run: python scripts/pr_reviewer.py
