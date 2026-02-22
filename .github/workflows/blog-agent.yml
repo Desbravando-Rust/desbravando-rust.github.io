@@ -4,7 +4,7 @@ on:
   # ① Disparo manual pela UI do GitHub
   workflow_dispatch:
 
-  # ② Agendado toda segunda-feira às 08h (horário de Brasília = 11h UTC)
+  # ② Agendado toda sábado às 10h (horário de Brasília = 13h UTC)
   schedule:
     - cron: "0 13 * * 6"
 
