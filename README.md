@@ -84,6 +84,9 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0008 -  Tratamento de Erros em Rust: Desmistificando Result e Option para Pythonistas](./posts/0008-tratamento-erros-rust-result-option-pythonistas)
+- [0007 -  Dominando Enums em Rust: Do Básico ao Avançado para Pythonistas](./posts/0007-enums-rust-pythonistas)
+- [0006 -  Gerenciamento de Memória em Rust vs Python: Alocação e Desempenho](./posts/0006-gerenciamento-memoria-rust-python)
 - [0005 -  Gerenciamento de Memória em Rust vs Python: Entendendo Ownership](./posts/0005-entendendo-ownership-rust-guia-pythonistas)
 - [0004 - De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica](./posts/0004-django-orm-vs-sqlx)
 - [0003 - Cargo contra rapa: Developer Tooling do jeito certo](./posts/0003-cargo-contra-rapa)
