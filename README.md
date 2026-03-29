@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0009 -  Desmistificando Traits em Rust: Herança para Pythonistas](./posts/0009-desmistificando-traits-rust-heranca-pythonistas)
 - [0008 -  Tratamento de Erros em Rust: Desmistificando Result e Option para Pythonistas](./posts/0008-tratamento-erros-rust-result-option-pythonistas)
 - [0007 -  Dominando Enums em Rust: Do Básico ao Avançado para Pythonistas](./posts/0007-enums-rust-pythonistas)
 - [0006 -  Gerenciamento de Memória em Rust vs Python: Alocação e Desempenho](./posts/0006-gerenciamento-memoria-rust-python)
