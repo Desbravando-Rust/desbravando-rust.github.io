@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0010 - Concorrência e Paralelismo em Rust: Desvendando Threads e Async/Await para Pythonistas](./posts/0010-concorrencia-paralelismo-rust-threads-async-pythonistas)
 - [0009 -  Desmistificando Traits em Rust: Herança para Pythonistas](./posts/0009-desmistificando-traits-rust-heranca-pythonistas)
 - [0008 -  Tratamento de Erros em Rust: Desmistificando Result e Option para Pythonistas](./posts/0008-tratamento-erros-rust-result-option-pythonistas)
 - [0007 -  Dominando Enums em Rust: Do Básico ao Avançado para Pythonistas](./posts/0007-enums-rust-pythonistas)
