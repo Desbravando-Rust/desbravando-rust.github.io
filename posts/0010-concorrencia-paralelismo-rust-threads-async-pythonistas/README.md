@@ -82,10 +82,10 @@ print(shared_data["counter"])  # Resultado inconsistente
 
 Para compartilhar dados entre threads com segurança em Rust, precisamos de dois conceitos:
 
-- **`Mutex<T>`** (MUTual EXclusion): funciona como o `threading.Lock()` do Python — garante que apenas uma thread acessa o dado interno por vez.
-- **`Arc<T>`** (Atomic Reference Counter): permite que múltiplas threads sejam *codonas* do mesmo valor. Não tem equivalente direto simples em Python, pois o GIL faz isso implicitamente.
+- **`Mutex<T>`** (MUTual EXclusion): funciona como o `threading.Lock()` do Python. O `Mutex` garante que apenas **um owner por vez** possa acessar e modificar o dado interno.
+- **`Arc<T>`** (Atomic Reference Counter): é como um `Rc` (contador de referências) seguro para threads — ele permite que **múltiplos owners** compartilhem a posse do mesmo valor. Não tem equivalente direto simples em Python, pois o GIL faz isso implicitamente.
 
-Em conjunto: usamos o `Arc` para *compartilhar a propriedade* do `Mutex` entre threads, e o `Mutex` para *proteger o acesso* ao dado interno.
+Juntos, `Arc<Mutex<T>>` é o padrão clássico para compartilhar estado mutável entre threads de forma segura: o `Arc` *compartilha a propriedade* e o `Mutex` *protege o acesso* ao dado interno.
 
 ```rust
 // Rust: Compartilhamento seguro com Arc<Mutex<T>>
@@ -98,9 +98,10 @@ fn main() {
 
     for _ in 0..10 {
         let counter = Arc::clone(&counter);
-        // `move` faz o closure *tomar posse* (ownership) das variáveis capturadas.
-        // Sem `move`, o closure tentaria capturar `counter` por referência,
-        // o que não é seguro para threads — o compilador impediria.
+        // O `move` força o closure a *tomar posse* (ownership) da variável `counter`
+        // (que é uma `Arc<Mutex<...>>`, já clonada para esta iteração).
+        // Isso é necessário porque as threads podem durar mais que a função atual —
+        // o sistema de ownership garante que os dados clonados vivam enquanto a thread precisar deles.
         let handle = thread::spawn(move || {
             for _ in 0..1000 {
                 let mut num = counter.lock().unwrap();
@@ -153,7 +154,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Em Rust, async/await é mais sobre concorrência do que paralelismo:
+Em Rust, async/await é mais sobre concorrência do que paralelismo — isso significa que uma única thread pode gerenciar milhares de operações de I/O concorrentes (como esperar respostas de rede) de forma eficiente, alternando entre elas. O paralelismo real (múltiplos núcleos trabalhando ao mesmo tempo) ainda é alcançado pelo *runtime* async (como o Tokio) ao distribuir essas tarefas por uma *pool* de threads de trabalho.
 
 ```rust
 // Rust: async/await com tokio
@@ -167,12 +168,11 @@ async fn tarefa_lenta(nome: &str, segundos: u64) {
 
 #[tokio::main]
 async fn main() {
-    // Executa as tarefas concorrentemente (não necessariamente em paralelo)
     let tarefa1 = tarefa_lenta("Tarefa 1", 2);
     let tarefa2 = tarefa_lenta("Tarefa 2", 1);
     let tarefa3 = tarefa_lenta("Tarefa 3", 3);
 
-    // `tokio::join!` aguarda todas as tarefas completarem (disponível no tokio, sem dependências extras)
+    // `tokio::join!` aguarda todas as tarefas completarem (sem dependências extras)
     tokio::join!(tarefa1, tarefa2, tarefa3);
 }
 ```
@@ -205,7 +205,7 @@ def trabalho_pesado():
         n += i
     return n
 
-# Usando threads para trabalho CPU-bound (não funciona bem por causa do GIL)
+# Threads para trabalho CPU-bound não escalam por causa do GIL
 inicio = time.time()
 threads = []
 for _ in range(4):
@@ -288,14 +288,16 @@ async def fetch(url):
 async def main():
     urls = ["http://httpbin.org/get"] * 10
     tasks = [fetch(url) for url in urls]
+    # asyncio.gather aceita uma lista dinâmica de tarefas com sintaxe concisa
     responses = await asyncio.gather(*tasks)
     return len(responses)
 ```
 
 ```rust
 // Rust: I/O-bound com async (eficiente)
+// Cargo.toml: reqwest = { version = "0.12", features = ["json"] }
 use reqwest;
-use tokio;
+use tokio::task::JoinSet;
 
 async fn fetch(url: &str) -> Result<String, reqwest::Error> {
     reqwest::get(url).await?.text().await
@@ -304,17 +306,22 @@ async fn fetch(url: &str) -> Result<String, reqwest::Error> {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let urls = vec!["http://httpbin.org/get"; 10];
-    let mut tasks = vec![];
 
+    // JoinSet gerencia um conjunto dinâmico de tarefas — sem dependências extras
+    let mut set = JoinSet::new();
     for url in urls {
-        tasks.push(tokio::spawn(async move {
-            fetch(url).await
-        }));
+        set.spawn(async move { fetch(url).await });
     }
 
-    // `futures::future::join_all` requer a crate `futures = "0.3"` no Cargo.toml
-    let results = futures::future::join_all(tasks).await;
-    println!("Total de respostas: {}", results.len());
+    let mut count = 0;
+    while let Some(result) = set.join_next().await {
+        result??;
+        count += 1;
+    }
+    // Nota: Python's asyncio.gather(*tasks) é mais conciso para listas dinâmicas.
+    // Em Rust, JoinSet (tokio) ou futures::future::join_all (crate `futures`) são as alternativas,
+    // contrabalançadas pela performance e pelo controle fino que Rust oferece.
+    println!("Total de respostas: {}", count);
     Ok(())
 }
 ```
@@ -378,8 +385,6 @@ A versão Rust é muito mais eficiente em termos de recursos porque:
 
 ### Teste de Carga Simples
 
-Vamos testar ambos os servidores com requisições concorrentes:
-
 ```python
 # Python: Teste de carga para os servidores
 import requests
@@ -395,6 +400,7 @@ def testar_servidor(porta, url, num_requisicoes):
         return requests.get(f"http://localhost:{porta}{url}").status_code
 
     with ThreadPoolExecutor(max_workers=100) as executor:
+        # Executa a função 'fazer_requisicao' para cada elemento no range
         resultados = list(executor.map(fazer_requisicao, range(num_requisicoes)))
 
     tempo_total = time.time() - inicio
@@ -419,23 +425,22 @@ testar_servidor(8080, "/lenta/1", 100)  # Actix com async
 
 ### Paralelismo de Dados com `rayon`
 
-Para trabalho CPU-bound que envolve processar coleções e iteradores, a crate [`rayon`](https://crates.io/crates/rayon) é uma ferramenta fantástica e muito popular. Ela oferece paralelismo quase automático através de uma API mínima — basta trocar `.iter()` por `.par_iter()`:
+Para trabalho CPU-bound que envolve processar coleções e iteradores, a crate [`rayon`](https://crates.io/crates/rayon) é uma ferramenta fantástica e muito popular. Ela oferece paralelismo quase automático — basta trocar `.iter()` por `.par_iter()`:
 
 ```rust
-// Rust: Paralelismo de dados com rayon (adicione `rayon = "1"` ao Cargo.toml)
+// Cargo.toml: rayon = "1"
 use rayon::prelude::*;
 
 fn main() {
-    let dados: Vec<i64> = (0..10_000_000).collect();
+    let data = vec!;[1][2]
 
-    // `.par_iter()` distribui o trabalho automaticamente entre os núcleos disponíveis
-    let soma: i64 = dados.par_iter().sum();
-
-    println!("Soma: {}", soma);
+    // Processa cada elemento em paralelo entre todos os núcleos disponíveis!
+    let resultados: Vec<_> = data.par_iter().map(|x| x * x).collect();
+    println!("{:?}", resultados); //[1]
 }
 ```
 
-Para Pythonistas, isso é comparável a usar `multiprocessing.Pool` com `map`, mas com uma API muito mais ergonômica e sem overhead de processos separados.
+Para Pythonistas, isso é comparável a usar `multiprocessing.Pool` com `map`, mas com uma API muito mais ergonômica e sem o overhead de processos separados.
 
 ### Comparação de Performance
 
@@ -448,6 +453,7 @@ Para Pythonistas, isso é comparável a usar `multiprocessing.Pool` com `map`, m
 ## ⚠️ Erros Comuns de Pythonistas em Rust
 
 ### 1. Tentar Usar Threads para Tudo Como no Python
+
 ```rust
 // ❌ Errado: Criar threads demais como faria em Python
 for _ in 0..1000 {
@@ -461,7 +467,8 @@ for _ in 0..1000 {
 }
 ```
 
-### 2. Esquecer de .await em Funções Async
+### 2. Esquecer de `.await` em Funções Async
+
 ```rust
 // ❌ Errado: Esquecer o .await
 async fn processar_dados() {
@@ -475,11 +482,11 @@ async fn processar_dados() {
 ```
 
 ### 3. Bloquear Threads de Execução com Operações CPU-intensivas
+
 ```rust
 // ❌ Errado: Trabalho CPU-intensive em contexto async
 async fn rota_lenta() {
     trabalho_pesado_cpu(); // Bloqueia o executor!
-    // ... resto async
 }
 
 // ✅ Correto: Mover trabalho CPU-intensive para thread dedicado
@@ -501,6 +508,8 @@ Para Pythonistas, aprender Rust significa:
 - Descobrir que async/await pode ser mais eficiente que threads tradicionais
 - Ganhar habilidades para escrever sistemas concorrentes mais robustos
 
+Em termos filosóficos, as duas linguagens representam trade-offs conscientes: Rust exige mais *upfront* — tipos explícitos, gerenciamento de ownership e um compilador rigoroso — para garantir segurança máxima e performance previsível. Python oferece mais facilidade inicial com tipagem dinâmica e o GIL como rede de segurança, mas esses atalhos têm um custo em performance e em race conditions que só aparecem em produção. Conhecer Rust muda a forma como você programa em qualquer linguagem.
+
 ## 📚 O Que Aprendemos
 
 - **Threads em Rust** são seguras graças ao sistema de tipos e traits `Send`/`Sync`
@@ -512,4 +521,4 @@ Para Pythonistas, aprender Rust significa:
 
 A jornada de aprendizado de concorrência em Rust é recompensadora e transformará como você pensa sobre programação paralela, mesmo quando voltar ao Python.
 
-Quer se aprofundar ainda mais? Confira o livro completo **"Desbravando Rust"** em https://desbravando-rust.github.io para dominar todos esses conceitos com exemplos práticos e exercícios!
+Quer se aprofundar ainda mais? Confira o livro completo **"Desbravando Rust"** em https://desbravandorust.com.br para dominar todos esses conceitos com exemplos práticos e exercícios!
