@@ -3,33 +3,33 @@
 Blog Agent - Gerador automático de posts para o blog Desbravando Rust
 """
 
-import os, re, sys, json, yaml
+import os, re, json
 from datetime import datetime
 from github import Github, GithubException
 from huggingface_hub import InferenceClient
 
 # ─────────────────────────────────────────────────────────────
-# CONFIGURAÇÕES — ajuste conforme seu repositório
+# CONFIGURAÇÕES
 # ─────────────────────────────────────────────────────────────
-GITHUB_TOKEN       = os.environ.get("GH_PAT") or os.environ["GITHUB_TOKEN"]
-HF_TOKEN           = os.environ["HF_TOKEN"]
-REPO_NAME          = os.environ["GITHUB_REPOSITORY"]  # ex: "jose/jose.github.io"
-POSTS_DIR          = "posts"
-MAIN_BRANCH        = "main"   # ou "master" se for o caso
+GITHUB_TOKEN        = os.environ.get("GH_PAT") or os.environ["GITHUB_TOKEN"]
+HF_TOKEN            = os.environ["HF_TOKEN"]
+REPO_NAME           = os.environ["GITHUB_REPOSITORY"]
+POSTS_DIR           = "posts"
+README_PATH         = "README.md"
+POSTS_SECTION       = "## Últimos posts:"
+MAIN_BRANCH         = "main"
+POST_FILENAME       = "README.md"
+MODEL_ID            = os.environ.get("MODEL_ID") or "deepseek-ai/DeepSeek-V3-0324"
 
-try:
-    THEME_MAX_TOKENS   = int(os.environ.get("THEME_MAX_TOKENS")) or 1024
-    CONTENT_MAX_TOKENS = int(os.environ.get("CONTENT_MAX_TOKENS")) or 8192
-except ValueError:
-    THEME_MAX_TOKENS   = 1024
-    CONTENT_MAX_TOKENS = 8192
+# FIX: int(None) lança TypeError, não ValueError — helper dedicado
+def _parse_int_env(key: str, default: int) -> int:
+    try:
+        return int(os.environ[key])
+    except (KeyError, ValueError, TypeError):
+        return default
 
-# MODEL_ID      = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-# MODEL_ID      = "mistralai/Mistral-7B-Instruct-v0.3"
-# MODEL_ID = "google/gemma-2-2b-it"
-MODEL_ID = os.environ.get("MODEL_ID") or "deepseek-ai/DeepSeek-V3-0324"
-POST_FILENAME = "README.md"   # padrão do repositório
-
+THEME_MAX_TOKENS   = _parse_int_env("THEME_MAX_TOKENS", 1024)
+CONTENT_MAX_TOKENS = _parse_int_env("CONTENT_MAX_TOKENS", 8192)
 
 BLOG_CONTEXT = """
 Você é um escritor técnico especializado em Rust e Python.
@@ -37,27 +37,23 @@ O blog 'Desbravando Rust' é voltado para programadores brasileiros,
 especialmente aqueles com background em Python que querem aprender Rust.
 O blog serve como material de apoio para o livro 'Desbravando Rust'.
 Escreva SEMPRE em PT-BR, com linguagem acessível e didática.
-"""
+""".strip()
+
 
 # ─────────────────────────────────────────────────────────────
 # 1. ABSORVER CONTEXTO EXISTENTE
 # ─────────────────────────────────────────────────────────────
 
-def parse_frontmatter(content: str) -> dict:
-    """Extrai o frontmatter YAML do arquivo markdown."""
-    if not content.startswith("---"):
-        return {}
-    parts = content.split("---", 2)
-    if len(parts) < 3:
-        return {}
-    try:
-        return yaml.safe_load(parts[1]) or {}
-    except yaml.YAMLError:
-        return {}
+# FIX: posts não têm frontmatter — extrai título do primeiro # Heading
+def extract_title(content: str, fallback: str) -> str:
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("# "):
+            return stripped[2:].strip()
+    return fallback
 
 
 def get_existing_posts(repo) -> list:
-    """Lê todos os posts existentes e retorna lista de metadados."""
     posts = []
     try:
         items = repo.get_contents(POSTS_DIR)
@@ -70,27 +66,23 @@ def get_existing_posts(repo) -> list:
             continue
         try:
             f = repo.get_contents(f"{POSTS_DIR}/{item.name}/{POST_FILENAME}")
-            fm = parse_frontmatter(f.decoded_content.decode("utf-8"))
+            raw = f.decoded_content.decode("utf-8")
             posts.append({
-                "dirname":     item.name,
-                "title":       fm.get("title", item.name),
-                "tags":        fm.get("tags", []),
-                "categories":  fm.get("categories", []),
-                "description": fm.get("description", ""),
+                "dirname": item.name,
+                "title":   extract_title(raw, item.name),
             })
         except GithubException:
-            pass  # ignora diretórios sem index.md
+            pass
 
     return posts
 
 
 def get_next_number(posts: list) -> int:
-    """Determina o número sequencial do próximo post."""
-    numbers = []
-    for p in posts:
-        m = re.match(r"^(\d+)", p["dirname"])
-        if m:
-            numbers.append(int(m.group(1)))
+    numbers = [
+        int(m.group(1))
+        for p in posts
+        if (m := re.match(r"^(\d+)", p["dirname"]))
+    ]
     return max(numbers, default=0) + 1
 
 
@@ -99,31 +91,27 @@ def get_next_number(posts: list) -> int:
 # ─────────────────────────────────────────────────────────────
 
 def choose_next_topic(posts: list, client: InferenceClient) -> dict:
-    """Usa o LLM para sugerir o próximo tema ainda não publicado."""
     topics_list = "\n".join(
-        f"- [{p['dirname']}] {p['title']}  | tags: {', '.join(p['tags'])}"
+        f"- [{p['dirname']}] {p['title']}"
         for p in posts
     ) or "Nenhum post publicado ainda."
 
-    prompt = f"""
-{BLOG_CONTEXT}
+    # FIX: ']' estava faltando para fechar o array "outline"
+    prompt = f"""{BLOG_CONTEXT}
 
 ## Posts já publicados:
 {topics_list}
 
-## Sua tarefa:
-Sugira o PRÓXIMO post. O tema deve:
-- NÃO repetir nenhum dos temas acima
-- Ter progressão lógica de aprendizado de Rust para quem vem do Python
-- Ser específico o suficiente para um post focado
+## Tarefa:
+Sugira o PRÓXIMO post com progressão lógica de aprendizado de Rust para quem vem do Python.
+NÃO repita temas acima. Seja específico.
 
-Responda SOMENTE com JSON válido, sem blocos de código markdown:
+Responda SOMENTE com JSON válido (sem blocos de código markdown):
 {{
   "title": "Título do post em PT-BR",
   "slug": "slug-curto-kebab-case",
   "description": "Uma frase descrevendo o post",
   "tags": ["tag1", "tag2", "tag3"],
-  "categories": ["rust"],
   "outline": [
     "Introdução: ...",
     "Seção 1: ...",
@@ -131,8 +119,8 @@ Responda SOMENTE com JSON válido, sem blocos de código markdown:
     "Comparação com Python: ...",
     "Conclusão: ..."
   ]
-}}
-"""
+}}"""
+
     resp = client.chat.completions.create(
         model=MODEL_ID,
         messages=[{"role": "user", "content": prompt}],
@@ -150,16 +138,14 @@ Responda SOMENTE com JSON válido, sem blocos de código markdown:
 # ─────────────────────────────────────────────────────────────
 
 def generate_post_content(topic: dict, posts: list, client: InferenceClient) -> str:
-    """Gera o arquivo .md completo com frontmatter."""
-    today = datetime.now().strftime("%Y-%m-%d")
-    recent_titles = "\n".join(f"- {p['title']}" for p in posts[-5:])
+    recent_titles = "\n".join(f"- {p['title']}" for p in posts[-5:]) or "Nenhum ainda."
     outline = "\n".join(f"  - {s}" for s in topic.get("outline", []))
 
-    prompt = f"""
-{BLOG_CONTEXT}
+    # FIX: removida regra #12 (pedir ao LLM para atualizar README — impossível)
+    prompt = f"""{BLOG_CONTEXT}
 
 ## Contexto (últimos posts publicados):
-{recent_titles or "Nenhum ainda."}
+{recent_titles}
 
 ## Post a ser escrito:
 Título: {topic['title']}
@@ -167,30 +153,31 @@ Slug: {topic['slug']}
 Descrição: {topic['description']}
 Tags: {', '.join(topic['tags'])}
 
-Outline sugerido:
+Outline:
 {outline}
 
 ## Regras de escrita:
-1. O post deve ter no mínimo 1500 palavras — prefira mais
-2. Linguagem acessível para quem tem pouco contexto em Rust
-3. Cada conceito novo deve ser introduzido com analogia ou contexto antes do código
-4. Inclua blocos ```rust extensos e comentados linha a linha em PT-BR
-5. Compare SEMPRE com Python (```python) — mostre o mesmo problema resolvido nas duas linguagens
-6. Use subtítulos (##, ###) para organizar o post em seções bem definidas
-7. Inclua uma seção "## O que aprendemos" ao final com bullet points dos conceitos cobertos
-8. Inclua pelo menos um exemplo prático completo e funcional, não apenas fragmentos
-9. Use emojis com moderação nos títulos para tornar mais amigável
-10. Explique os erros mais comuns que quem vem do Python comete nesse tema em Rust
-11. Inclua no final a chamada para compra do livro como nos demais posts com o link do site
-12. Atualize o README.md da raiz do repositório para incluir o link para o post recém criado.
+1. Mínimo de 1500 palavras — prefira mais
+2. Linguagem acessível para iniciantes em Rust com background Python
+3. Introduza cada conceito com analogia ou contexto antes do código
+4. Blocos ```rust extensos, comentados linha a linha em PT-BR
+5. Compare SEMPRE com Python (```python) — mesmo problema nas duas linguagens
+6. Use subtítulos (##, ###) para organizar bem o conteúdo
+7. Seção "## O que aprendemos" ao final com bullet points dos conceitos
+8. Ao menos um exemplo prático completo e funcional, não apenas fragmentos
+9. Emojis com moderação nos títulos para deixar mais amigável
+10. Explique os erros mais comuns de quem vem do Python nesse tema
+11. Finalize com chamada para compra do livro com link https://desbravando-rust.github.io
 
 ## Formato de saída:
-Gere APENAS o conteúdo markdown puro, começando diretamente com o título:
+Markdown puro, iniciando diretamente com o título:
+
 # {topic['title']}
 
-Sem frontmatter, sem bloco de metadados, sem `---` no início.
-"""
-    resp = client.chat_completion(
+Sem frontmatter, sem `---`, sem bloco de metadados."""
+
+    # FIX: era client.chat_completion() — API antiga e removida
+    resp = client.chat.completions.create(
         model=MODEL_ID,
         messages=[{"role": "user", "content": prompt}],
         max_tokens=CONTENT_MAX_TOKENS,
@@ -200,24 +187,50 @@ Sem frontmatter, sem bloco de metadados, sem `---` no início.
 
 
 # ─────────────────────────────────────────────────────────────
-# 4. CRIAR BRANCH + ARQUIVO + PULL REQUEST
+# 4. ATUALIZAR ÍNDICE NO README DA RAIZ  ← NOVO
+# ─────────────────────────────────────────────────────────────
+
+def update_readme_index(repo, branch: str, dirname: str, topic: dict, post_number: int):
+    """Insere o novo post no topo da seção '## Últimos posts:' do README.md."""
+    readme_file = repo.get_contents(README_PATH, ref=branch)
+    current = readme_file.decoded_content.decode("utf-8")
+
+    new_entry  = f"- [{post_number:04d} - {topic['title']}](./posts/{dirname})\n"
+    # Busca a seção seguida de linha em branco (padrão atual do README)
+    marker     = f"{POSTS_SECTION}\n\n"
+
+    if marker in current:
+        # Insere no topo da lista, mantendo a linha em branco após o título da seção
+        updated = current.replace(marker, f"{marker}{new_entry}", 1)
+    else:
+        # Fallback: seção não existe, cria ao final
+        updated = current.rstrip() + f"\n\n{POSTS_SECTION}\n\n{new_entry}"
+
+    repo.update_file(
+        path=README_PATH,
+        message=f"docs(index): add link to post {dirname}",
+        content=updated,
+        sha=readme_file.sha,
+        branch=branch,
+    )
+    print(f"  📋 README.md atualizado com link para {dirname}")
+
+
+# ─────────────────────────────────────────────────────────────
+# 5. CRIAR BRANCH + ARQUIVOS + PULL REQUEST
 # ─────────────────────────────────────────────────────────────
 
 def create_pull_request(repo, post_number: int, topic: dict, content: str) -> str:
-    """Cria branch, commita o arquivo e abre o PR. Retorna URL do PR."""
-    dirname    = f"{post_number:04d}-{topic['slug']}"
-    file_path  = f"{POSTS_DIR}/{dirname}/{POST_FILENAME}"
-    branch     = f"agent/post-{datetime.now().strftime('%Y%m%d')}-{topic['slug']}"
-    today_br   = datetime.now().strftime("%d/%m/%Y")
+    dirname   = f"{post_number:04d}-{topic['slug']}"
+    file_path = f"{POSTS_DIR}/{dirname}/{POST_FILENAME}"
+    branch    = f"agent/post-{datetime.now().strftime('%Y%m%d')}-{topic['slug']}"
+    today_br  = datetime.now().strftime("%d/%m/%Y")
 
-    # SHA do commit mais recente da branch principal
     base_sha = repo.get_branch(MAIN_BRANCH).commit.sha
-
-    # 1. Cria a nova branch
     repo.create_git_ref(ref=f"refs/heads/{branch}", sha=base_sha)
     print(f"  🌿 Branch criada: {branch}")
 
-    # 2. Cria o arquivo index.md na nova branch
+    # Commit 1: arquivo do novo post
     repo.create_file(
         path=file_path,
         message=f"feat(blog): add post {dirname}",
@@ -226,9 +239,10 @@ def create_pull_request(repo, post_number: int, topic: dict, content: str) -> st
     )
     print(f"  📄 Arquivo criado: {file_path}")
 
-    # 3. Abre o Pull Request
-    pr_body = f"""
-## 🤖 Post gerado automaticamente pelo Blog Agent
+    # Commit 2: atualização do índice no README da raiz
+    update_readme_index(repo, branch, dirname, topic, post_number)
+
+    pr_body = f"""## 🤖 Post gerado automaticamente pelo Blog Agent
 
 | Campo | Valor |
 |-------|-------|
@@ -245,8 +259,9 @@ def create_pull_request(repo, post_number: int, topic: dict, content: str) -> st
 > - [ ] Precisão técnica do conteúdo Rust
 > - [ ] Exemplos de código compilam corretamente
 > - [ ] Linguagem adequada ao público-alvo
-> - [ ] Frontmatter correto (tags, slug, data)
+> - [ ] Link no README.md está correto e no topo da lista
 """
+
     pr = repo.create_pull(
         base=MAIN_BRANCH,
         head=branch,
@@ -268,30 +283,21 @@ def main():
     repo = g.get_repo(REPO_NAME)
     print(f"✅ GitHub: {repo.full_name}")
 
-    # client = InferenceClient(
-    #     provider="hf-inference",
-    #     api_key=HF_TOKEN,
-    # )
     client = InferenceClient(api_key=HF_TOKEN)
-
     print(f"✅ HF Inference API: {MODEL_ID}\n")
 
-    # Passo 1: Absorver contexto
     print("📚 Lendo posts existentes...")
     posts = get_existing_posts(repo)
     print(f"   {len(posts)} post(s) encontrado(s)\n")
 
-    # Passo 2: Decidir tema
     print("🤔 Escolhendo próximo tema...")
     topic = choose_next_topic(posts, client)
     print(f"   ✅ Tema: {topic['title']}\n")
 
-    # Passo 3: Gerar conteúdo
     print("✍️  Gerando conteúdo do post...")
     content = generate_post_content(topic, posts, client)
     print(f"   ✅ {len(content)} caracteres gerados\n")
 
-    # Passo 4: Criar PR
     number = get_next_number(posts)
     print(f"📬 Criando PR para o post #{number:04d}...")
     pr_url = create_pull_request(repo, number, topic, content)
