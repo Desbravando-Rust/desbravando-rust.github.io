@@ -521,4 +521,4 @@ Em termos filosóficos, as duas linguagens representam trade-offs conscientes: R
 
 A jornada de aprendizado de concorrência em Rust é recompensadora e transformará como você pensa sobre programação paralela, mesmo quando voltar ao Python.
 
-Quer se aprofundar ainda mais? Confira o livro completo **"Desbravando Rust"** em https://desbravandorust.com.br para dominar todos esses conceitos com exemplos práticos e exercícios!
+Quer se aprofundar ainda mais? Confira o livro completo **"Desbravando Rust"** em [desbravandorust.com.br](https://desbravandorust.com.br) para dominar todos esses conceitos com exemplos práticos e exercícios!

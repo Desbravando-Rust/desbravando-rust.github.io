@@ -32,7 +32,7 @@ Rust prioriza **composição sobre herança** - um princípio de design que tamb
 
 ## 🧩 O que são Traits e como funcionam
 
-Traits em Rust são similares a **interfaces** em outras linguagens de programação, mas com superpoderes! Uma trait define um conjunto de métodos que um tipo deve implementar. 
+Traits em Rust são similares a **interfaces** em outras linguagens de programação, mas com superpoderes! Uma trait define um conjunto de métodos que um tipo deve implementar.
 
 Pense nas traits como **contratos de comportamento**. Elas dizem: "Se você quiser ser considerado um X, você precisa ser capaz de fazer Y".
 
@@ -689,10 +689,10 @@ Traits são um dos conceitos mais poderosos do Rust, oferecendo flexibilidade e 
 
 ---
 
-💡 Quer se aprofundar ainda mais em Rust? 
+💡 Quer se aprofundar ainda mais em Rust?
 
-Adquira o livro **'Desbravando Rust'** para uma jornada completa desde os fundamentos até tópicos avançados! 
+Adquira o livro **'Desbravando Rust'** para uma jornada completa desde os fundamentos até tópicos avançados!
 
-📖 **Disponível em: [https://desbravandorust.com.br](https://desbravandorust.com.br)**
+📖 **Disponível em: [desbravandorust.com.br](https://desbravandorust.com.br)**
 
 Nos próximos posts, continuaremos explorando conceitos avançados de Rust. Deixe nos comentários quais tópicos você gostaria de ver explicados!

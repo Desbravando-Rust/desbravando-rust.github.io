@@ -781,7 +781,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ### Resultados
 
-Cada um dos exemplos acima foram executados na mesma máquina do post [Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](https://desbravando-rust.github.io/posts/0001-performance-na-pratica/#ambiente-do-execu%C3%A7%C3%A3o), e criei um script em python para analisar as saídas geradas na pasta `results/`:
+Cada um dos exemplos acima foram executados na mesma máquina do post [Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](https://desbravandorust.com.br/posts/0001-performance-na-pratica/#ambiente-do-execu%C3%A7%C3%A3o), e criei um script em python para analisar as saídas geradas na pasta `results/`:
 
 ```python
 import json
@@ -1092,10 +1092,10 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 - **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
 
 
-### [Clique aqui e garanta seu exemplar agora!](https://desbravando-rust.github.io/)
+### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
 
 
 Se os números não mentem e o Polars é 11x mais rápido que Pandas,  imagine o que você pode construir quando entende a linguagem que torna isso possível.
 
 
-<a href="https://desbravando-rust.github.io/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
+<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

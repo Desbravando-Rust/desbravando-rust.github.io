@@ -281,4 +281,4 @@ println!("Tamanho total: {}", root.calcular_tamanho());
 
 Enums são uma das características mais poderosas de Rust, permitindo modelar domínios complexos de forma segura e eficiente. Para Pythonistas, pode parecer estranho no começo, mas logo você vai perceber como eles tornam seu código mais expressivo e seguro.
 
-Quer se aprofundar ainda mais em Rust? Confira nosso livro **"Desbravando Rust"** com muito mais conteúdo para quem vem do Python: [www.desbravandorust.com.br](https://www.desbravandorust.com.br)
+Quer se aprofundar ainda mais em Rust? Confira nosso livro **"Desbravando Rust"** com muito mais conteúdo para quem vem do Python: [desbravandorust.com.br](https://desbravandorust.com.br)

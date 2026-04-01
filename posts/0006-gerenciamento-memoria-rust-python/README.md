@@ -62,7 +62,7 @@ Rust introduz um sistema único de propriedade (ownership) com 3 regras fundamen
 fn main() {
     let s = String::from("hello");  // s é o dono da String
     faz_algo(s);                    // Transfere a propriedade para a função
-    
+
     // println!("{}", s);          // ERRO! s não é mais dono do valor
 }
 
@@ -95,10 +95,10 @@ Vamos implementar um exemplo prático em ambas as linguagens:
 ```python
 def processar_dados():
     dados = [x for x in range(1_000_000)]  # Aloca lista grande
-    
+
     # Modifica os dados
     resultados = [x * 2 for x in dados]
-    
+
     # Liberação da memória depende do GC
     return resultados
 
@@ -110,10 +110,10 @@ resultado = processar_dados()
 ```rust
 fn processar_dados() -> Vec<i32> {
     let dados: Vec<i32> = (1..1_000_000).collect();  // Aloca vetor
-    
+
     // Consome 'dados' e produz novo vetor
     let resultados: Vec<i32> = dados.into_iter().map(|x| x * 2).collect();
-    
+
     // 'dados' foi movido e liberado automaticamente
     resultados
 }  // 'resultados' será liberado quando sair do escopo do chamador
@@ -166,15 +166,15 @@ Vamos implementar um sistema mais complexo em ambas as linguagens:
 class DataProcessor:
     def __init__(self):
         self.cache = {}
-    
+
     def process(self, data):
         # Verifica cache primeiro
         if id(data) in self.cache:
             return self.cache[id(data)]
-        
+
         # Processamento pesado
         result = [x ** 2 for x in data]
-        
+
         # Guarda no cache (cuidado com memory leak!)
         self.cache[id(data)] = result
         return result
@@ -200,10 +200,10 @@ impl DataProcessor {
             cache: HashMap::new(),
         }
     }
-    
+
     fn process(&mut self, data: &[i32]) -> &Vec<i32> {
         let data_ptr = data.as_ptr() as usize;
-        
+
         // Verifica cache primeiro (usando entry API para eficiência)
         self.cache.entry(data_ptr)
             .or_insert_with(|| data.iter().map(|&x| x.pow(2)).collect())
@@ -214,7 +214,7 @@ fn main() {
     let mut processor = DataProcessor::new();
     let dados: Vec<i32> = (0..100000).collect();
     let resultado = processor.process(&dados);
-    
+
     // Memória gerenciada automaticamente com garantias
 }
 ```
@@ -238,21 +238,21 @@ fn main() {
 
 ## 🎯 O que aprendemos
 
-✔ Python usa Garbage Collector automático enquanto Rust usa ownership  
-✔ Contagem de referências vs verificação em tempo de compilação  
-✔ Rust oferece melhor desempenho e previsibilidade na gestão de memória  
-✔ Python prioriza produtividade em detrimento do controle fino  
-✔ O modelo de ownership previne bugs comuns como dangling pointers  
-✔ Borrowing em Rust permite segurança sem sacrificar flexibilidade  
+✔ Python usa Garbage Collector automático enquanto Rust usa ownership
+✔ Contagem de referências vs verificação em tempo de compilação
+✔ Rust oferece melhor desempenho e previsibilidade na gestão de memória
+✔ Python prioriza produtividade em detrimento do controle fino
+✔ O modelo de ownership previne bugs comuns como dangling pointers
+✔ Borrowing em Rust permite segurança sem sacrificar flexibilidade
 
 ## 📚 Quer Aprofundar em Rust?
 
 Este post é apenas um aperitivo do conteúdo completo que oferecemos no livro **"Desbravando Rust"**! Se você quer:
 
-- Dominar o sistema de ownership na prática  
-- Aprender a escrever código seguro e performático  
-- Fazer a transição suave de Python para Rust  
+- Dominar o sistema de ownership na prática
+- Aprender a escrever código seguro e performático
+- Fazer a transição suave de Python para Rust
 
-Visite nosso site em [www.desbravandorust.com.br](https://www.desbravandorust.com.br) e garanta seu exemplar hoje mesmo! 🚀
+Visite nosso site em [desbravandorust.com.br](https://desbravandorust.com.br) e garanta seu exemplar hoje mesmo! 🚀
 
 Próximo post: "Concorrência em Rust vs Python: Threads, async e além". Não perca!

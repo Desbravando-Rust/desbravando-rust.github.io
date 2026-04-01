@@ -200,12 +200,12 @@ O operador `?` é uma das características mais convenientes de Rust. Ele propag
 // Sem o operador ? (mais verboso)
 fn ler_arquivo_caminho(caminho: &str) -> Result<String, std::io::Error> {
     let arquivo_resultado = std::fs::File::open(caminho);
-    
+
     let mut arquivo = match arquivo_resultado {
         Ok(arquivo) => arquivo,
         Err(erro) => return Err(erro),
     };
-    
+
     let mut conteudo = String::new();
     match std::io::Read::read_to_string(&mut arquivo, &mut conteudo) {
         Ok(_) => Ok(conteudo),
@@ -262,15 +262,15 @@ def carregar_configuracao(caminho):
     try:
         with open(caminho, 'r') as arquivo:
             config = json.load(arquivo)
-        
+
         if 'porta' not in config:
             raise ValueError("Porta não especificada na configuração")
-        
+
         if not isinstance(config['porta'], int):
             raise TypeError("Porta deve ser um número inteiro")
-            
+
         return config
-        
+
     except FileNotFoundError:
         print(f"Arquivo {caminho} não encontrado")
         return {"porta": 8080}  # Valor padrão
@@ -321,16 +321,16 @@ fn carregar_configuracao(caminho: &str) -> Result<Configuracao, ErroConfiguracao
     // Usamos ? para propagar erros automaticamente
     let conteudo = fs::read_to_string(caminho)
         .map_err(|_| ErroConfiguracao::ArquivoNaoEncontrado)?;
-    
+
     // Parse do JSON com tratamento de erro
     let config: Configuracao = serde_json::from_str(&conteudo)
         .map_err(|_| ErroConfiguracao::ParseErro)?;
-    
+
     // Validação adicional
     if config.porta == 0 {
         return Err(ErroConfiguracao::PortaInvalida);
     }
-    
+
     Ok(config)
 }
 
@@ -373,9 +373,9 @@ O sistema de erros de Rust pode parecer verboso no início, especialmente vindo 
 
 ## 📚 Próximos Passsos
 
-Quer se aprofundar ainda mais em Rust? O livro **"Desbravando Rust"** cobre esses e muitos outros conceitos com exemplos práticos, exercícios e projetos reais. 
+Quer se aprofundar ainda mais em Rust? O livro **"Desbravando Rust"** cobre esses e muitos outros conceitos com exemplos práticos, exercícios e projetos reais.
 
-Visite nosso site [www.desbravandorust.com.br](https://www.desbravandorust.com.br) para adquirir seu exemplar e continuar sua jornada na linguagem mais amada pela comunidade!
+Visite nosso site [desbravandorust.com.br](https://desbravandorust.com.br) para adquirir seu exemplar e continuar sua jornada na linguagem mais amada pela comunidade!
 
 Nos próximos posts, vamos explorar concorrência em Rust, sistemas de tipos avançados, e como interoperar Rust com Python. Até lá! 🚀
 

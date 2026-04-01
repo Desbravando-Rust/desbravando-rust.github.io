@@ -491,7 +491,7 @@ Se este artigo despertou sua curiosidade sobre como Rust e SQLx funcionam por ba
 
 
 
-### [Clique aqui e garanta seu exemplar agora!](https://desbravando-rust.github.io/)
+### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
 
 
-<a href="https://desbravando-rust.github.io/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
+<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

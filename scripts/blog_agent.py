@@ -167,7 +167,8 @@ Outline:
 8. Ao menos um exemplo prático completo e funcional, não apenas fragmentos
 9. Emojis com moderação nos títulos para deixar mais amigável
 10. Explique os erros mais comuns de quem vem do Python nesse tema
-11. Finalize com chamada para compra do livro com link https://desbravando-rust.github.io
+11. Finalize com chamada para compra do livro com link já em markdowon [desbravandorust.com.br
+](https://desbravandorust.com.br)
 
 ## Formato de saída:
 Markdown puro, iniciando diretamente com o título:

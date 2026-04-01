@@ -1,6 +1,6 @@
 **Um guia prático para pythonistas explorarem novos horizontes**
 
-[![Comprar Livro](https://img.shields.io/badge/Comprar-R$_89,90-orange?style=for-the-badge)](https://desbravando-rust.github.io/#garanta-seu-exemplar-aqui)
+[![Comprar Livro](https://img.shields.io/badge/Comprar-R$_89,90-orange?style=for-the-badge)](https://desbravandorust.com.br/#garanta-seu-exemplar-aqui)
 
 
 ## Sobre o Livro

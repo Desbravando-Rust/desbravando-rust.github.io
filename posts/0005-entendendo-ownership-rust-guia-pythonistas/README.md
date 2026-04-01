@@ -311,4 +311,4 @@ fn exibe_tamanho(s: String) {
 
 Dominar ownership é o primeiro passo para escrever código Rust seguro e eficiente. No próximo post, exploraremos o conceito de borrowing e lifetimes em profundidade — incluindo como o compilador rastreia o tempo de vida das referências para garantir que nunca apontem para memória inválida.
 
-Para se aprofundar ainda mais com exemplos práticos e exercícios, confira o livro Desbravando Rust em [https://desbravandorust.com.br](https://desbravandorust.com.br).
+Para se aprofundar ainda mais com exemplos práticos e exercícios, confira o livro Desbravando Rust em [desbravandorust.com.br](https://desbravandorust.com.br).
