@@ -1,5 +1,7 @@
 # Desvendando Iteradores e Closures em Rust: A Potência Funcional para Pythonistas
 
+![Iteradores e Closures em Rust](./cover11.png)
+
 Se você vem do Python e está começando sua jornada em Rust, provavelmente já percebeu que ambas as linguagens possuem recursos poderosos para programação funcional. No entanto, as semelhanças superficiais escondem diferenças profundas que são cruciais para entender como Rust oferece segurança de memória e desempenho superior.
 
 Neste artigo, vamos explorar como closures e iteradores funcionam em Rust, comparando constantemente com as abordagens do Python. Você descobrirá como Rust implementa esses conceitos de forma única, proporcionando tanto flexibilidade quanto segurança em tempo de compilação.
