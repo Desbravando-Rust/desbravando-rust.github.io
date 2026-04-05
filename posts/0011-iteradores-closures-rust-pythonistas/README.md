@@ -35,38 +35,40 @@ print(dobro(5))  # Output: 10
 
 **Rust:**
 ```rust
-// Closure simples em Rust
+// Closure simples em Rust com tipos explícitos
+fn multiplicador_por(n: i32) -> impl Fn(i32) -> i32 {
+    move |x| x * n
+}
+
 fn main() {
-    let multiplicador_por = |n| {
-        move |x| x * n
-    };
-    
     let dobro = multiplicador_por(2);
     println!("{}", dobro(5));  // Output: 10
 }
 ```
 
-Note a palavra-chave `move` no exemplo Rust. Ela indica que a closure vai "tomar posse" (ownership) da variável `n`. Essa é uma das diferenças fundamentais entre as duas linguagens!
+> **Nota sobre `impl Fn`:** Em Rust, ao retornar uma closure de uma função, usamos `impl Fn(...)` para indicar o tipo de retorno. Isso é mais eficiente que `Box<dyn Fn(...)>` pois não exige alocação no heap. A palavra-chave `move` faz a closure **adquirir posse** (_ownership_) da variável `n`, garantindo que ela permaneça válida mesmo após a função retornar.
+
+> **Ownership em poucas palavras:** Rust tem um sistema único onde cada valor tem um único "dono". Quando usamos `move`, transferimos a posse da variável para dentro da closure — isso é fundamental para garantir segurança de memória sem garbage collector!
 
 ### Os Três Traits de Closures: Fn, FnMut e FnOnce
 
-Em Rust, closures são classificadas em três tipos baseados em como capturam variáveis:
+Em Rust, **traits** são interfaces que definem comportamentos. Para closures, existem três traits que determinam como elas interagem com as variáveis capturadas:
 
-1. **Fn**: Apenas empresta variáveis (read-only)
-2. **FnMut**: Empresta variáveis mutavelmente (pode modificá-las)
-3. **FnOnce**: Toma posse das variáveis (pode usá-las apenas uma vez)
+1. **Fn**: Apenas empresta variáveis (read-only) — pode ser chamada várias vezes
+2. **FnMut**: Empresta variáveis mutavelmente — pode modificá-las a cada chamada
+3. **FnOnce**: Adquire posse das variáveis — pode ser chamada apenas uma vez
 
 Vamos ver exemplos práticos:
 
 ```rust
 fn main() {
     let valor = 10;
-    
+
     // Fn: apenas empresta 'valor'
     let closure_fn = || println!("Valor: {}", valor);
     closure_fn();
     closure_fn();  // Pode ser chamada múltiplas vezes
-    
+
     // FnMut: empresta 'valor' mutavelmente
     let mut valor_mut = 10;
     let mut closure_fnmut = || {
@@ -75,17 +77,41 @@ fn main() {
     };
     closure_fnmut();
     closure_fnmut();
-    
-    // FnOnce: toma posse de 'valor'
+
+    // FnOnce: adquire posse de 'valor_once'
     let valor_once = String::from("Hello");
-    let closure_fnonce = || {
+    let closure_fnonce = move || {
         println!("Valor: {}", valor_once);
-        // valor_once é consumido aqui
+        // valor_once é consumido aqui (drop ao final da closure)
     };
     closure_fnonce();
     // closure_fnonce();  // Erro! Não pode ser chamada novamente
 }
 ```
+
+### Closure com Estado Mutável
+
+Uma das aplicações mais poderosas das closures é manter estado interno. Isso é especialmente útil para criar contadores, acumuladores e geradores:
+
+```rust
+// Closure que mantém estado mutável
+fn contador() -> impl FnMut() -> i32 {
+    let mut count = 0;
+    move || {
+        count += 1;
+        count
+    }
+}
+
+fn main() {
+    let mut contar = contador();
+    println!("{}", contar()); // 1
+    println!("{}", contar()); // 2
+    println!("{}", contar()); // 3
+}
+```
+
+Note que `FnMut` é necessário aqui porque a closure modifica `count` a cada chamada. O tipo de retorno `impl FnMut() -> i32` informa ao compilador que estamos retornando algo que implementa o trait `FnMut`.
 
 ### Captura de Variáveis: As Diferenças Cruciais
 
@@ -107,11 +133,11 @@ for closure in criar_closures():
 **Rust (comportamento correto por padrão):**
 ```rust
 fn criar_closures() -> Vec<Box<dyn Fn()>> {
-    let mut closures = Vec::new();
-    for i in 0..3 {
-        closures.push(Box::new(move || println!("Valor: {}", i)));
-    }
-    closures
+    // Box<dyn Fn()> é necessário para armazenar closures de tamanhos distintos
+    // em um Vec. 'dyn' indica despacho dinâmico (trait object).
+    (0..3)
+        .map(|i| Box::new(move || println!("Valor: {}", i)) as Box<dyn Fn()>)
+        .collect()
 }
 
 fn main() {
@@ -122,30 +148,62 @@ fn main() {
 }
 ```
 
+> **Por que `Box<dyn Fn()>`?** Cada closure em Rust tem um tipo único e anônimo — o compilador não consegue determinar o tamanho exato em tempo de compilação quando armazenamos closures diferentes em um mesmo `Vec`. `Box<dyn Fn()>` resolve isso alocando a closure no heap com tamanho fixo (um ponteiro). Quando você retorna uma única closure de uma função, prefira `impl Fn()` por ser mais eficiente.
+
 Rust força você a pensar sobre ownership desde o início, prevenindo erros sutis que são comuns em Python!
 
 ## 🔄 Seção 2: Dominando Iteradores em Rust
 
+Closures e iteradores caminham juntos em Rust — os adaptadores como `map` e `filter` recebem closures como argumento. Vamos explorar como os iteradores funcionam e como combiná-los com closures para criar pipelines poderosos.
+
+### `iter()`, `iter_mut()` e `into_iter()`: Quando Usar Cada Um
+
+Antes de avançar, é essencial entender as três formas de iterar sobre uma coleção em Rust. Elas diferem fundamentalmente em como tratam o **ownership**:
+
+| Método | Tipo de acesso | O que acontece com a coleção |
+|---|---|---|
+| `.iter()` | `&T` — referência imutável | Coleção continua disponível |
+| `.iter_mut()` | `&mut T` — referência mutável | Coleção continua disponível |
+| `.into_iter()` | `T` — posse do valor | Coleção é consumida (movida) |
+
+```rust
+fn main() {
+    let mut numeros = vec![1, 2, 3];
+
+    // iter(): empréstimo imutável — numeros ainda existe depois
+    let soma: i32 = numeros.iter().sum();
+    println!("Soma: {}", soma);
+
+    // iter_mut(): empréstimo mutável — modifica os valores no lugar
+    numeros.iter_mut().for_each(|n| *n *= 2);
+    println!("Dobrados: {:?}", numeros); // [2, 4, 6]
+
+    // into_iter(): adquire posse — numeros não pode mais ser usado
+    let resultado: Vec<_> = numeros.into_iter().filter(|&n| n > 2).collect();
+    println!("Filtrados: {:?}", resultado); // [4, 6]
+    // println!("{:?}", numeros); // ERRO: numeros foi movido para o iterador
+}
+```
+
 ### FromIterator e IntoIterator: A Magia Por Trás dos Iteradores
 
-Em Rust, iteradores são lazy por padrão - eles não fazem nada até que você os consuma. Isso é diferente do Python, onde muitas operações são eager (executadas imediatamente).
+Em Rust, iteradores são **preguiçosos** por padrão — eles não fazem nada até que você os consuma. Isso é diferente do Python, onde muitas operações são **imediatas** (executadas no momento da chamada).
 
 Os dois traits mais importantes são:
 - **IntoIterator**: Converte algo em um iterador
 - **FromIterator**: Constrói uma coleção a partir de um iterador
 
-Vamos ver como isso funciona na prática:
-
 ```rust
 fn main() {
     let numeros = vec![1, 2, 3, 4, 5];
-    
-    // IntoIterator: converte Vec em iterador
+
+    // IntoIterator: converte Vec em iterador (move a posse de 'numeros')
     let iterador = numeros.into_iter();
-    
-    // FromIterator: converte iterador de volta para Vec
+    // Aqui, 'numeros' foi movido — não pode mais ser acessado
+
+    // FromIterator: .collect() usa FromIterator para construir a nova coleção
     let novos_numeros: Vec<_> = iterador.collect();
-    println!("{:?}", novos_numeros);
+    println!("{:?}", novos_numeros); // [1, 2, 3, 4, 5]
 }
 ```
 
@@ -153,7 +211,7 @@ fn main() {
 
 Aqui está onde a programação funcional realmente brilha em Rust! Vamos comparar com Python:
 
-**Python (eager evaluation):**
+**Python (avaliação imediata):**
 ```python
 # Python: operações são aplicadas imediatamente
 numeros = [1, 2, 3, 4, 5]
@@ -161,27 +219,56 @@ resultado = [x * 2 for x in numeros if x % 2 == 0]
 print(resultado)  # [4, 8]
 ```
 
-**Rust (lazy evaluation):**
+**Rust (avaliação preguiçosa):**
 ```rust
 fn main() {
     let numeros = vec![1, 2, 3, 4, 5];
-    
-    // Rust: operações são lazy, só executam quando consumidas
+
+    // Rust: operações são preguiçosas, só executam quando consumidas
     let resultado: Vec<_> = numeros
         .into_iter()
         .filter(|x| x % 2 == 0)
         .map(|x| x * 2)
         .collect();
-    
+
     println!("{:?}", resultado);  // [4, 8]
 }
 ```
 
 A beleza da abordagem Rust é que o compilador pode otimizar toda a cadeia de operações sem alocações intermediárias desnecessárias!
 
+### Adaptadores Avançados: chain, step_by e take
+
+Além de `map` e `filter`, Rust oferece uma rica biblioteca de adaptadores que permitem construir pipelines sofisticados:
+
+```rust
+fn main() {
+    // chain: concatena dois iteradores
+    // step_by: pula N elementos entre cada item
+    // take: limita o total de elementos retornados
+    let resultado = (1..100)
+        .chain(200..300)
+        .step_by(2)
+        .take(10)
+        .collect::<Vec<_>>();
+
+    println!("{:?}", resultado); // [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+
+    // Combinando closures com iteradores: flat_map, zip, fold
+    let palavras = vec!["olá mundo", "rust é incrível"];
+    let letras_unicas: std::collections::HashSet<char> = palavras
+        .iter()
+        .flat_map(|s| s.chars())
+        .filter(|c| c.is_alphabetic())
+        .collect();
+
+    println!("Total de letras únicas: {}", letras_unicas.len());
+}
+```
+
 ### Exemplo Prático: Processando Dados de Sensor
 
-Vamos criar um exemplo mais complexo e realista:
+Vamos criar um exemplo mais complexo e realista que combina closures e iteradores em um pipeline completo:
 
 ```rust
 struct LeituraSensor {
@@ -193,11 +280,11 @@ struct LeituraSensor {
 fn processar_leitura(leituras: Vec<LeituraSensor>) -> Vec<(i64, f64)> {
     leituras
         .into_iter()
-        .filter(|leitura| leitura.valida)  // Filtra leituras válidas
-        .filter(|leitura| leitura.valor >= 0.0)  // Valores não-negativos
+        .filter(|leitura| leitura.valida)           // Filtra leituras válidas
+        .filter(|leitura| leitura.valor >= 0.0)     // Valores não-negativos
         .map(|leitura| (leitura.timestamp, leitura.valor * 1.5))  // Transforma
-        .filter(|(_, valor)| *valor <= 100.0)  // Remove valores excessivos
-        .collect()  // Coleta em Vec
+        .filter(|(_, valor)| *valor <= 100.0)       // Remove valores excessivos
+        .collect()                                   // Coleta em Vec
 }
 
 fn main() {
@@ -207,7 +294,7 @@ fn main() {
         LeituraSensor { valor: 75.0, timestamp: 1002, valida: false },
         LeituraSensor { valor: 150.0, timestamp: 1003, valida: true },
     ];
-    
+
     let resultado = processar_leitura(leituras);
     println!("{:?}", resultado);  // [(1000, 38.25)]
 }
@@ -215,16 +302,16 @@ fn main() {
 
 Este exemplo mostra como Rust permite criar pipelines de processamento de dados claros, seguros e eficientes!
 
-## ⚡ Seção 3: Lazy Evaluation vs Eager Evaluation
+## ⚡ Seção 3: Avaliação Preguiçosa vs Avaliação Imediata
 
 ### A Filosofia de Cada Linguagem
 
-**Python (Eager):**
-- Operações são executadas imediatamente
+**Python (Imediata):**
+- Operações são executadas no momento da chamada
 - Mais fácil de depurar (você vê resultados intermediários)
 - Pode consumir mais memória (cria listas intermediárias)
 
-**Rust (Lazy):**
+**Rust (Preguiçosa):**
 - Operações só acontecem quando os resultados são realmente necessários
 - Permite otimizações poderosas (fusão de iteradores, eliminação de alocações)
 - Mais eficiente em termos de memória e desempenho
@@ -235,7 +322,7 @@ Vamos comparar o processamento de grandes conjuntos de dados:
 
 **Python (com list comprehensions):**
 ```python
-# Python: cria 3 listas intermediárias na memória
+# Python: cria listas intermediárias na memória
 import time
 
 dados = list(range(1_000_000))
@@ -243,19 +330,18 @@ dados = list(range(1_000_000))
 inicio = time.time()
 resultado = [x * 2 for x in dados if x % 3 == 0]
 fim = time.time()
-
 print(f"Tempo: {(fim - inicio):.4f}s")
 print(f"Tamanho do resultado: {len(resultado)}")
 ```
 
-**Rust (com iteradores lazy):**
+**Rust (com iteradores preguiçosos):**
 ```rust
 // Rust: não cria coleções intermediárias
 use std::time::Instant;
 
 fn main() {
     let dados: Vec<_> = (1..1_000_000).collect();
-    
+
     let inicio = Instant::now();
     let resultado: Vec<_> = dados
         .into_iter()
@@ -263,13 +349,23 @@ fn main() {
         .map(|x| x * 2)
         .collect();
     let duracao = inicio.elapsed();
-    
+
     println!("Tempo: {:.4?}s", duracao);
     println!("Tamanho do resultado: {}", resultado.len());
 }
 ```
 
 Em benchmarks, a versão Rust geralmente é 2-3x mais rápida e consome significativamente menos memória!
+
+### ⚙️ Zero-Cost Abstractions e Loop Fusion
+
+Um dos pontos mais impressionantes do sistema de iteradores em Rust é que toda essa expressividade não tem custo em tempo de execução:
+
+- **Loop Fusion**: O compilador une automaticamente múltiplos `filter` e `map` em um único loop, sem iterações intermediárias
+- **Inlining automático**: Closures passadas para iteradores geralmente são embutidas diretamente no código gerado
+- **Sem alocações desnecessárias**: Adaptadores como `map`, `filter`, `chain` não alocam memória — apenas descrevem a transformação
+
+Isso é o que Rust chama de **zero-cost abstractions**: você escreve código de alto nível, mas o compilador gera código tão eficiente quanto um loop manual em C.
 
 ## 🐍 Comparação com Python: Quando Cada Abordagem Brilha
 
@@ -305,25 +401,25 @@ let conjunto: std::collections::HashSet<_> = "abracadabra"
 
 **Python (generators):**
 ```python
-# Generator expression (lazy)
+# Generator expression (avaliação preguiçosa)
 quadrados = (x**2 for x in range(1000000))
 soma = sum(quadrados)  # Consome o generator
 ```
 
 **Rust (iteradores):**
 ```rust
-// Iteradores Rust são sempre lazy
-let quadrados = (0..1_000_000).map(|x| x.pow(2));
-let soma: i64 = quadrados.sum();  // Consome o iterador
+// Iteradores Rust são sempre preguiçosos
+let quadrados = (0..1_000_000u64).map(|x| x.pow(2));
+let soma: u64 = quadrados.sum();  // Consome o iterador
 ```
 
 ### Erros Comuns de Pythonistas em Rust
 
 1. **Esquecer o `collect()`:**
 ```rust
-// ERRO: Iteradores são lazy, então isso não faz nada!
+// ERRO: Iteradores são preguiçosos — isso não processa nada!
 let resultado = vec![1, 2, 3].iter().map(|x| x * 2);
-// CORRETO: 
+// CORRETO:
 let resultado: Vec<_> = vec![1, 2, 3].iter().map(|x| x * 2).collect();
 ```
 
@@ -332,26 +428,27 @@ let resultado: Vec<_> = vec![1, 2, 3].iter().map(|x| x * 2).collect();
 // ERRO: Tentar usar variável após mover para closure
 let dados = vec![1, 2, 3];
 let closure = move || println!("{:?}", dados);
-println!("{:?}", dados);  // Erro! dados foi movido
+println!("{:?}", dados);  // Erro! dados foi movido para a closure
 ```
 
 3. **Confusão entre `iter()`, `into_iter()`, `iter_mut()`:**
 ```rust
 let mut numeros = vec![1, 2, 3];
 
-// iter(): empréstimo imutável
-for n in numeros.iter() { /* pode ler n */ }
+// iter(): empréstimo imutável — coleção continua disponível
+for n in numeros.iter() { /* lê &n */ }
 
-// iter_mut(): empréstimo mutável  
-for n in numeros.iter_mut() { /* pode modificar n */ }
+// iter_mut(): empréstimo mutável — permite modificar os valores
+for n in numeros.iter_mut() { *n *= 2; }
 
-// into_iter(): posse (consome o vetor)
+// into_iter(): adquire posse — consome o vetor
 for n in numeros.into_iter() { /* n é dono do valor */ }
+// numeros não existe mais aqui!
 ```
 
 ## 🚀 Conclusão: Por Que Rust Vale a Pena para Programação Funcional
 
-Rust oferece o melhor dos dois mundos: a expressividade da programação funcional combinada com o desempenho e segurança de sistemas. 
+Rust oferece o melhor dos dois mundos: a expressividade da programação funcional combinada com o desempenho e segurança de sistemas.
 
 **Use Rust quando:**
 - Você precisa de máximo desempenho e eficiência de memória
@@ -366,9 +463,11 @@ Rust oferece o melhor dos dois mundos: a expressividade da programação funcion
 ## 🎯 O Que Aprendemos
 
 - **Closures Rust** são mais poderosas e seguras que as do Python, com sistema explícito de ownership
-- **Iteradores Rust** são lazy por padrão, permitindo otimizações poderosas
-- **Traits Fn, FnMut, FnOnce** definem como closures capturam variáveis
-- **Lazy evaluation** em Rust é mais eficiente que eager evaluation do Python
+- **Traits Fn, FnMut, FnOnce** definem como closures capturam e interagem com variáveis
+- **`impl Trait`** é preferível a `Box<dyn Trait>` quando possível (sem alocação de heap)
+- **Iteradores Rust** são preguiçosos por padrão, permitindo otimizações via loop fusion e zero-cost abstractions
+- **`iter()`, `iter_mut()`, `into_iter()`** servem propósitos distintos — escolha com atenção ao ownership
+- **Avaliação preguiçosa** em Rust é mais eficiente que a avaliação imediata do Python
 - **Erros comuns** de Pythonistas podem ser evitados entendendo ownership
 
 Iteradores e closures são apenas parte do que torna Rust especial. Se você quer dominar completamente a linguagem e desbloquear todo seu potencial, o livro "Desbravando Rust" tem muito mais a oferecer!
