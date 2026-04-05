@@ -169,6 +169,7 @@ Outline:
 10. Explique os erros mais comuns de quem vem do Python nesse tema
 11. Finalize com chamada para compra do livro com link já em markdowon [desbravandorust.com.br
 ](https://desbravandorust.com.br)
+12. Não utilize emojis ou emoticons
 
 ## Formato de saída:
 Markdown puro, iniciando diretamente com o título:
