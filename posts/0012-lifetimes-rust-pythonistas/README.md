@@ -214,11 +214,58 @@ trait Resumivel<'a> {
 
 ## Erros Comuns para Pythonistas
 
-1. **Esquecer de anotar lifetimes** em funções que retornam referências
-2. **Tentar retornar referências** para valores locais
-3. **Subestimar o escopo** de variáveis emprestadas
-4. **Confundir ownership** com borrowing em estruturas
-5. **Ignorar lifetime elision**: o compilador infere lifetimes simples, mas casos complexos exigem anotação explícita
+### 1. Esquecer de anotar lifetimes em funções que retornam referências
+
+Sempre que uma função retorna uma referência derivada de um parâmetro, o compilador precisa saber qual parâmetro "empresta" o dado.
+
+### 2. Tentar retornar referência para valor local
+
+Este é o erro mais frequente para quem vem do Python — retornar um ponteiro para algo que vai ser destruído ao sair do escopo da função:
+
+```rust
+// ERRO: `s` não vive o suficiente
+fn problema_comum() -> &str {
+    let s = String::from("ops");
+    &s  // s é destruída aqui; o ponteiro ficaria inválido
+}
+
+// CORREÇÃO: retornar o valor com ownership, não uma referência
+fn solucao() -> String {
+    String::from("ops")
+}
+```
+
+### 3. Subestimar o escopo de variáveis emprestadas
+
+Em Rust, o borrow checker rastreia exatamente onde cada referência pode ser usada — usar uma referência fora do escopo do dono é erro de compilação.
+
+### 4. Confundir ownership com borrowing em estruturas
+
+Structs que armazenam referências precisam de parâmetros de lifetime; structs que armazenam valores com ownership não precisam.
+
+### 5. Ignorar lifetime elision
+
+O compilador infere lifetimes simples automaticamente, mas casos com múltiplas referências ou structs exigem anotação explícita. Quando em dúvida, anote.
+
+### 6. Não usar lifetimes em enums com referências
+
+Enums também podem conter referências e precisam declarar seus lifetimes, assim como structs:
+
+```rust
+// Sem lifetime: erro de compilação se a variante carregar uma referência
+enum Resultado<'a> {
+    Ok(&'a str),    // referência com lifetime vinculado ao enum
+    Erro(String),   // String com ownership — não precisa de lifetime
+}
+
+fn processar<'a>(texto: &'a str) -> Resultado<'a> {
+    if texto.is_empty() {
+        Resultado::Erro(String::from("texto vazio"))
+    } else {
+        Resultado::Ok(texto)
+    }
+}
+```
 
 ## O Que Aprendemos
 
@@ -228,5 +275,16 @@ trait Resumivel<'a> {
 - Python abstrai isso com garbage collector, mas com custo de performance e sem garantias em tempo de compilação
 - Estruturas com referências precisam declarar seus lifetimes
 - Lifetime elision simplifica casos comuns; múltiplos lifetimes lidam com relações complexas
+
+### Python vs Rust: resumo da abordagem de memória
+
+| Aspecto              | Python (GC)                          | Rust (Lifetimes)                        |
+|----------------------|--------------------------------------|-----------------------------------------|
+| **Gerenciamento**    | Automático via garbage collector     | Explícito via borrow checker            |
+| **Segurança**        | Verificada em tempo de execução      | Verificada em tempo de compilação       |
+| **Conveniência**     | ✅ Alta — sem anotações              | ⚠️ Média — curva de aprendizado inicial |
+| **Previsibilidade**  | ⚠️ Pausas de GC possíveis            | ✅ Alta — sem GC, sem pausas            |
+| **Performance**      | ⚠️ Overhead do GC                    | ✅ Zero-cost abstractions               |
+| **Erros de memória** | Detectados em runtime (ou silencosos)| Impossíveis — garantidos em compilação  |
 
 Quer dominar Rust como um verdadeiro desbravador? Adquira já o livro completo em [desbravandorust.com.br](https://desbravandorust.com.br) e transforme-se em um expert na linguagem que está revolucionando a programação de sistemas!
