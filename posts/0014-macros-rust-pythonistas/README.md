@@ -34,6 +34,8 @@ macro_rules! meu_println {
     };
     
     // Segunda regra: com um ou mais argumentos
+    // $($arg:tt)* captura qualquer token válido em Rust (tt = token tree),
+    // tornando a macro flexível para diferentes padrões de entrada
     ($($arg:tt)*) => {
         println!($($arg)*)  // Repassa os argumentos para println!
     };
@@ -43,13 +45,17 @@ fn main() {
     meu_println!();  // Imprime uma linha em branco
     meu_println!("Olá, {}!", "mundo");  // Imprime: Olá, mundo!
     meu_println!("Valores: {}, {}, {}", 1, 2, 3);  // Múltiplos argumentos
+    
+    // ⚠️ Erro comum: esquecer o ! na chamada
+    // meu_println("teste");   // Erro: função `meu_println` não encontrada
+    // meu_println!("teste");  // ✅ Correto
 }
 ```
 
 O que está acontecendo aqui:
 - `macro_rules!` inicia a definição da macro
 - `()` define uma regra para quando a macro é chamada sem argumentos
-- `$($arg:tt)*` captura todos os tokens (tt = token tree) passados para a macro
+- `$($arg:tt)*` captura todos os tokens passados para a macro — `tt` (token tree) aceita qualquer token válido Rust, o que torna a macro extremamente flexível
 - `$($arg)*` expande os tokens capturados na chamada para `println!`
 
 ### Comparação com Python
@@ -91,21 +97,16 @@ macro_rules! vetor {
         }
     };
     
-    // Caso com repetição: cria múltiplos elementos iguais
+    // Caso com repetição: usa std::iter::repeat para criar múltiplos elementos iguais.
+    // Funciona para tipos Copy e Clone sem necessidade de .clone() explícito.
     ($x:expr; $n:expr) => {
-        {
-            let mut temp_vec = Vec::new();
-            for _ in 0..$n {
-                temp_vec.push($x.clone());
-            }
-            temp_vec
-        }
+        std::iter::repeat($x).take($n).collect::<Vec<_>>()
     };
 }
 
 fn main() {
-    let v1 = vetor!();  // Vec vazio
-    let v2 = vetor!(1, 2, 3);  // Vec com valores 1, 2, 3
+    let v1 = vetor!();        // Vec vazio
+    let v2 = vetor!(1, 2, 3); // Vec com valores 1, 2, 3
     let v3 = vetor!("a"; 5);  // Vec com 5 strings "a"
     
     println!("{:?}", v1);  // []
@@ -113,6 +114,8 @@ fn main() {
     println!("{:?}", v3);  // ["a", "a", "a", "a", "a"]
 }
 ```
+
+> **Nota técnica:** A versão anterior usava `.clone()` explícito dentro de um loop, o que é desnecessário para tipos `Copy` (como inteiros) e verboso para os demais. Usar `std::iter::repeat` é idiomático e deixa o compilador decidir a estratégia de cópia mais eficiente.
 
 Em Python, teríamos que usar uma função normal:
 
@@ -142,11 +145,13 @@ A versão Rust é mais poderosa porque:
 
 ## Macros Procedurais: O Poder Real da Metaprogramação 💪
 
-As macros procedurais são muito mais poderosas que as declarativas. Elas permitem manipular arbitráriamente o código fonte usando a API de tokens do Rust. Existem três tipos:
+> ⚠️ **Atenção:** Macros procedurais são um tópico avançado e requerem familiaridade com parsing de código Rust. Se você ainda está se familiarizando com a linguagem, comece com macros declarativas e volte aqui quando se sentir confortável com os fundamentos!
+
+As macros procedurais são muito mais poderosas que as declarativas. Elas permitem manipular arbitrariamente o código fonte usando a API de tokens do Rust. Existem três tipos:
 
 1. **Macros de Derive**: Automatizam implementação de traits
 2. **Macros de Atributo**: Aplicam transformações a itens
-3. **Macros Function-like**: Parecidas com as declarativas, mas mais poderosas
+3. **Macros Function-like**: Parecidas com as declarativas, mas com poder total sobre os tokens
 
 ### Configuração para Macros Procedurais
 
@@ -160,16 +165,20 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-proc-macro = true  # Esta é uma crate de macro procedural!
+# Esta linha é crucial: define que esta crate pode exportar macros procedurais.
+# Macros procedurais requerem esta configuração especial porque o compilador
+# precisa carregar e executar sua crate durante a própria compilação do projeto.
+proc-macro = true
 
 [dependencies]
 syn = { version = "2.0", features = ["full"] }
 quote = "1.0"
+proc-macro2 = "1.0"
 ```
 
 ### Macro de Derive: `MinhaSerde`
 
-Vamos criar uma macro de derive simples que automaticamente gera serialização/deserialização básica, similar ao que o Serde faz:
+Vamos criar uma macro de derive simples que automaticamente gera serialização básica, similar ao que o Serde faz:
 
 ```rust
 // main.rs
@@ -190,15 +199,15 @@ fn main() {
     };
     
     let serializado = pessoa.serializar();
-    println!("{}", serializado);  // {"nome": "João", "idade": 30, "ativo": true}
-    
-    // Desserialização seria implementada de forma similar
+    println!("{}", serializado);
+    // {"nome": "João", "idade": 30, "ativo": true}
 }
 ```
 
 ```rust
 // lib.rs da crate minha_serde
 use proc_macro::TokenStream;
+use proc_macro2::Span;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput};
 
@@ -215,28 +224,34 @@ pub fn minha_serde_derive(input: TokenStream) -> TokenStream {
     }) = input.data {
         &campos_nomeados.named
     } else {
-        panic!("MinhaSerde só funciona com structs com campos nomeados!");
+        // ✅ Retorna um erro de compilação em vez de um panic em runtime
+        return syn::Error::new(
+            Span::call_site(),
+            "MinhaSerde só funciona com structs com campos nomeados!"
+        ).to_compile_error().into();
     };
     
-    // Gera os nomes dos campos como strings
+    // Gera os nomes dos campos como strings e os identificadores para acesso
     let nomes_campos: Vec<String> = campos
         .iter()
-        .map(|campo| {
-            campo
-                .ident
-                .as_ref()
-                .unwrap()
-                .to_string()
-        })
+        .map(|campo| campo.ident.as_ref().unwrap().to_string())
         .collect();
     
-    // Gera a implementação do trait
+    let idents_campos: Vec<_> = campos
+        .iter()
+        .map(|campo| campo.ident.as_ref().unwrap())
+        .collect();
+    
+    // Gera a implementação do trait.
+    // Nota: usamos `{}` (Display) em vez de `{:?}` (Debug) para serialização.
+    // Isso exige que cada campo implemente o trait `Display`.
+    // Para um serializador real, use a crate `serde` com suporte a tipos arbitrários.
     let expandido = quote! {
         impl #nome {
             pub fn serializar(&self) -> String {
                 let mut resultado = String::from("{");
                 #(
-                    resultado.push_str(&format!("\"{}\": {:?}, ", #nomes_campos, self.#nomes_campos));
+                    resultado.push_str(&format!("\"{}\": {}, ", #nomes_campos, self.#idents_campos));
                 )*
                 resultado.pop();  // Remove última vírgula
                 resultado.pop();  // Remove último espaço
@@ -249,6 +264,8 @@ pub fn minha_serde_derive(input: TokenStream) -> TokenStream {
     TokenStream::from(expandido)
 }
 ```
+
+> **Nota técnica:** Usamos `syn::Error::new(...).to_compile_error()` em vez de `panic!()`. Isso garante que o erro apareça como um erro de compilação limpo e rastreável, em vez de um crash do compilador — que é o comportamento esperado em macros procedurais de produção.
 
 Este exemplo mostra o poder real das macros procedurais: analisamos a estrutura da struct em tempo de compilação e geramos código específico baseado em seus campos.
 
@@ -284,6 +301,32 @@ As diferenças são fundamentais:
 - O código Rust gerado é otimizado especificamente para cada struct
 - Não há overhead de runtime para análise reflexiva
 - Erros são detectados durante a compilação, não durante a execução
+
+### Macro Function-like Procedural
+
+Além das macros de derive e atributo, existe o terceiro tipo: **macros function-like procedurais**. Elas têm a mesma sintaxe de chamada das declarativas (`nome!(...)`), mas com poder total sobre os tokens de entrada:
+
+```rust
+// lib.rs
+use proc_macro::TokenStream;
+
+#[proc_macro]
+pub fn meu_sql(input: TokenStream) -> TokenStream {
+    // Aqui você pode validar SQL em tempo de compilação,
+    // gerar structs de resultado, etc.
+    let sql = input.to_string();
+    quote::quote! {
+        compile_error!(concat!("SQL processado em compile-time: ", #sql))
+    }.into()
+}
+```
+
+```rust
+// Uso
+meu_sql!(SELECT * FROM usuarios WHERE ativo = true);
+```
+
+Esse padrão é usado por crates como `sqlx` para validar queries SQL contra o banco de dados em tempo de compilação — algo simplesmente impossível em Python.
 
 ## Macros de Atributo: Personalizando Comportamento
 
@@ -361,39 +404,70 @@ Novamente, a diferença fundamental está em quando a transformação acontece:
 - Python: Em tempo de execução, com overhead de chamadas de função
 - Rust: Em tempo de compilação, sem overhead de runtime
 
+## Debugando Macros com `cargo-expand`
+
+Uma das partes mais desafiadoras de trabalhar com macros é entender o que elas realmente geram. A ferramenta `cargo-expand` resolve exatamente isso, mostrando o código final após todas as expansões:
+
+```bash
+# Instalação (necessária apenas uma vez)
+cargo install cargo-expand
+
+# Ver o código expandido do seu projeto
+cargo expand
+
+# Ver apenas um módulo específico
+cargo expand meu_modulo
+```
+
+Por exemplo, ao rodar `cargo expand` em um projeto que usa `#[derive(MinhaSerde)]`, você verá exatamente o código `impl Pessoa { pub fn serializar(...) }` gerado pela macro — o que é invaluável para debugging e aprendizado.
+
+## Quando Não Usar Macros
+
+Antes de sair criando macros para tudo, é importante saber quando **não** usá-las:
+
+- **Dificultam o debugging**: Erros em código gerado por macros podem ter mensagens confusas e stack traces difíceis de rastrear
+- **Reduzem a legibilidade**: Um código com muitas macros pode ser difícil de entender para quem não as escreveu
+- **São complexas de manter**: Macros procedurais especialmente exigem conhecimento de `syn`, `quote` e a API de tokens do Rust
+- **IDEs têm suporte limitado**: Autocomplete e navegação de código funcionam melhor com código direto
+
+**Regra de ouro:** Se uma função, trait ou genérico resolve o problema, prefira essas opções. Reserve macros para quando a sintaxe ou a geração de código em tempo de compilação for realmente necessária.
+
 ## Erros Comuns de Pythonistas em Rust
 
-1. **Tentar usar macros como funções**: Macros parecem funções, mas têm regras diferentes. Use `!` na chamada.
+1. **Esquecer o `!` na chamada**: Macros parecem funções, mas a exclamação é obrigatória.
+   ```rust
+   meu_println("teste");   // ❌ Erro: função não encontrada
+   meu_println!("teste");  // ✅ Correto
+   ```
 
-2. **Esquecer da higiene**: Macros Rust são higiênicas (variáveis não vazam), ao contrário de algumas técnicas Python.
+2. **Tentar usar macros como funções**: Têm regras diferentes — não aceitam tipos genéricos da mesma forma.
 
-3. **Subestimar a complexidade**: Macros procedurais são mais complexas que decoradores Python.
+3. **Esquecer da higiene**: Macros Rust são higiênicas (variáveis não vazam para o escopo externo), ao contrário de algumas técnicas de metaprogramação Python.
 
-4. **Não entender a expansão**: Use `cargo expand` para ver o código gerado pelas macros.
+4. **Subestimar a complexidade**: Macros procedurais são mais complexas que decoradores Python. Use `cargo expand` para entender o que está sendo gerado.
+
+5. **Usar `panic!` em macros procedurais**: Prefira `syn::Error::new(...).to_compile_error()` para produzir erros de compilação adequados.
 
 ## Quando Usar Macros no Rust
 
 Use macros quando:
-- Você precisa de boilerplate repetitivo que não pode ser abstraído com funções
-- Quer criar APIs com syntax personalizada
+- Você precisa de boilerplate repetitivo que não pode ser abstraído com funções ou traits
+- Quer criar APIs com syntax personalizada (como `vec![]` ou `println!`)
 - Precisa de código gerado em tempo de compilação para performance
-- Está implementando traits comuns para muitos tipos
-
-Não use macros quando:
-- Uma função normal resolveria o problema
-- Você está começando a aprender Rust (aprenda os fundamentos primeiro)
-- A complexidade não justifica o benefício
+- Está implementando traits comuns para muitos tipos automaticamente
 
 ## O Que Aprendemos
 
 - **Macros declarativas** (`macro_rules!`) permitem criação de syntax extensions através de regras de pattern matching
 - **Macros procedurais** oferecem poder total sobre manipulação de código em três variedades: derive, attribute e function-like
-- **Macros de derive** automatizam implementação de traits com base na análise de estruturas
+- **Macros de derive** automatizam implementação de traits com base na análise de estruturas em tempo de compilação
 - **Macros de atributo** modificam itens anotados com comportamentos personalizados
+- **Macros function-like procedurais** permitem processamento arbitrário de tokens, como validação de SQL em compile-time
+- **`cargo expand`** é a ferramenta essencial para debugar e entender o código gerado pelas macros
 - **O processo de compilação** do Rust expande macros antes da geração de código, oferecendo segurança e performance
-- **Comparação com Python**: Enquanto Python usa runtime metaprogramming (decoradores, metaclasses), Rust faz compile-time metaprogramming com verificação de tipos
+- **Comparação com Python**: Enquanto Python usa runtime metaprogramming (decoradores, metaclasses), Rust faz compile-time metaprogramming com verificação de tipos — e isso faz toda a diferença
 
-As macros são uma das características mais poderosas do Rust, permitindo criar código conciso, seguro e eficiente que seria impossível ou inseguro em muitas outras linguagens.
+As macros são uma das características mais poderosas do Rust, permitindo criar código conciso, seguro e eficiente que seria impossível ou inseguro em muitas outras linguagens. Use-as com sabedoria, sempre preferindo a solução mais simples quando ela resolver o problema.
 
 ---
 
