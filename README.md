@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0013 - Smart Pointers em Rust: Gerenciamento Avançado de Memória para Pythonistas](./posts/0013-smart-pointers-rust-pythonistas)
 - [0012 - Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas](./posts/0012-lifetimes-rust-pythonistas)
 - [0011 - Desvendando Iteradores e Closures em Rust: A Potência Funcional para Pythonistas](./posts/0011-iteradores-closures-rust-pythonistas)
 - [0010 - Concorrência e Paralelismo em Rust: Desvendando Threads e Async/Await para Pythonistas](./posts/0010-concorrencia-paralelismo-rust-threads-async-pythonistas)
