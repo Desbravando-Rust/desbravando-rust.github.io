@@ -237,18 +237,34 @@ Esse formato entrega o melhor dos dois mundos:
 
 ## Benchmark: onde o ganho aparece
 
-Nos testes documentados no projeto, com 100.000 validações mistas de CNPJ (formatadas, sem formatação e alfanuméricas), o resultado foi:
+Com `make bench` rodando **100.000 validações por cenário** (CNPJ e CPF), os resultados coletados foram:
 
-| Linguagem | Tempo de execução | Validações por segundo |
-| --- | --- | --- |
-| Python puro | ~0,475s | ~210.000/s |
-| Rust (PyO3) | ~0,019s | ~5.250.000/s |
+**Análise 1: Tempo de execução (s)**
+
+| Documento | Python | Rust |
+| --- | ---: | ---: |
+| CNPJ | 0,684318s | **0,063321s** |
+| CPF | 0,713108s | **0,039088s** |
+
+**Análise 2: Throughput (validações/segundo)**
+
+| Documento | Python | Rust |
+| --- | ---: | ---: |
+| CNPJ | 146.131/s | **1.579.264/s** |
+| CPF | 140.231/s | **2.558.310/s** |
 
 ![Benchmark Python vs Rust para validacao de CNPJ](imgs/benchmark.png)
 
-Isso representa um ganho de aproximadamente **25x** para o núcleo em Rust.
+**Speedup Rust sobre Python**
 
-A proporção também se mantém alta em testes com volumes menores, mesmo variando por hardware, versão de Python e flags de compilação.
+| Documento | Ganho |
+| --- | ---: |
+| CNPJ | **10,81x** |
+| CPF | **18,24x** |
+
+
+
+Os números variam por hardware, versão de Python, versão de Rust e flags de compilação, mas a vantagem do núcleo nativo se mantém clara nos dois documentos.
 
 ## Por que funciona tão bem?
 
