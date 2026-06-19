@@ -35,17 +35,6 @@ pytest -v tests/
 
 Os testes cobrem CNPJ numérico, CNPJ alfanumérico, DV incorreto, repetição e entradas inválidas.
 
-### 3. Execute o benchmark rápido
-
-O projeto tem um script simples em Python para comparar as duas implementações:
-
-```bash
-cd ../pocs/cnpj_py
-python main.py
-```
-
-Ele mede a função pura em Python contra a função nativa em Rust para o mesmo CNPJ.
-
 ---
 
 ## Incorporando em um projeto Python existente via PyPI
@@ -189,7 +178,7 @@ Nos testes documentados no projeto, com 100.000 validações mistas (formatadas,
 
 Isso representa um ganho de aproximadamente **25x** para o núcleo em Rust.
 
-Em PoCs locais (como o script de benchmark com 50.000 iterações), a proporção também se mantém alta, mesmo variando por hardware, versão de Python e flags de compilação.
+A proporção também se mantém alta em testes com volumes menores, mesmo variando por hardware, versão de Python e flags de compilação.
 
 ## Por que funciona tão bem?
 
