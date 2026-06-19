@@ -35,8 +35,81 @@ pytest -v tests/
 
 Os testes cobrem CNPJ numérico, CNPJ alfanumérico, DV incorreto, repetição e entradas inválidas.
 
+### 3. Execute o benchmark rápido
 
-### 3. Como ficou o core
+O projeto tem um script simples em Python para comparar as duas implementações:
+
+```bash
+cd ../pocs/cnpj_py
+python main.py
+```
+
+Ele mede a função pura em Python contra a função nativa em Rust para o mesmo CNPJ.
+
+---
+
+## Incorporando em um projeto Python existente via PyPI
+
+Se você não quer clonar o repositório e apenas precisa da validação de alta performance no seu projeto, basta instalar o pacote publicado:
+
+```bash
+pip install rsfn4py
+```
+
+O pacote distribui wheels pré-compilados para Linux, macOS e Windows nas versões mais recentes do Python, então **não é necessário ter Rust instalado** na máquina.
+
+### Uso básico
+
+```python
+from rsfn4py import validate_cnpj_rust
+
+cnpjs = [
+    "12.345.678/0001-95",   # Numérico formatado
+    "12345678000195",        # Numérico sem formatação
+    "12ABC34501DE35",        # Alfanumérico (novo formato)
+    "11.111.111/1111-11",   # Inválido (sequência repetida)
+]
+
+for cnpj in cnpjs:
+    status = "✅ válido" if validate_cnpj_rust(cnpj) else "❌ inválido"
+    print(f"{cnpj:<25} → {status}")
+```
+
+### Em um endpoint FastAPI
+
+```python
+from fastapi import FastAPI, HTTPException
+from rsfn4py import validate_cnpj_rust
+
+app = FastAPI()
+
+@app.get("/cadastro/{cnpj}")
+def validar_cnpj(cnpj: str):
+    if not validate_cnpj_rust(cnpj):
+        raise HTTPException(status_code=422, detail="CNPJ inválido")
+    return {"cnpj": cnpj, "valido": True}
+```
+
+### Em processamento em lote (pandas/polars)
+
+```python
+import pandas as pd
+from rsfn4py import validate_cnpj_rust
+
+df = pd.read_csv("cadastros.csv")
+
+# Aplica a validação Rust em todo o DataFrame — sem loop Python explícito
+df["cnpj_valido"] = df["cnpj"].apply(validate_cnpj_rust)
+
+invalidos = df[~df["cnpj_valido"]]
+print(f"{len(invalidos)} CNPJs inválidos encontrados")
+```
+
+> **Nota:** Como `validate_cnpj_rust` é uma função C-Extension, o overhead por chamada é muito menor do que uma função Python pura, o que faz diferença especialmente em DataFrames com centenas de milhares de linhas.
+
+---
+
+### 4. Como ficou o core
 
 No `rsfn4py`, o algoritmo da validação fica no core em Rust:
 
@@ -112,7 +185,7 @@ Nos testes documentados no projeto, com 100.000 validações mistas (formatadas,
 | Python puro | ~0,475s | ~210.000/s |
 | Rust (PyO3) | ~0,019s | ~5.250.000/s |
 
-![Benchmark Python vs Rust para validacao de CNPJ](imgs/perf-cnpj-rust-python.svg)
+![Benchmark Python vs Rust para validacao de CNPJ](imgs/benchmark.png)
 
 Isso representa um ganho de aproximadamente **25x** para o núcleo em Rust.
 
