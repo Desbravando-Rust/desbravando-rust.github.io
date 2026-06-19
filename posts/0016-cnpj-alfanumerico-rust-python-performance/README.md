@@ -45,6 +45,8 @@ Se você não quer clonar o repositório e apenas precisa da validação de alta
 pip install rsfn4py
 ```
 
+Projeto no PyPI: [https://pypi.org/project/rsfn4py/](https://pypi.org/project/rsfn4py/)
+
 O pacote distribui wheels pré-compilados para Linux, macOS e Windows nas versões mais recentes do Python, então **não é necessário ter Rust instalado** na máquina.
 
 ### Uso básico
@@ -315,3 +317,7 @@ Se você quiser aplicar esse modelo no seu contexto:
 4. Publique wheel para reduzir atrito de adoção no time.
 
 Quando o assunto é regra fiscal crítica em alto volume, performance deixa de ser "otimização" e vira requisito de negócio. E, nesse ponto, Rust como extensão do Python faz muita diferença.
+
+---
+
+Quer se aprofundar em Rust de forma prática, aplicada ao mundo real e com foco em performance? Conheça o livro em [desbravandorust.com.br](https://desbravandorust.com.br).
