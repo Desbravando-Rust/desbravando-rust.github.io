@@ -1,6 +1,9 @@
 # CNPJ alfanumérico e CPF na prática: Rust acelerando Python em regras fiscais críticas
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Jun 19, 2026
 
+![Cover](imgs/cover.png)
+
+
 A partir de julho de 2026, o ecossistema brasileiro passa a conviver com o CNPJ alfanumérico (IN RFB 2.119/2022). Para quem opera sistemas de cadastro, antifraude, onboarding, faturamento e compliance, isso muda o jogo: validações que antes eram simples e numéricas agora precisam aceitar letras, manter compatibilidade retroativa e continuar performando sob alta carga.
 
 Neste post, vamos para o modo hands-on usando o projeto `rsfn4py`: as regras de validação de CNPJ e CPF ficam em Rust e são expostas para Python via PyO3, com fallback em Python puro. A ideia não é trocar sua stack inteira, e sim turbinar o trecho mais crítico com custo de migração muito baixo.
@@ -255,7 +258,7 @@ Com `make bench` rodando **100.000 validações por cenário** (CNPJ e CPF), os 
 | CNPJ | 146.131/s | **1.579.264/s** |
 | CPF | 140.231/s | **2.558.310/s** |
 
-![Benchmark Python vs Rust para validacao de CNPJ](imgs/benchmark.png)
+![Benchmark Python vs Rust para validação de CNPJ e CPF](imgs/benchmark.png)
 
 **Speedup Rust sobre Python**
 
