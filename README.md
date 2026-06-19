@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0015 - CNPJ Alfanumérico na prática: Rust acelerando Python em uma regra fiscal crítica](./posts/0015-cnpj-alfanumerico-rust-python-performance)
 - [0014 - Macros em Rust: Automatizando Código Além do que Python Permite](./posts/0014-macros-rust-pythonistas)
 - [0013 - Smart Pointers em Rust: Gerenciamento Avançado de Memória para Pythonistas](./posts/0013-smart-pointers-rust-pythonistas)
 - [0012 - Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas](./posts/0012-lifetimes-rust-pythonistas)
