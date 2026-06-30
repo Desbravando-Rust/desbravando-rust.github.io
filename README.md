@@ -84,6 +84,7 @@ Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão dig
 
 ## Últimos posts:
 
+- [0017 - Seu ORM está mentindo para você (Parte II): o N+1 que o SQLx te obriga a enxergar](./posts/0017-orm-mentindo-n1-sqlx)
 - [0016 - CNPJ Alfanumérico na prática: Rust acelerando Python em uma regra fiscal crítica](./posts/0016-cnpj-alfanumerico-rust-python-performance)
 - [0015 - Desvendando Pattern Matching em Rust: Um Guia Prático para Pythonistas](./posts/0015-pattern-matching-rust-pythonistas)
 - [0014 - Macros em Rust: Automatizando Código Além do que Python Permite](./posts/0014-macros-rust-pythonistas)
