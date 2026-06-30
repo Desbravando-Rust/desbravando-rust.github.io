@@ -1,5 +1,5 @@
 # Seu ORM está mentindo para você (Parte II): o N+1 que o SQLx te obriga a enxergar
-###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Jul 06, 2026
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Jun 29, 2026
 
 ![Cover](imgs/cover.png)
 
