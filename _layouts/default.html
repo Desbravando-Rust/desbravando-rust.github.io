@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% if page.title %}<title>{{ page.title }} — {{ site.title }}</title>{% else %}<title>{{ site.title }} — {{ site.tagline }}</title>{% endif %}
+  <meta name="description" content="{{ page.description | default: site.description | strip_newlines | strip }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  {% assign og_image = "/imgs/capa.jpg" %}
+  {% assign cover_candidate = page.dir | append: "imgs/cover.png" %}
+  {% assign cover = site.static_files | where: "path", cover_candidate | first %}
+  {% if cover %}{% assign og_image = cover_candidate %}{% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ page.description | default: site.description | strip_newlines | strip }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:image" content="{{ og_image | absolute_url }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title | default: site.title }}">
+  <meta name="twitter:image" content="{{ og_image | absolute_url }}">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  {% if site.cupom != "" %}
+  <div class="coupon-bar">🎟️ {{ site.cupom_texto }} — use o cupom <b>{{ site.cupom }}</b> no checkout</div>
+  {% endif %}
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">Desbravando <span>Rust</span></a>
+      {% include cta.html label="Comprar o livro" %}
+    </div>
+  </header>
+  <main>
+    {{ content }}
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <nav class="footer-links">
+        <a href="/">Início</a>
+        <a href="/blog/">Blog</a>
+        <a href="/amostra/">Capítulo gratuito</a>
+      </nav>
+      <p>Dúvidas? <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+      <p class="copy">© {{ site.time | date: "%Y" }} {{ site.author }} — {{ site.title }}</p>
+    </div>
+  </footer>
+  {% include analytics.html %}
+</body>
+</html>

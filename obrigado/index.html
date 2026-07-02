@@ -1,3 +1,7 @@
+---
+layout: none
+sitemap: false
+---
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -157,23 +161,14 @@
         e quer conquistar performance e segurança sem abandonar o que sabe.
       </p>
 
-      <!--       
-      <div class="steps">
-        <b>Próximos passos:</b><br>
-        1. Envie o comprovante de pagamento e seus dados para
-        <b>desbravandorust@gmail.com</b>.<br>
-        2. Em até <b>2 dias úteis</b> você recebe por e-mail o livro digital em PDF,
-        personalizado, junto com a nota fiscal.
-      </div> -->
-
       <p>
         Enquanto o livro não chega, os artigos do blog são o melhor aquecimento:
         benchmarks reais, Rust acelerando Python e muito código para reproduzir.
       </p>
 
       <div class="actions">
-        <a class="btn btn-primary" href="https://desbravandorust.com.br/#últimos-posts">Ler os posts do blog</a>
-        <a class="btn btn-secondary" href="https://desbravandorust.com.br">Voltar ao site</a>
+        <a class="btn btn-primary" href="/blog/">Ler os posts do blog</a>
+        <a class="btn btn-secondary" href="/">Voltar ao site</a>
       </div>
 
       <footer>
@@ -181,5 +176,16 @@
       </footer>
     </div>
   </main>
+  {% include analytics.html %}
+  <script>
+    // Dispara o evento de compra uma única vez por sessão: esta é uma URL fixa
+    // de redirect do Kiwify, e refresh/back re-abririam a página e inflariam a receita.
+    if (!sessionStorage.getItem('dr_purchase_tracked')) {
+      var v = {{ site.preco | remove: "." | replace: ",", "." }};
+      if (window.gtag) gtag('event', 'purchase', { currency: 'BRL', value: v });
+      if (window.fbq) fbq('track', 'Purchase', { currency: 'BRL', value: v });
+      sessionStorage.setItem('dr_purchase_tracked', '1');
+    }
+  </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-```markdown
 # Desvendando Pattern Matching em Rust: Um Guia Prático para Pythonistas
 
 Se você vem do Python, está acostumado com estruturas condicionais como `if-elif-else` para controlar o fluxo do programa. Mas e se eu te disser que Rust possui uma ferramenta muito mais poderosa chamada **pattern matching**? Vamos explorar como essa funcionalidade revolucionária pode transformar sua maneira de escrever código.
@@ -178,4 +177,3 @@ fn saudacao(usuario: Usuario) {
 - @ bindings ajudam a capturar valores durante o matching
 
 Se você quer se aprofundar ainda mais em Rust e descobrir como aproveitar ao máximo seus recursos avançados, não deixe de conferir o livro completo [Desbravando Rust](https://desbravandorust.com.br).
-```
