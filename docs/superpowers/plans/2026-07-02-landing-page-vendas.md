@@ -234,7 +234,7 @@ git commit -m "feat: _config.yml central (venda, analytics, defaults de layout)"
       <nav class="footer-links">
         <a href="/">Início</a>
         <a href="/blog/">Blog</a>
-        <a href="/amostra/">Capítulo grátis</a>
+        <a href="/amostra/">Capítulo gratuito</a>
       </nav>
       <p>Dúvidas? <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
       <p class="copy">© {{ site.time | date: "%Y" }} {{ site.author }} — {{ site.title }}</p>
@@ -593,7 +593,7 @@ description: >-
       </ul>
       <div class="hero-actions">
         {% include cta.html %}
-        <a class="btn btn-ghost" href="/amostra/">Ler capítulo grátis</a>
+        <a class="btn btn-ghost" href="/amostra/">Ler capítulo gratuito</a>
       </div>
     </div>
     <div class="hero-cover">
@@ -676,7 +676,7 @@ description: >-
     </details>
     {% endif %}
     <p class="sample-nudge">Quer sentir o estilo antes de comprar?
-      <a href="/amostra/">Leia um capítulo grátis →</a></p>
+      <a href="/amostra/">Leia um capítulo gratuito →</a></p>
   </div>
 </section>
 
@@ -1061,7 +1061,7 @@ git commit -m "feat: índice do blog gerado automaticamente"
 
 ---
 
-### Task 6: Página de amostra grátis e 404
+### Task 6: Página de amostra gratuito e 404
 
 **Files:**
 - Create: `amostra/index.md`
@@ -1075,7 +1075,7 @@ git commit -m "feat: índice do blog gerado automaticamente"
 
 ```markdown
 ---
-title: Capítulo grátis
+title: Capítulo gratuito
 description: >-
   Baixe gratuitamente um capítulo do livro Desbravando Rust e sinta o estilo
   antes de comprar — comparações diretas entre Python e Rust.
@@ -1083,7 +1083,7 @@ description: >-
 
 <section class="post">
 
-# Leia um capítulo grátis
+# Leia um capítulo gratuito
 
 Antes de decidir, sinta o estilo do livro: direto, prático e sempre comparando
 Rust com o Python que você já domina.
@@ -1128,7 +1128,7 @@ Expected: todos ≥ 1. Nota: o PDF em si ainda não existe — registrado como i
 
 ```bash
 git add amostra/index.md 404.html
-git commit -m "feat: página de capítulo grátis e 404 com CTA"
+git commit -m "feat: página de capítulo gratuito e 404 com CTA"
 ```
 
 ---

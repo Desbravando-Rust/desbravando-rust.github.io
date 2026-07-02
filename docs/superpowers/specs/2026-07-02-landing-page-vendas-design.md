@@ -33,7 +33,7 @@
 ├── assets/css/style.css     # CSS único do site (dark/laranja, responsivo, syntax highlighting Rouge)
 ├── index.html               # landing page de vendas
 ├── blog/index.html          # índice completo de posts (gerado por loop Liquid sobre site.pages)
-├── amostra/index.md         # página do capítulo grátis
+├── amostra/index.md         # página do capítulo gratuito
 ├── 404.html                 # página 404 com CTA
 ├── posts/…                  # INTOCADOS: pasta + README.md em markdown
 ├── obrigado/index.html      # mantém; vira URL de redirect pós-compra do Kiwify; remove bloco de comprovante
@@ -44,11 +44,11 @@
 
 Visual: fundo escuro com gradiente vinho→laranja seguindo a capa; laranja `#f74c00` reservado quase exclusivamente aos CTAs.
 
-1. **Hero** — capa com glow + título + subtítulo ("Um guia prático para pythonistas explorarem novos horizontes") + 3 bullets de valor (performance, segurança de memória, sem abandonar o que já sabe) + botão **Comprar agora — R$ 89,90** + link secundário "Ler capítulo grátis". Acima da dobra em desktop e mobile.
+1. **Hero** — capa com glow + título + subtítulo ("Um guia prático para pythonistas explorarem novos horizontes") + 3 bullets de valor (performance, segurança de memória, sem abandonar o que já sabe) + botão **Comprar agora — R$ 89,90** + link secundário "Ler capítulo gratuito". Acima da dobra em desktop e mobile.
 2. **Prova social** — 2–3 depoimentos curtos (nome + cargo; foto opcional). Textos fornecidos pelo autor na implementação; blocos HTML copiáveis para adicionar mais.
 3. **Para quem é / o que você vai aprender** — conteúdo atual do README reescrito em cards escaneáveis (Ownership/Borrowing/Lifetimes, tratamento de erros, concorrência, projetos práticos: Axum, TOTP/Lambdas, concatenação de arquivos).
 4. **Dentro do livro** — sumário completo em `<details>` expansível + números concretos (páginas, capítulos, projetos). Dados fornecidos pelo autor.
-5. **Capítulo grátis** — CTA secundário para `/amostra` (isca da campanha LinkedIn; reduz risco percebido).
+5. **Capítulo gratuito** — CTA secundário para `/amostra` (isca da campanha LinkedIn; reduz risco percebido).
 6. **Sobre o autor** — foto redonda, texto enxuto (~3 linhas) focado em autoridade: 22 anos de web, Python → Rust.
 7. **Preço + CTA final** — card de compra: capa mini, o que está incluído (PDF + atualizações + nota fiscal), bloco de preço (3 estados), botão Kiwify, selo "compra segura via Kiwify", garantia de 7 dias explícita.
 8. **FAQ** — 4–5 `<details>`: quanto de Python preciso? formato e prazo de entrega? garantia? nota fiscal? cupom (quando ativo)?

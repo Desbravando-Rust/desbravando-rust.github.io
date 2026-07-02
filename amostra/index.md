@@ -1,12 +1,12 @@
 ---
-title: Capítulo grátis
+title: Capítulo gratuito
 description: >-
   Baixe gratuitamente um capítulo do livro Desbravando Rust e sinta o estilo
   antes de comprar — comparações diretas entre Python e Rust.
 ---
 
 <section class="post">
-  <h1>Leia um capítulo grátis</h1>
+  <h1>Leia um capítulo gratuito</h1>
 
   <p>Antes de decidir, sinta o estilo do livro: direto, prático e sempre
   comparando Rust com o Python que você já domina.</p>
