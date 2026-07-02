@@ -86,6 +86,7 @@ a { color: var(--rust-orange-soft); }
   font-size: 1.15rem;
   color: var(--text);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .brand span { color: var(--rust-orange-soft); }

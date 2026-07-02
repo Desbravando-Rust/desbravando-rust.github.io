@@ -178,8 +178,14 @@ sitemap: false
   </main>
   {% include analytics.html %}
   <script>
-    if (window.gtag) gtag('event', 'purchase', { currency: 'BRL', value: {{ site.preco | replace: ",", "." }} });
-    if (window.fbq) fbq('track', 'Purchase', { currency: 'BRL', value: {{ site.preco | replace: ",", "." }} });
+    // Dispara o evento de compra uma única vez por sessão: esta é uma URL fixa
+    // de redirect do Kiwify, e refresh/back re-abririam a página e inflariam a receita.
+    if (!sessionStorage.getItem('dr_purchase_tracked')) {
+      var v = {{ site.preco | remove: "." | replace: ",", "." }};
+      if (window.gtag) gtag('event', 'purchase', { currency: 'BRL', value: v });
+      if (window.fbq) fbq('track', 'Purchase', { currency: 'BRL', value: v });
+      sessionStorage.setItem('dr_purchase_tracked', '1');
+    }
   </script>
 </body>
 </html>

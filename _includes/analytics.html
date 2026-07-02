@@ -33,7 +33,7 @@
   document.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('.js-buy') : null;
     if (!a) return;
-    if (window.gtag) gtag('event', 'begin_checkout', { currency: 'BRL', value: {{ site.preco | replace: ",", "." }} });
+    if (window.gtag) gtag('event', 'begin_checkout', { currency: 'BRL', value: {{ site.preco | remove: "." | replace: ",", "." }} });
     if (window.fbq) fbq('track', 'InitiateCheckout');
   });
 </script>
