@@ -6,17 +6,19 @@ description: >-
 ---
 
 <section class="post">
+  <h1>Leia um capítulo grátis</h1>
 
-# Leia um capítulo grátis
+  <p>Antes de decidir, sinta o estilo do livro: direto, prático e sempre
+  comparando Rust com o Python que você já domina.</p>
 
-Antes de decidir, sinta o estilo do livro: direto, prático e sempre comparando
-Rust com o Python que você já domina.
+  <p>
+    <a class="btn btn-buy" href="/assets/pdf/desbravando-rust-sample.pdf" target="_blank" rel="noopener">Ler o capítulo em PDF</a>
+  </p>
 
-<a class="btn btn-buy" href="/assets/desbravando-rust-amostra.pdf" download>Baixar capítulo em PDF</a>
+  <p>Gostou do que leu? O livro completo aprofunda ownership, tratamento de
+  erros, concorrência e três projetos completos.</p>
 
-Gostou do que leu? O livro completo aprofunda ownership, tratamento de erros,
-concorrência e três projetos completos.
-
-<a class="btn btn-ghost js-buy" href="{{ site.kiwify_url }}" rel="noopener">Comprar o livro — R$ {{ site.preco }}</a>
-
+  <p>
+    <a class="btn btn-ghost js-buy" href="{{ site.kiwify_url }}" rel="noopener">Comprar o livro — R$ {{ site.preco }}</a>
+  </p>
 </section>

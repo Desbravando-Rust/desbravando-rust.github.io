@@ -304,7 +304,7 @@ section > .container > h2 { font-size: 1.9rem; margin-bottom: 8px; }
 
 .toc summary { cursor: pointer; font-weight: 700; }
 
-.toc ol { margin: 16px 0 0 24px; color: var(--text-muted); }
+.toc ul { margin: 16px 0 0 24px; color: var(--text-muted); }
 
 .toc li { margin-bottom: 6px; }
 

@@ -92,11 +92,11 @@ description: >-
     {% if site.data.sumario and site.data.sumario.size > 0 %}
     <details class="toc">
       <summary>Ver o sumário completo</summary>
-      <ol>
+      <ul>
         {% for cap in site.data.sumario %}
         <li>{{ cap }}</li>
         {% endfor %}
-      </ol>
+      </ul>
     </details>
     {% endif %}
     <p class="sample-nudge">Quer sentir o estilo antes de comprar?
@@ -155,11 +155,7 @@ description: >-
     </details>
     <details><summary>Como e quando recebo o livro?</summary>
       <p>A compra é processada pela Kiwify. Assim que o pagamento é confirmado, você recebe por e-mail
-        o acesso ao PDF — sem espera.</p>
-    </details>
-    <details><summary>E se eu não gostar?</summary>
-      <p>Você tem 7 dias de garantia incondicional: pediu reembolso dentro do prazo, recebeu de volta.
-        Sem perguntas.</p>
+        o acesso ao PDF.</p>
     </details>
     <details><summary>Recebo nota fiscal?</summary>
       <p>Sim, a nota fiscal é emitida e enviada para o seu e-mail.</p>

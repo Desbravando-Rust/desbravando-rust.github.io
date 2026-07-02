@@ -16,8 +16,8 @@ cupom: ""          # preencha (ex: "LINKEDIN10") para exibir a faixa de cupom no
 cupom_texto: ""    # ex: "10% de desconto para a comunidade do LinkedIn"
 
 # Números do livro (aparecem na seção "Dentro do livro" quando preenchidos)
-paginas: ""        # ex: "320"
-capitulos: ""      # ex: "18"
+paginas: "407"        # ex: "320"
+capitulos: "30"      # ex: "18"
 
 # ================= ANALYTICS — edite aqui =================
 ga4_id: "G-XL3S6FDENZ"              # ex: "G-XXXXXXXXXX"

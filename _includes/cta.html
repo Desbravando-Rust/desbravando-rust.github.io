@@ -1,2 +1,2 @@
 {% if include.label %}{% assign cta_label = include.label %}{% else %}{% assign cta_label = "Comprar agora — R$ " | append: site.preco %}{% endif %}
-<a class="btn btn-buy js-buy" href="{{ site.kiwify_url }}" rel="noopener">{{ cta_label }}</a>
+<a class="btn btn-buy js-buy" href="{{ site.kiwify_url }}" rel="noopener" target="_blank">{{ cta_label }}</a>
