@@ -1,0 +1,23 @@
+---
+title: Blog
+description: >-
+  Artigos técnicos sobre Rust para pythonistas: benchmarks, comparações
+  Python vs Rust e projetos práticos com código para reproduzir.
+---
+<section class="blog-index">
+  <div class="container">
+    <h1>Blog</h1>
+    <p class="section-sub">Benchmarks reais, Rust acelerando Python e muito código para reproduzir.
+      Post novo? Ele aparece aqui automaticamente.</p>
+    {% assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" | sort: "path" | reverse %}
+    <div class="post-grid">
+      {% for p in blog_posts %}
+      {% assign post_num = p.dir | split: "/" | last | split: "-" | first %}
+      <a class="post-card" href="{{ p.url }}">
+        <span class="post-num">#{{ post_num }}</span>
+        <h3>{{ p.title }}</h3>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
