@@ -42,6 +42,15 @@
         <a href="/blog/">Blog</a>
         <a href="/amostra/">Capítulo gratuito</a>
       </nav>
+      {% if site.linkedin_url != "" %}
+      <p class="footer-social">
+        <a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn do autor" title="Conecte-se no LinkedIn">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
+            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/>
+          </svg>
+        </a>
+      </p>
+      {% endif %}
       <p>Dúvidas? <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
       <p class="copy">© {{ site.time | date: "%Y" }} {{ site.author }} — {{ site.title }}</p>
     </div>

@@ -110,6 +110,12 @@ a { color: var(--rust-orange-soft); }
 
 .footer-links a:hover { color: var(--rust-orange-soft); }
 
+.footer-social { margin: 14px 0; }
+
+.footer-social a { color: var(--text-muted); display: inline-flex; transition: color 0.15s ease, transform 0.15s ease; }
+
+.footer-social a:hover { color: var(--rust-orange-soft); transform: translateY(-2px); }
+
 .site-footer .copy { margin-top: 8px; color: #7d8aa0; }
 
 @media (max-width: 720px) {
