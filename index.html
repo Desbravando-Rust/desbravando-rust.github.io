@@ -1,0 +1,190 @@
+---
+layout: default
+description: >-
+  Desbravando Rust — guia prático para desenvolvedores Python dominarem Rust:
+  ownership, tratamento de erros, concorrência e projetos reais. Compre o livro digital.
+---
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1>Desbravando <span>Rust</span></h1>
+      <p class="hero-tagline">{{ site.tagline }}</p>
+      <ul class="hero-bullets">
+        <li>Conceitos lado a lado: cada tema de Rust comparado com o Python que você já domina</li>
+        <li>Ownership, Borrowing e Lifetimes explicados sem sofrimento</li>
+        <li>Projetos reais: API REST com Axum, TOTP com Lambdas, CLI de arquivos</li>
+      </ul>
+      <div class="hero-actions">
+        {% include cta.html %}
+        <a class="btn btn-ghost" href="/amostra/">Ler capítulo grátis</a>
+      </div>
+    </div>
+    <div class="hero-cover">
+      <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust">
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPOIMENTOS ============ -->
+{% if site.data.depoimentos and site.data.depoimentos.size > 0 %}
+<section class="social-proof">
+  <div class="container">
+    <h2>Quem leu, recomenda</h2>
+    <div class="quotes">
+      {% for d in site.data.depoimentos %}
+      <blockquote class="quote">
+        <p>"{{ d.texto }}"</p>
+        <footer><b>{{ d.nome }}</b>{% if d.cargo %} — {{ d.cargo }}{% endif %}</footer>
+      </blockquote>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ O QUE VOCÊ VAI APRENDER ============ -->
+<section class="learn">
+  <div class="container">
+    <h2>Feito para quem vem do Python</h2>
+    <p class="section-sub">Você não vai recomeçar do zero — vai traduzir o que já sabe para uma
+      linguagem com performance de C e segurança de memória garantida em compilação.</p>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <h3>🧭 Sintaxe e estruturas</h3>
+        <p>As particularidades de Rust sempre comparadas com o equivalente em Python.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🧠 Gerenciamento de memória</h3>
+        <p>Ownership, Borrowing e Lifetimes — o coração da segurança de Rust, desmistificado.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🛡️ Tratamento de erros</h3>
+        <p>Result e Option no lugar de exceções: erros robustos e idiomáticos.</p>
+      </div>
+      <div class="learn-card">
+        <h3>⚡ Concorrência e paralelismo</h3>
+        <p>Threads e async/await sem GIL e sem data races.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🔨 Projetos práticos</h3>
+        <p>API REST de agendamento com Axum, TOTP com Lambdas, concatenação de arquivos.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🚀 Do zero ao deploy</h3>
+        <p>Cargo, tooling e as melhores práticas do ecossistema desde o primeiro capítulo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DENTRO DO LIVRO ============ -->
+<section class="inside">
+  <div class="container">
+    <h2>Dentro do livro</h2>
+    {% if site.paginas != "" or site.capitulos != "" %}
+    <div class="stats">
+      {% if site.paginas != "" %}<div class="stat"><b>{{ site.paginas }}</b><span>páginas</span></div>{% endif %}
+      {% if site.capitulos != "" %}<div class="stat"><b>{{ site.capitulos }}</b><span>capítulos</span></div>{% endif %}
+      <div class="stat"><b>3</b><span>projetos completos</span></div>
+    </div>
+    {% endif %}
+    {% if site.data.sumario and site.data.sumario.size > 0 %}
+    <details class="toc">
+      <summary>Ver o sumário completo</summary>
+      <ol>
+        {% for cap in site.data.sumario %}
+        <li>{{ cap }}</li>
+        {% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+    <p class="sample-nudge">Quer sentir o estilo antes de comprar?
+      <a href="/amostra/">Leia um capítulo grátis →</a></p>
+  </div>
+</section>
+
+<!-- ============ AUTOR ============ -->
+<section class="author">
+  <div class="container author-inner">
+    <img src="/imgs/profile1.jpg" alt="Foto de José Luis da Cruz Junior" loading="lazy">
+    <div>
+      <h2>Quem escreveu</h2>
+      <p><b>José Luis da Cruz Junior</b> — mais de 22 anos de desenvolvimento web, carreira sólida
+        construída em Python e hoje dedicado a explorar o poder de Rust.</p>
+      <p>Este livro é o caminho que ele gostaria de ter tido: claro, prático e sem exigir que você
+        abandone o que já sabe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREÇO + CTA FINAL ============ -->
+<section class="buy" id="comprar">
+  <div class="container">
+    <div class="buy-card">
+      <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust" loading="lazy">
+      <div class="buy-info">
+        <h2>Garanta seu exemplar</h2>
+        <ul class="buy-includes">
+          <li>✔ Livro digital em PDF</li>
+          <li>✔ Entrega imediata por e-mail após a confirmação do pagamento</li>
+          <li>✔ Nota fiscal inclusa</li>
+          <li>✔ Garantia incondicional de 7 dias</li>
+        </ul>
+        <div class="price-block">
+          {% if site.preco_antigo != "" %}<span class="price-old">R$ {{ site.preco_antigo }}</span>{% endif %}
+          <span class="price">R$ {{ site.preco }}</span>
+        </div>
+        {% if site.cupom != "" %}
+        <p class="coupon-note">🎟️ {{ site.cupom_texto }} — use o cupom <b>{{ site.cupom }}</b> no checkout</p>
+        {% endif %}
+        {% include cta.html %}
+        <p class="secure">🔒 Compra processada com segurança pela Kiwify · cartão, PIX ou boleto</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq">
+  <div class="container">
+    <h2>Perguntas frequentes</h2>
+    <details><summary>Preciso ser avançado em Python?</summary>
+      <p>Não. Se você já escreve Python no dia a dia — funções, classes, pip/venv — tem toda a base
+        necessária. O livro usa seu conhecimento de Python como ponte, não como pré-requisito acadêmico.</p>
+    </details>
+    <details><summary>Como e quando recebo o livro?</summary>
+      <p>A compra é processada pela Kiwify. Assim que o pagamento é confirmado, você recebe por e-mail
+        o acesso ao PDF — sem espera.</p>
+    </details>
+    <details><summary>E se eu não gostar?</summary>
+      <p>Você tem 7 dias de garantia incondicional: pediu reembolso dentro do prazo, recebeu de volta.
+        Sem perguntas.</p>
+    </details>
+    <details><summary>Recebo nota fiscal?</summary>
+      <p>Sim, a nota fiscal é emitida e enviada para o seu e-mail.</p>
+    </details>
+    <details><summary>Quais formas de pagamento?</summary>
+      <p>Cartão de crédito, PIX e boleto — tudo pelo checkout seguro da Kiwify.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ ÚLTIMOS POSTS ============ -->
+<section class="recent-posts" id="blog">
+  <div class="container">
+    <h2>Do blog</h2>
+    <p class="section-sub">Benchmarks reais, Rust acelerando Python e muito código para reproduzir.</p>
+    {% assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" | sort: "path" | reverse %}
+    <div class="post-grid">
+      {% for p in blog_posts limit: 6 %}
+      {% assign post_num = p.dir | split: "/" | last | split: "-" | first %}
+      <a class="post-card" href="{{ p.url }}">
+        <span class="post-num">#{{ post_num }}</span>
+        <h3>{{ p.title }}</h3>
+      </a>
+      {% endfor %}
+    </div>
+    <p class="all-posts"><a href="/blog/">Ver todos os posts →</a></p>
+  </div>
+</section>
