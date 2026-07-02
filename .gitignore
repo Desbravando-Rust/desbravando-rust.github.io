@@ -1,2 +1,4 @@
 .env
 temas.md
+_site/
+.jekyll-cache/
