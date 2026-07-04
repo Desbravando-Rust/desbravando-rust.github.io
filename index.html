@@ -1,0 +1,235 @@
+---
+layout: default
+description: >-
+  Desbravando Rust — guia prático para desenvolvedores Python dominarem Rust:
+  ownership, tratamento de erros, concorrência e projetos reais. Compre o livro digital.
+---
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1>Desbravando <span>Rust</span></h1>
+      <p class="hero-tagline">{{ site.tagline }}</p>
+      <ul class="hero-bullets">
+        <li>Conceitos lado a lado: cada tema de Rust comparado com o Python que você já domina</li>
+        <li>Ownership, Borrowing e Lifetimes explicados sem sofrimento</li>
+        <li>Projetos reais: API REST com Axum, TOTP com Lambdas, CLI de arquivos</li>
+      </ul>
+      <div class="hero-actions">
+        {% include cta.html %}
+        <a class="btn btn-ghost" href="/amostra/">Ler capítulo gratuito</a>
+      </div>
+      <p class="hero-blog-link">Prefere ver na prática antes de decidir?
+        <a href="#blog">Explore o blog — benchmarks reais e código ↓</a></p>
+    </div>
+    <div class="hero-cover">
+      <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust">
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPOIMENTOS ============ -->
+{% if site.data.depoimentos and site.data.depoimentos.size > 0 %}
+<section class="social-proof">
+  <div class="container">
+    <h2>Quem leu, recomenda</h2>
+    <div class="quotes">
+      {% for d in site.data.depoimentos %}
+      <blockquote class="quote">
+        <p>"{{ d.texto }}"</p>
+        <footer>
+          <span><b>{{ d.nome }}</b>{% if d.cargo %} — {{ d.cargo }}{% endif %}</span>
+          {% if d.linkedin %}
+          <a class="quote-linkedin" href="{{ d.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn de {{ d.nome }}" title="Ver perfil de {{ d.nome }} no LinkedIn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/>
+            </svg>
+          </a>
+          {% endif %}
+        </footer>
+      </blockquote>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ O QUE VOCÊ VAI APRENDER ============ -->
+<section class="learn">
+  <div class="container">
+    <h2>Feito para quem vem do Python</h2>
+    <p class="section-sub">Você não vai recomeçar do zero — vai traduzir o que já sabe para uma
+      linguagem com performance de C e segurança de memória garantida em compilação.</p>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <h3>🧭 Sintaxe e estruturas</h3>
+        <p>As particularidades de Rust sempre comparadas com o equivalente em Python.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🧠 Gerenciamento de memória</h3>
+        <p>Ownership, Borrowing e Lifetimes — o coração da segurança de Rust, desmistificado.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🛡️ Tratamento de erros</h3>
+        <p>Result e Option no lugar de exceções: erros robustos e idiomáticos.</p>
+      </div>
+      <div class="learn-card">
+        <h3>⚡ Concorrência e paralelismo</h3>
+        <p>Threads e async/await sem GIL e sem data races.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🔨 Projetos práticos</h3>
+        <p>API REST de agendamento com Axum, TOTP com Lambdas, concatenação de arquivos.</p>
+      </div>
+      <div class="learn-card">
+        <h3>🚀 Do zero ao deploy</h3>
+        <p>Cargo, tooling e as melhores práticas do ecossistema desde o primeiro capítulo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DENTRO DO LIVRO ============ -->
+<section class="inside">
+  <div class="container">
+    <h2>Dentro do livro</h2>
+    {% if site.paginas != "" or site.capitulos != "" %}
+    <div class="stats">
+      {% if site.paginas != "" %}<div class="stat"><b>{{ site.paginas }}</b><span>páginas A4</span></div>{% endif %}
+      {% if site.capitulos != "" %}<div class="stat"><b>{{ site.capitulos }}</b><span>capítulos</span></div>{% endif %}
+      <div class="stat"><b>3</b><span>projetos completos</span></div>
+    </div>
+    {% endif %}
+    {% if site.data.sumario and site.data.sumario.size > 0 %}
+    <details class="toc">
+      <summary>Ver o sumário completo</summary>
+      <ul>
+        {% for cap in site.data.sumario %}
+        <li>{{ cap }}</li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+    <p class="sample-nudge">Quer sentir o estilo antes de comprar?
+      <a href="/amostra/">Leia um capítulo gratuito →</a></p>
+  </div>
+</section>
+
+<!-- ============ VEJA POR DENTRO ============ -->
+{% assign previews = site.static_files | where_exp: "f", "f.path contains '/imgs/preview/'" | sort: "path" %}
+{% if previews.size > 0 %}
+<section class="peek">
+  <div class="container">
+    <h2>Veja por dentro</h2>
+    <p class="section-sub">Páginas reais do livro — Rust sempre lado a lado com o Python que você já conhece.</p>
+    <div class="peek-grid">
+      {% for f in previews %}
+      <a class="peek-shot" href="{{ f.path }}" target="_blank" rel="noopener">
+        <img src="{{ f.path }}" alt="Página do livro Desbravando Rust" loading="lazy">
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ AUTOR ============ -->
+<section class="author">
+  <div class="container author-inner">
+    <img src="/imgs/profile1.jpg" alt="Foto de José Luis da Cruz Junior" loading="lazy">
+    <div>
+      <h2>Quem escreveu</h2>
+      <p><b>José Luis da Cruz Junior</b> — mais de 22 anos de desenvolvimento web, carreira sólida
+        construída em Python e hoje dedicado a explorar o poder de Rust.</p>
+      <p>Coloca a teoria em prática: é criador e mantenedor do
+        <a href="https://pypi.org/project/rsfn4py/" target="_blank" rel="noopener">rsfn4py</a>,
+        pacote que leva validações fiscais brasileiras (CNPJ alfanumérico e CPF) para o Python com
+        um núcleo em Rust.</p>
+      <p>Este livro é o caminho que ele gostaria de ter tido: claro, prático e sem exigir que você
+        abandone o que já sabe.</p>
+      <p class="author-links">
+        <span>Veja o trabalho dele:</span>
+        {% if site.github_url != "" %}
+        <a href="{{ site.github_url }}" target="_blank" rel="noopener" aria-label="GitHub do autor" title="GitHub">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.72-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+        </a>
+        {% endif %}
+        {% if site.linkedin_url != "" %}
+        <a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn do autor" title="LinkedIn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>
+        </a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREÇO + CTA FINAL ============ -->
+<section class="buy" id="comprar">
+  <div class="container">
+    <div class="buy-card">
+      <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust" loading="lazy">
+      <div class="buy-info">
+        <h2>Garanta seu exemplar</h2>
+        <ul class="buy-includes">
+          <li>✔ Livro digital em PDF</li>
+          <li>✔ Entrega por e-mail após a confirmação do pagamento</li>
+          <li>✔ Nota fiscal inclusa</li>
+          <!-- <li>✔ Garantia incondicional de 7 dias</li> -->
+        </ul>
+        <div class="price-block">
+          {% if site.preco_antigo != "" %}<span class="price-old">R$ {{ site.preco_antigo }}</span>{% endif %}
+          <span class="price">R$ {{ site.preco }}</span>
+        </div>
+        {% if site.cupom != "" %}
+        <p class="coupon-note">🎟️ {{ site.cupom_texto }} — use o cupom <b>{{ site.cupom }}</b> no checkout</p>
+        {% endif %}
+        {% include cta.html %}
+        <!-- <p class="guarantee-seal">🛡️ <b>7 dias de garantia incondicional</b> — não gostou, devolvemos 100%, sem perguntas.</p> -->
+        <p class="secure">🔒 Compra processada com segurança pela Kiwify · cartão, PIX ou boleto</p>
+      </div>
+    </div>
+    <p class="buy-share-intro">Conhece alguém que ia curtir? Compartilhe:</p>
+    {% include share.html url="/" title=site.title %}
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq">
+  <div class="container">
+    <h2>Perguntas frequentes</h2>
+    <details><summary>Preciso ser avançado em Python?</summary>
+      <p>Não. Se você já escreve Python no dia a dia — funções, classes, pip/venv — tem toda a base
+        necessária. O livro usa seu conhecimento de Python como ponte, não como pré-requisito acadêmico.</p>
+    </details>
+    <details><summary>Como e quando recebo o livro?</summary>
+      <p>A compra é processada pela Kiwify. Assim que o pagamento é confirmado, você recebe por e-mail
+        o acesso ao PDF.</p>
+    </details>
+    <details><summary>Recebo nota fiscal?</summary>
+      <p>Sim, a nota fiscal é emitida e enviada para o seu e-mail.</p>
+    </details>
+    <details><summary>Quais formas de pagamento?</summary>
+      <p>Cartão de crédito, PIX e boleto — tudo pelo checkout seguro da Kiwify.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ ÚLTIMOS POSTS ============ -->
+<section class="recent-posts" id="blog">
+  <div class="container">
+    <h2>Últimos posts do blog</h2>
+    <p class="section-sub">Benchmarks reais, Rust acelerando Python e muito código para reproduzir.</p>
+    {% assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" | sort: "path" | reverse %}
+    <div class="post-grid">
+      {% for p in blog_posts limit: 6 %}
+      {% assign post_num = p.dir | split: "/" | last | split: "-" | first %}
+      <a class="post-card" href="{{ p.url }}">
+        <span class="post-num">#{{ post_num }}</span>
+        <h3>{{ p.title }}</h3>
+      </a>
+      {% endfor %}
+    </div>
+    <p class="all-posts"><a href="/blog/">Ver todos os posts →</a></p>
+  </div>
+</section>

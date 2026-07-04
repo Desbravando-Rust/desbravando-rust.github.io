@@ -1,4 +1,5 @@
 # Desvendando Iteradores e Closures em Rust: A Potência Funcional para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Abr 04, 2026
 
 ![Iteradores e Closures em Rust](./cover11.png)
 
