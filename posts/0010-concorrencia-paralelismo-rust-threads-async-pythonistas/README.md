@@ -1,4 +1,5 @@
 # Concorrência e Paralelismo em Rust: Desvendando Threads e Async/Await para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Abr 01, 2026
 
 Desenvolvedores Python que estão migrando para Rust frequentemente encontram desafios interessantes quando o assunto é concorrência e paralelismo. Enquanto Python tem seu próprio conjunto de ferramentas (threads, multiprocessing, asyncio), Rust oferece uma abordagem única que combina segurança de memória com alto desempenho.
 

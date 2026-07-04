@@ -1,4 +1,5 @@
 # Tratamento de Erros em Rust: Desmistificando Result e Option para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Mar 21, 2026
 
 👋 Bem-vindos, desbravadores! Hoje vamos explorar um dos aspectos mais poderosos e característicos de Rust: seu sistema de tratamento de erros. Se você vem do Python, onde usamos exceções para quase tudo, prepare-se para uma abordagem mais segura e explícita que vai mudar sua forma de pensar sobre erros.
 

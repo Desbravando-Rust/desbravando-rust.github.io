@@ -1,102 +1,44 @@
-**Um guia prático para pythonistas explorarem novos horizontes**
+# desbravandorust.com.br
 
-[![Comprar Livro](https://img.shields.io/badge/Comprar-R$_89,90-orange?style=for-the-badge)](https://desbravandorust.com.br/#garanta-seu-exemplar-aqui)
+Site de vendas + blog do livro **Desbravando Rust**, hospedado no GitHub Pages
+(Jekyll nativo, sem build customizado).
 
+## Como editar as coisas do dia a dia
 
-## Sobre o Livro
+| O que | Onde |
+|---|---|
+| Preço, link Kiwify, cupom, IDs de analytics | `_config.yml` (seções comentadas no topo) |
+| Depoimentos de leitores | `_data/depoimentos.yml` |
+| Sumário do livro | `_data/sumario.yml` |
+| Capítulo de amostra (PDF) | salvar como `assets/desbravando-rust-amostra.pdf` |
+| Textos da home | `index.html` (HTML simples, seções marcadas com comentários) |
 
-<img src="imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left">
+## Como publicar um post novo
 
-**Desbravando Rust** é um guia técnico completo desenvolvido especialmente para desenvolvedores Python que desejam expandir suas habilidades para uma linguagem de alto desempenho e segurança: Rust.
+1. Crie a pasta `posts/NNNN-slug-do-post/` (numeração sequencial).
+2. Escreva o `README.md` em markdown, começando com `# Título do post`.
+3. Imagens do post em `posts/NNNN-slug/imgs/` (use `imgs/cover.png` para a
+   imagem de compartilhamento no LinkedIn).
+4. Commit + push. O post aparece automaticamente na home e em `/blog`.
 
-Este livro oferece uma transição didática e prática, comparando conceitos, sintaxes e melhores práticas entre Python e Rust, permitindo que você aproveite seu conhecimento existente enquanto domina uma das linguagens mais admiradas da atualidade.
+## Campanhas (LinkedIn)
 
-Se você busca otimizar performance, explorar concorrência de forma segura ou simplesmente ampliar seu conjunto de habilidades técnicas, este livro foi feito para você.
+- Ative o cupom preenchendo `cupom` e `cupom_texto` no `_config.yml` — uma faixa
+  aparece no topo de todas as páginas.
+- Use UTM nos links divulgados:
+  `https://desbravandorust.com.br/?utm_source=linkedin&utm_medium=social&utm_campaign=NOME`
 
-Desvende a performance e segurança de Rust, vindo do mundo Python.
+## Rodar localmente
 
-Prepare-se para uma jornada que transformará sua maneira de programar, unindo a produtividade
-que você já conhece com a performance e segurança que só Rust pode oferecer.
-
-Se você é um desenvolvedor Python buscando otimizar performance, explorar concorrência ou
-simplesmente expandir seu conjunto de habilidades, este livro é para você.
-
-Você será guiado em uma <b>jornada prática</b>, comparando conceitos, sintaxe e as melhores
-práticas em ambas as linguagens.<br><br>
-Você aprenderá a:
-- <b>Sintaxe e Estruturas de Dados:</b><br />Entenda as particularidades de Rust, comparando
-    com o que você já sabe em Python.
-- <b>Gerenciamento de Memória:</b><br /> Desvende os conceitos de Ownership, Borrowing e
-    Lifetimes, o coração da segurança de Rust.
-- <b>Tratamento de Erros:</b><br /> Aprenda a lidar com erros de forma robusta e idiomática em
-    Rust.
-- <b>Concorrência e Paralelismo:</b><br /> Explore as ferramentas de concorrência de Rust para
-    construir aplicações performáticas.
-- <b>Vários exemplos práticos:</b><br /> Concatenando Arquivos, API Rest de agendamento com
-    Axum, TOTP com Lambdas
-- Ao final deste livro, você estará apto a escrever código Rust seguro, performático e
-    eficiente, aplicando o conhecimento adquirido para resolver problemas do mundo real e elevar
-    suas habilidades de programação a um novo nível.
-
-
-## Sobre o Autor
-<img src="imgs/profile1.jpg" alt="Foto do Autor" class="author-photo" style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--rust-orange); object-fit: cover; filter: drop-shadow(0 0 10px var(--accent-glow));"/>
-
-<b>José Luis da Cruz Junior</b> um desenvolvedor com mais de 22 anos de experiência em
-Desenvolvimento Web, apaixonado por novas tecnologias e pela criação de soluções eficientes.
-Com uma sólida carreira construída em Python, ele agora se dedica a explorar o poder de
-Rust, compartilhando seu conhecimento para ajudar outros desenvolvedores a fazerem essa
-transição.
-<br><br>Acredita que a fusão de diferentes paradigmas de programação é a chave para a
-inovação.
-<br><br>Este livro é a materialização de sua experiência e paixão, oferecendo um caminho
-claro e prático para desenvolvedores Python que desejam expandir seus horizontes com Rust.
-
-## Garanta seu exemplar aqui:
-
-Compre agora e receba o livro digital em PDF em até 2 dias úteis.
-
-###### QR Code para pagamento:
-<img class="pix-qrcode" src="imgs/venda_qr.png" alt="QR Code PIX para pré-venda">
-
-###### Chave pix copie e cole:
-```
-00020126580014BR.GOV.BCB.PIX0136fb98188e-9e75-4c85-88bb-c3fbc12ffc47520400005303986540589.905802BR5924XWDEV WEB SOLUTIONS LTDA6009SAO PAULO61080540900062250521mhe8Msky7DWiKlB1h51126304063D
+```bash
+gem install jekyll jekyll-optional-front-matter jekyll-readme-index \
+  jekyll-relative-links jekyll-titles-from-headings jekyll-sitemap
+jekyll serve
 ```
 
-Após o pagamento, mande um email com o comprovante e seus dados para <b>desbravandorust@gmail.com</b> com as seguintes informações:
-- Nome Completo
-- CPF
-- Data de nascimento
-- E-mail
-- Telefone
-- Endereço
-- Número
-- Complemento
-- Bairro
-- Cidade
-- Estado
-- CEP
+## Estrutura
 
-
-Você receberá em seu email em até <b>2 dias úteis</b> o livro na versão digital em PDF e personalizado, juntamente com a nota fiscal de compra.
-
-
-## Últimos posts:
-
-- [0016 - CNPJ Alfanumérico na prática: Rust acelerando Python em uma regra fiscal crítica](./posts/0016-cnpj-alfanumerico-rust-python-performance)
-- [0015 - Desvendando Pattern Matching em Rust: Um Guia Prático para Pythonistas](./posts/0015-pattern-matching-rust-pythonistas)
-- [0014 - Macros em Rust: Automatizando Código Além do que Python Permite](./posts/0014-macros-rust-pythonistas)
-- [0013 - Smart Pointers em Rust: Gerenciamento Avançado de Memória para Pythonistas](./posts/0013-smart-pointers-rust-pythonistas)
-- [0012 - Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas](./posts/0012-lifetimes-rust-pythonistas)
-- [0011 - Desvendando Iteradores e Closures em Rust: A Potência Funcional para Pythonistas](./posts/0011-iteradores-closures-rust-pythonistas)
-- [0010 - Concorrência e Paralelismo em Rust: Desvendando Threads e Async/Await para Pythonistas](./posts/0010-concorrencia-paralelismo-rust-threads-async-pythonistas)
-- [0009 -  Desmistificando Traits em Rust: Herança para Pythonistas](./posts/0009-desmistificando-traits-rust-heranca-pythonistas)
-- [0008 -  Tratamento de Erros em Rust: Desmistificando Result e Option para Pythonistas](./posts/0008-tratamento-erros-rust-result-option-pythonistas)
-- [0007 -  Dominando Enums em Rust: Do Básico ao Avançado para Pythonistas](./posts/0007-enums-rust-pythonistas)
-- [0006 -  Gerenciamento de Memória em Rust vs Python: Alocação e Desempenho](./posts/0006-gerenciamento-memoria-rust-python)
-- [0005 -  Gerenciamento de Memória em Rust vs Python: Entendendo Ownership](./posts/0005-entendendo-ownership-rust-guia-pythonistas)
-- [0004 - De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica](./posts/0004-django-orm-vs-sqlx)
-- [0003 - Cargo contra rapa: Developer Tooling do jeito certo](./posts/0003-cargo-contra-rapa)
-- [0002 - Pandas vs Polars: Benchmark com 3 Milhões de Registros](./posts/0002-pandas-vs-polars)
-- [0001 - Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](./posts/0001-performance-na-pratica)
+- `_layouts/` — casca da marca (`default.html`) e layout dos posts (`post.html`)
+- `_includes/` — botão de compra (`cta.html`) e rastreadores (`analytics.html`)
+- `assets/css/style.css` — todo o CSS do site
+- `obrigado/` — página de redirect pós-compra configurada no Kiwify
