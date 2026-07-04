@@ -402,9 +402,24 @@ section > .container > h2 { font-size: 1.9rem; margin-bottom: 8px; }
 
 .post-card:hover { transform: translateY(-3px); border-color: var(--rust-orange-soft); }
 
+.post-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
 .post-num { color: var(--rust-orange-soft); font-size: 0.8rem; font-weight: 700; }
 
+.post-date {
+  color: var(--rust-orange-soft);
+  background: rgba(222, 130, 74, 0.12);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .post-card h3 { color: var(--text); font-size: 1.05rem; margin-top: 6px; line-height: 1.4; }
+
+.post-author { display: block; color: var(--text-muted); font-size: 0.78rem; margin-top: 10px; }
 
 .all-posts { margin-top: 24px; }
 

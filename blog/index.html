@@ -13,10 +13,18 @@ description: >-
     <div class="post-grid">
       {% for p in blog_posts %}
       {% assign post_num = p.dir | split: "/" | last | split: "-" | first %}
+      {% assign after_author = p.content | split: 'zejuniortdr/) em ' %}
+      {% if after_author.size > 1 %}{% assign post_date = after_author[1] | strip | split: '
+' | first | strip %}{% endif %}
       <a class="post-card" href="{{ p.url }}">
-        <span class="post-num">#{{ post_num }}</span>
+        <div class="post-card-top">
+          <span class="post-num">#{{ post_num }}</span>
+          {% if post_date %}<span class="post-date">{{ post_date }}</span>{% endif %}
+        </div>
         <h3>{{ p.title }}</h3>
+        <span class="post-author">Por @zejuniortdr</span>
       </a>
+      {% assign post_date = nil %}
       {% endfor %}
     </div>
   </div>

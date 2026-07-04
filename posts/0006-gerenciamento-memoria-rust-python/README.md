@@ -1,4 +1,5 @@
 # Gerenciamento de Memória em Rust vs Python: Alocação e Desempenho
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Fev 28, 2026
 
 🔍 Imagine que a memória do computador é como uma grande biblioteca. Em Python, temos um bibliotecário (o Garbage Collector) que fica organizando os livros (objetos) para nós. Já em Rust, somos nós mesmos os bibliotecários, mas com regras muito claras sobre quem pode pegar qual livro e quando devolver. Vamos desvendar essas diferenças fundamentais!
 
