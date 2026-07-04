@@ -247,9 +247,16 @@ a { color: var(--rust-orange-soft); }
 .hero-bullets li::before { content: "🦀"; position: absolute; left: 0; }
 
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-.hero-blog-link { margin-top: 18px; font-size: .95rem; }
-.hero-blog-link a { color: var(--text-muted); border-bottom: 1px solid transparent; }
-.hero-blog-link a:hover { color: var(--rust-orange); border-bottom-color: currentColor; }
+.hero-blog-link {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  max-width: 30rem;
+  font-size: .95rem;
+  color: var(--text-muted);
+}
+.hero-blog-link a { color: var(--rust-orange-soft); font-weight: 600; }
+.hero-blog-link a:hover { color: var(--rust-orange); }
 
 .hero-cover { flex-shrink: 0; }
 
