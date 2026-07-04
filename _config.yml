@@ -1,0 +1,68 @@
+title: Desbravando Rust
+tagline: Um guia prático para pythonistas explorarem novos horizontes
+description: >-
+  Guia técnico para desenvolvedores Python que querem dominar Rust:
+  ownership, tratamento de erros, concorrência e projetos práticos.
+url: "https://desbravandorust.com.br"
+lang: pt-BR
+author: José Luis da Cruz Junior
+email: desbravandorust@gmail.com
+linkedin_url: "https://www.linkedin.com/in/jose-luis-da-cruz-junior/"   # perfil do autor (ícone no rodapé)
+github_url: "https://github.com/zejuniortdr/"   # GitHub do autor (aparece na seção "Quem escreveu")
+
+# ================= VENDA — edite aqui =================
+kiwify_url: "https://pay.kiwify.com.br/kDaL3Xq"
+preco: "89,90"
+preco_antigo: ""   # preencha (ex: "129,90") para exibir "de R$ 129,90 por R$ 89,90"
+cupom: ""          # preencha (ex: "LINKEDIN10") para exibir a faixa de cupom no topo do site
+cupom_texto: ""    # ex: "10% de desconto para a comunidade do LinkedIn"
+
+# Números do livro (aparecem na seção "Dentro do livro" quando preenchidos)
+paginas: "258"        # ex: "320"
+capitulos: "30"      # ex: "18"
+
+# ================= ANALYTICS — edite aqui =================
+ga4_id: "G-XL3S6FDENZ"              # ex: "G-XXXXXXXXXX"
+meta_pixel_id: ""       # ex: "1234567890"
+linkedin_partner_id: "" # ex: "123456"
+
+plugins:
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-relative-links
+  - jekyll-titles-from-headings
+  - jekyll-sitemap
+
+relative_links:
+  enabled: true
+  collections: false
+
+titles_from_headings:
+  enabled: true
+  strip_title: false
+  collections: false
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+  - scope:
+      path: "posts"
+    values:
+      layout: post
+  - scope:
+      path: "assets/pdf"
+    values:
+      sitemap: false   # mantém o PDF de amostra fora do sitemap
+
+exclude:
+  - docs
+  - scripts
+  - temas.md
+  - Pipfile
+  - Pipfile.lock
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
