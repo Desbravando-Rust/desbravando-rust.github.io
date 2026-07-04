@@ -37,7 +37,16 @@ description: >-
       {% for d in site.data.depoimentos %}
       <blockquote class="quote">
         <p>"{{ d.texto }}"</p>
-        <footer><b>{{ d.nome }}</b>{% if d.cargo %} — {{ d.cargo }}{% endif %}</footer>
+        <footer>
+          <span><b>{{ d.nome }}</b>{% if d.cargo %} — {{ d.cargo }}{% endif %}</span>
+          {% if d.linkedin %}
+          <a class="quote-linkedin" href="{{ d.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn de {{ d.nome }}" title="Ver perfil de {{ d.nome }} no LinkedIn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/>
+            </svg>
+          </a>
+          {% endif %}
+        </footer>
       </blockquote>
       {% endfor %}
     </div>
@@ -86,7 +95,7 @@ description: >-
     <h2>Dentro do livro</h2>
     {% if site.paginas != "" or site.capitulos != "" %}
     <div class="stats">
-      {% if site.paginas != "" %}<div class="stat"><b>{{ site.paginas }}</b><span>páginas</span></div>{% endif %}
+      {% if site.paginas != "" %}<div class="stat"><b>{{ site.paginas }}</b><span>páginas A4</span></div>{% endif %}
       {% if site.capitulos != "" %}<div class="stat"><b>{{ site.capitulos }}</b><span>capítulos</span></div>{% endif %}
       <div class="stat"><b>3</b><span>projetos completos</span></div>
     </div>
@@ -106,6 +115,24 @@ description: >-
   </div>
 </section>
 
+<!-- ============ VEJA POR DENTRO ============ -->
+{% assign previews = site.static_files | where_exp: "f", "f.path contains '/imgs/preview/'" | sort: "path" %}
+{% if previews.size > 0 %}
+<section class="peek">
+  <div class="container">
+    <h2>Veja por dentro</h2>
+    <p class="section-sub">Páginas reais do livro — Rust sempre lado a lado com o Python que você já conhece.</p>
+    <div class="peek-grid">
+      {% for f in previews %}
+      <a class="peek-shot" href="{{ f.path }}" target="_blank" rel="noopener">
+        <img src="{{ f.path }}" alt="Página do livro Desbravando Rust" loading="lazy">
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- ============ AUTOR ============ -->
 <section class="author">
   <div class="container author-inner">
@@ -116,6 +143,19 @@ description: >-
         construída em Python e hoje dedicado a explorar o poder de Rust.</p>
       <p>Este livro é o caminho que ele gostaria de ter tido: claro, prático e sem exigir que você
         abandone o que já sabe.</p>
+      <p class="author-links">
+        <span>Veja o trabalho dele:</span>
+        {% if site.github_url != "" %}
+        <a href="{{ site.github_url }}" target="_blank" rel="noopener" aria-label="GitHub do autor" title="GitHub">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.72-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+        </a>
+        {% endif %}
+        {% if site.linkedin_url != "" %}
+        <a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn do autor" title="LinkedIn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>
+        </a>
+        {% endif %}
+      </p>
     </div>
   </div>
 </section>
@@ -129,9 +169,9 @@ description: >-
         <h2>Garanta seu exemplar</h2>
         <ul class="buy-includes">
           <li>✔ Livro digital em PDF</li>
-          <li>✔ Entrega imediata por e-mail após a confirmação do pagamento</li>
+          <li>✔ Entrega por e-mail após a confirmação do pagamento</li>
           <li>✔ Nota fiscal inclusa</li>
-          <li>✔ Garantia incondicional de 7 dias</li>
+          <!-- <li>✔ Garantia incondicional de 7 dias</li> -->
         </ul>
         <div class="price-block">
           {% if site.preco_antigo != "" %}<span class="price-old">R$ {{ site.preco_antigo }}</span>{% endif %}
@@ -141,9 +181,12 @@ description: >-
         <p class="coupon-note">🎟️ {{ site.cupom_texto }} — use o cupom <b>{{ site.cupom }}</b> no checkout</p>
         {% endif %}
         {% include cta.html %}
+        <!-- <p class="guarantee-seal">🛡️ <b>7 dias de garantia incondicional</b> — não gostou, devolvemos 100%, sem perguntas.</p> -->
         <p class="secure">🔒 Compra processada com segurança pela Kiwify · cartão, PIX ou boleto</p>
       </div>
     </div>
+    <p class="buy-share-intro">Conhece alguém que ia curtir? Compartilhe:</p>
+    {% include share.html url="/" title=site.title %}
   </div>
 </section>
 

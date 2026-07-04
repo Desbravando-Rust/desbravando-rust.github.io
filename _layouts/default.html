@@ -35,6 +35,13 @@
   <main>
     {{ content }}
   </main>
+  <div class="sticky-buy" aria-label="Comprar o livro">
+    <div class="sticky-buy-info">
+      <span>Desbravando Rust</span>
+      <b>R$ {{ site.preco }}</b>
+    </div>
+    {% include cta.html label="Comprar" %}
+  </div>
   <footer class="site-footer">
     <div class="container">
       <nav class="footer-links">

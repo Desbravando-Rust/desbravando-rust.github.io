@@ -703,7 +703,7 @@ description: >-
         <h2>Garanta seu exemplar</h2>
         <ul class="buy-includes">
           <li>✔ Livro digital em PDF</li>
-          <li>✔ Entrega imediata por e-mail após a confirmação do pagamento</li>
+          <li>✔ Entrega por e-mail após a confirmação do pagamento</li>
           <li>✔ Nota fiscal inclusa</li>
           <li>✔ Garantia incondicional de 7 dias</li>
         </ul>

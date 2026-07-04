@@ -4,18 +4,30 @@ layout: default
 <article class="post">
   {{ content }}
 </article>
+{% include share.html url=page.url title=page.title %}
 <script>
   // Links externos dentro do post abrem em nova aba (ex.: citação do autor no GitHub)
   document.querySelectorAll('.post a[href^="http"]').forEach(function (a) {
     if (a.host !== location.host) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
   });
+  // Replica o bloco de share logo abaixo do autor/data (o <h6> vem de dentro do conteúdo)
+  // ponytail: clona o share do rodapé em vez de renderizar duas vezes
+  var author = document.querySelector('.post h6');
+  var share = document.querySelector('.post ~ .share');
+  if (author && share) {
+    var top = share.cloneNode(true);
+    top.classList.add('share-top');
+    author.after(top);
+  }
 </script>
+{% assign path_parts = page.path | split: "/" %}
+{% assign post_num = path_parts[1] | split: "-" | first %}
+{% assign cta_line = site.data.cta_posts[post_num] %}
 <aside class="post-cta">
   <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust" loading="lazy">
   <div>
     <h2>Gostou deste conteúdo?</h2>
-    <p>O livro <b>Desbravando Rust</b> aprofunda tudo isso: ownership, erros, concorrência e projetos
-      práticos — escrito para quem vem do Python.</p>
+    <p>{% if cta_line %}{{ cta_line }}{% else %}O livro <b>Desbravando Rust</b> aprofunda tudo isso: ownership, erros, concorrência e projetos práticos — escrito para quem vem do Python.{% endif %}</p>
     {% include cta.html %}
   </div>
 </aside>
