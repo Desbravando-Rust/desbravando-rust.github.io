@@ -1,4 +1,5 @@
 # Dominando Enums em Rust: Do Básico ao Avançado para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Mar 14, 2026
 
 🦀🔍 Se você vem do Python, enums (ou "enumerações") podem parecer apenas uma forma elegante de definir constantes. Mas em Rust, eles são uma superpotência! Neste post, vamos explorar como os enums em Rust vão muito além do que você está acostumado no Python, permitindo associar dados, implementar métodos e usar pattern matching de forma poderosa.
 

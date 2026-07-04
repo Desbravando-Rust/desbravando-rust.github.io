@@ -1,4 +1,5 @@
 # Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Abr 16, 2026
 
 ## Introdução: O Tempo de Vida das Variáveis
 

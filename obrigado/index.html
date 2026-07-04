@@ -1,0 +1,191 @@
+---
+layout: none
+sitemap: false
+---
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Obrigado pela compra! — Desbravando Rust</title>
+  <style>
+    :root {
+      --bg: #141e30;
+      --bg-card: #1b2740;
+      --rust-orange: #f74c00;
+      --rust-orange-soft: #ff7a3d;
+      --text: #e8edf5;
+      --text-muted: #b8c2d0;
+      --accent-glow: rgba(247, 76, 0, 0.35);
+      --green: #7ed957;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { background: var(--bg); }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(ellipse at top, #1d2b47 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid #2a3850;
+      border-top: 4px solid var(--rust-orange);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      max-width: 860px;
+      width: 100%;
+      padding: 48px 40px;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .card, .content { min-width: 0; }
+
+    .cover {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .cover img {
+      width: 240px;
+      border-radius: 8px;
+      box-shadow: 0 0 30px var(--accent-glow), 0 12px 32px rgba(0, 0, 0, 0.6);
+      transform: rotate(-2deg);
+    }
+
+    .check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(126, 217, 87, 0.15);
+      border: 2px solid var(--green);
+      color: var(--green);
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    h1 .highlight { color: var(--rust-orange-soft); }
+
+    .content p { color: var(--text-muted); margin-bottom: 14px; }
+
+    .content p strong { color: var(--text); }
+
+    .steps {
+      background: rgba(247, 76, 0, 0.08);
+      border-left: 3px solid var(--rust-orange);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .steps b { color: var(--text); }
+
+    .actions { margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--rust-orange);
+      color: #fff;
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      border: 1px solid #3a4a68;
+      color: var(--text-muted);
+    }
+
+    .btn-secondary:hover { color: var(--text); border-color: var(--rust-orange-soft); }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #7d8aa0;
+    }
+
+    footer a { color: var(--rust-orange-soft); text-decoration: none; }
+
+    @media (max-width: 720px) {
+      .card { flex-direction: column; text-align: center; padding: 36px 24px; }
+      .steps { text-align: left; }
+      .actions { justify-content: center; }
+      .cover img { width: 190px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="cover">
+      <img src="../imgs/capa.jpg" alt="Capa do livro Desbravando Rust">
+    </div>
+
+    <div class="content">
+      <div class="check">✓</div>
+      <h1>Obrigado pela sua compra!<br><span class="highlight">Bem-vindo a bordo, desbravador.</span></h1>
+
+      <p>
+        Sua jornada do Python ao Rust começa agora — e você não vai fazê-la sozinho.
+        <strong>Desbravando Rust</strong> foi escrito exatamente para quem já domina Python
+        e quer conquistar performance e segurança sem abandonar o que sabe.
+      </p>
+
+      <p>
+        Enquanto o livro não chega, os artigos do blog são o melhor aquecimento:
+        benchmarks reais, Rust acelerando Python e muito código para reproduzir.
+      </p>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/blog/">Ler os posts do blog</a>
+        <a class="btn btn-secondary" href="/">Voltar ao site</a>
+      </div>
+
+      <footer>
+        Dúvidas? Fale com a gente: <a href="mailto:desbravandorust@gmail.com">desbravandorust@gmail.com</a>
+      </footer>
+    </div>
+  </main>
+  {% include analytics.html %}
+  <script>
+    // Dispara o evento de compra uma única vez por sessão: esta é uma URL fixa
+    // de redirect do Kiwify, e refresh/back re-abririam a página e inflariam a receita.
+    if (!sessionStorage.getItem('dr_purchase_tracked')) {
+      var v = {{ site.preco | remove: "." | replace: ",", "." }};
+      if (window.gtag) gtag('event', 'purchase', { currency: 'BRL', value: v });
+      if (window.fbq) fbq('track', 'Purchase', { currency: 'BRL', value: v });
+      sessionStorage.setItem('dr_purchase_tracked', '1');
+    }
+  </script>
+</body>
+</html>

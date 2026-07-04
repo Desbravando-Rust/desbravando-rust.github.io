@@ -1,0 +1,6 @@
+# Depoimentos de leitores — a seção só aparece na home quando houver ao menos um.
+# Formato (remova o "#" para ativar):
+# - nome: "Fulano de Tal"
+#   cargo: "Backend Engineer"
+#   texto: "Uma frase curta sobre o que o livro destravou para você."
+#   linkedin: "https://www.linkedin.com/in/fulano/"   # opcional — exibe o ícone do LinkedIn no depoimento

@@ -1,5 +1,5 @@
 # Python sem GIL chegou. Rust ainda importa?
-###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Aug 3, 2026
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Ago 03, 2026
 
 ![Cover](imgs/cover.png)
 

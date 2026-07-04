@@ -1,4 +1,5 @@
 # Entendendo Ownership em Rust: Um Guia para Pythonistas
+###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Fev 22, 2026
 
 Se você vem do Python e está começando com Rust, provavelmente já se deparou com mensagens de erro misteriosas sobre "ownership", "borrowing" ou "value moved here". Calma, você não está sozinho nessa jornada. Vamos explorar juntos esse conceito que é o coração da segurança e performance do Rust.
 

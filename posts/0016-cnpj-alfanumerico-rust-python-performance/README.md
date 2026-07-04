@@ -50,6 +50,8 @@ pip install rsfn4py
 
 Projeto no PyPI: [https://pypi.org/project/rsfn4py/](https://pypi.org/project/rsfn4py/)
 
+> O `rsfn4py` é mantido por [@zejuniortdr](https://github.com/zejuniortdr/), autor deste blog. Dúvidas, sugestões ou bugs? Abra uma issue no repositório — o feedback de quem usa em produção ajuda a evoluir o pacote.
+
 O pacote distribui wheels pré-compilados para Linux, macOS e Windows nas versões mais recentes do Python, então **não é necessário ter Rust instalado** na máquina.
 
 ### Uso básico
