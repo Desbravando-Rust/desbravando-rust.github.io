@@ -19,6 +19,7 @@ description: >-
         {% include cta.html %}
         <a class="btn btn-ghost" href="/amostra/">Ler capítulo gratuito</a>
       </div>
+      <p class="hero-blog-link"><a href="#blog">Prefere ver na prática? Explore o blog — benchmarks reais e código ↓</a></p>
     </div>
     <div class="hero-cover">
       <img src="/imgs/capa.jpg" alt="Capa do livro Desbravando Rust">
@@ -169,7 +170,7 @@ description: >-
 <!-- ============ ÚLTIMOS POSTS ============ -->
 <section class="recent-posts" id="blog">
   <div class="container">
-    <h2>Do blog</h2>
+    <h2>Últimos posts do blog</h2>
     <p class="section-sub">Benchmarks reais, Rust acelerando Python e muito código para reproduzir.</p>
     {% assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" | sort: "path" | reverse %}
     <div class="post-grid">
