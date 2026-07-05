@@ -1,6 +1,8 @@
 # Smart Pointers em Rust: Gerenciamento Avançado de Memória para Pythonistas
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Abr 18, 2026
 
+![Smart Pointers em Rust: Gerenciamento Avançado de Memória para Pythonistas](imgs/cover.png)
+
 Se você vem do Python, onde o gerenciamento de memória é automático através do coletor de lixo (GC), pode estranhar inicialmente como Rust lida com alocação e liberação de memória. Porém, os *Smart Pointers* em Rust oferecem um meio-termo poderoso: controle manual quando necessário, mas com segurança garantida pelo compilador. Vamos explorar como essas estruturas funcionam e como se comparam ao modelo Python.
 
 ## Introdução: Do Python para Rust - Uma Mudança de Paradigma

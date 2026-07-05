@@ -10,14 +10,19 @@ layout: default
   document.querySelectorAll('.post a[href^="http"]').forEach(function (a) {
     if (a.host !== location.host) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
   });
-  // Replica o bloco de share logo abaixo do autor/data (o <h6> vem de dentro do conteúdo)
+  // Replica o bloco de share logo após a capa (ou o autor, se não houver capa),
+  // antes do texto — o <h6>/imagem vêm de dentro do conteúdo.
   // ponytail: clona o share do rodapé em vez de renderizar duas vezes
   var author = document.querySelector('.post h6');
+  var cover = document.querySelector('.post img[src*="cover"]');
   var share = document.querySelector('.post ~ .share');
-  if (author && share) {
-    var top = share.cloneNode(true);
-    top.classList.add('share-top');
-    author.after(top);
+  if (share) {
+    var anchor = cover ? (cover.closest('p') || cover) : author;
+    if (anchor) {
+      var top = share.cloneNode(true);
+      top.classList.add('share-top');
+      anchor.after(top);
+    }
   }
 </script>
 {% assign path_parts = page.path | split: "/" %}

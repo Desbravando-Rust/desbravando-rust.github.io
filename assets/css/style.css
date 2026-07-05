@@ -142,7 +142,7 @@ a { color: var(--rust-orange-soft); }
 }
 /* Compartilhamento nos posts */
 .post ~ .share { max-width: 760px; margin: 24px auto 0; padding: 0 24px; }
-.post .share-top { margin: 0 0 32px; padding: 0; }
+.post .share-top { margin: 24px 0 32px; padding: 0; }
 /* Compartilhamento na home (seção de compra) */
 .buy-share-intro { text-align: center; color: var(--text-muted); margin-top: 32px; }
 .buy .share { justify-content: center; margin-top: 12px; }
