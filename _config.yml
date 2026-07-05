@@ -26,6 +26,10 @@ ga4_id: "G-XL3S6FDENZ"              # ex: "G-XXXXXXXXXX"
 meta_pixel_id: ""       # ex: "1234567890"
 linkedin_partner_id: "" # ex: "123456"
 
+# Minifica o CSS gerado a partir de assets/css/style.scss no build
+sass:
+  style: compressed
+
 plugins:
   - jekyll-optional-front-matter
   - jekyll-readme-index

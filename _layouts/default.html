@@ -38,7 +38,8 @@
   <meta name="twitter:description" content="{{ page.description | default: site.description | strip_newlines | strip }}">
   <meta name="twitter:image" content="{{ og_image_abs }}">
   <meta name="twitter:image:alt" content="{{ og_image_alt }}">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  {% comment %} CSS inline e minificado (scssify) para eliminar o request render-blocking do caminho crítico e acelerar o first paint. {% endcomment %}
+  <style>{% capture css %}{% include style.scss %}{% endcapture %}{{ css | scssify }}</style>
 </head>
 <body>
   {% if site.cupom != "" %}
