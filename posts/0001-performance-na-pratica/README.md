@@ -481,7 +481,4 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 - **Performance real**: Entenda como Rust elimina o overhead que torna Python lento
 - **Safety sem garbage collector**: Como Rust garante segurança de memória em compile-time
 - **Concorrência sem medo**: Paralelização nativa sem data races (o que torna Polars tão rápido)
-- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
-
-
-### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
+- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo.
