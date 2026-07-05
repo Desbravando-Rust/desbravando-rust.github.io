@@ -12,7 +12,7 @@ description: >-
   comparando Rust com o Python que você já domina.</p>
 
   <p>
-    <a class="btn btn-buy" href="/assets/pdf/desbravando-rust-sample.pdf" target="_blank" rel="noopener">Ler o capítulo em PDF</a>
+    <a class="btn btn-buy" href="https://forms.gle/kkhruXjTTctZz81Q9" target="_blank" rel="noopener">Ler o capítulo em PDF</a>
   </p>
 
   <p>Gostou do que leu? O livro completo aprofunda ownership, tratamento de
