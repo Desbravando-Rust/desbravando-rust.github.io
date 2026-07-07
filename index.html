@@ -199,20 +199,11 @@ description: >-
 <section class="faq">
   <div class="container">
     <h2>Perguntas frequentes</h2>
-    <details><summary>Preciso ser avançado em Python?</summary>
-      <p>Não. Se você já escreve Python no dia a dia — funções, classes, pip/venv — tem toda a base
-        necessária. O livro usa seu conhecimento de Python como ponte, não como pré-requisito acadêmico.</p>
+    {% for item in site.data.faq %}
+    <details><summary>{{ item.q }}</summary>
+      <p>{{ item.a }}</p>
     </details>
-    <details><summary>Como e quando recebo o livro?</summary>
-      <p>A compra é processada pela Kiwify. Assim que o pagamento é confirmado, o acesso ao PDF é
-        liberado imediatamente na sua área de membros — sem espera.</p>
-    </details>
-    <details><summary>Recebo nota fiscal?</summary>
-      <p>Sim, a nota fiscal é emitida e enviada para o seu e-mail.</p>
-    </details>
-    <details><summary>Quais formas de pagamento?</summary>
-      <p>Cartão de crédito, PIX e boleto — tudo pelo checkout seguro da Kiwify.</p>
-    </details>
+    {% endfor %}
   </div>
 </section>
 

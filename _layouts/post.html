@@ -36,3 +36,24 @@ layout: default
     {% include cta.html %}
   </div>
 </aside>
+
+{% include schema-post.html %}
+
+{% include lead-capture.html %}
+
+{% assign related = site.data.relacionados[post_num] %}
+{% if related %}
+<aside class="related">
+  <h2>Leia também</h2>
+  <ul>
+    {% assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" %}
+    {% for p in blog_posts %}
+      {% assign pp = p.path | split: "/" %}
+      {% assign pnum = pp[1] | split: "-" | first %}
+      {% if related contains pnum %}
+      <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</aside>
+{% endif %}
