@@ -1,6 +1,8 @@
 # Cargo contra rapa
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Dez 03, 2025
 
+![Cargo contra rapa](imgs/cover.png)
+
 Se você vem de linguagens como JavaScript, Python ou PHP, provavelmente já passou pela "fadiga de configuração". Você quer começar um projeto novo e a primeira hora é gasta decidindo qual gerenciador de pacotes usar, configurando o linter, o formatador, o framework de testes e o bundler.
 
 E se eu te dissesse que no Rust, essa decisão já foi tomada por você, e ela é *incrivelmente boa*?
@@ -141,5 +143,3 @@ Se você está cansado de configurar Webpack, brigar com ambientes virtuais Pyth
 No livro **"Desbravando Rust"**, dedicamos capítulos inteiros para explorar o ecossistema do Cargo, ensinando não só a sintaxe da linguagem, mas como usar essas ferramentas para criar software robusto, testado e documentado desde o primeiro dia.
 
 ### [Garanta seu exemplar e pare de brigar com configurações!](https://desbravandorust.com.br/)
-
-<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

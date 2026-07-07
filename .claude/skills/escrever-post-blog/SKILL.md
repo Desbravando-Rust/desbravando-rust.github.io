@@ -6,9 +6,9 @@ description: Use ao escrever um novo post para o blog Desbravando Rust (reposit�
 # Escrever post do blog Desbravando Rust
 
 ## Objetivo
-Gerar um post novo idêntico em estrutura, tom e apelo comercial aos 17 posts
-existentes, com um único fim: converter leitor pythonista em comprador do livro
-**Desbravando Rust** (https://desbravandorust.com.br).
+Gerar um post novo idêntico em estrutura, tom e apelo comercial aos posts
+existentes (0001–0022), com um único fim: converter leitor pythonista em comprador
+do livro **Desbravando Rust** (https://desbravandorust.com.br).
 
 Todo post é **material de apoio do livro** — o conteúdo entrega valor real e
 termina levando à compra.
@@ -19,10 +19,12 @@ termina levando à compra.
 2. Escolher o próximo número: `NNNN` = maior número em `posts/` + 1, com 4 dígitos.
 3. Criar `posts/NNNN-slug-descritivo/README.md` (slug em kebab-case, com palavras-chave de SEO; posts de conceito terminam em `-pythonistas`).
 4. Escrever o corpo seguindo a **Anatomia** e o tom (use `template-post.md` como esqueleto).
-5. Adicionar **1–2 referências cruzadas** a posts relacionados (ver Referências cruzadas).
-6. Adicionar a linha de CTA contextual em `_data/cta_posts.yml` na chave `"NNNN"`.
-7. Se houver imagens, colocá-las em `posts/NNNN-slug/imgs/` e referenciar como `imgs/arquivo.png`.
-8. Verificar: `index.html` e `/blog/` **atualizam sozinhos** — só confira que `NNNN` é o maior número (aparece primeiro na home, que lista os 6 mais recentes).
+5. **Primeiro parágrafo = meta description**: garanta que a primeira linha de prosa (depois do título/autor/capa) funcione sozinha como resumo de SEO (ver seção dedicada abaixo).
+6. Adicionar **1–2 referências cruzadas inline** a posts relacionados (ver Referências cruzadas).
+7. Adicionar a entrada em `_data/relacionados.yml` (chave `"NNNN"` com 3 posts do mesmo cluster) **e** incluir `NNNN` na lista dos posts relacionados que fazem par (ver Referências cruzadas).
+8. Adicionar a linha de CTA contextual em `_data/cta_posts.yml` na chave `"NNNN"`.
+9. Se houver imagens, colocá-las em `posts/NNNN-slug/imgs/` e referenciar como `imgs/arquivo.png`.
+10. Verificar: `index.html` e `/blog/` **atualizam sozinhos** — só confira que `NNNN` é o maior número (aparece primeiro na home, que lista os 6 mais recentes).
 
 ## Mecânica do Jekyll (o que é automático vs manual)
 
@@ -34,6 +36,10 @@ termina levando à compra.
 | Botões de compartilhar (LinkedIn/X/WhatsApp/Telegram/copiar) | Injetados automaticamente por `_layouts/post.html`. **Não coloque no corpo.** |
 | Card final "Gostou deste conteúdo?" com capa + botão comprar | Injetado automaticamente pelo layout. |
 | CTA contextual dentro desse card | Puxada de `_data/cta_posts.yml[NNNN]`. **Este arquivo você edita.** |
+| Bloco "Receba um capítulo grátis" (captura de e-mail) | Injetado automaticamente por `_layouts/post.html` (`lead-capture.html`). **Não coloque formulário/captura no corpo.** |
+| JSON-LD (`BlogPosting` + `BreadcrumbList`) | Gerado automaticamente por `schema-post.html`. Nada a fazer no corpo. |
+| **Meta description** (`<meta description>` + `og:`/`twitter:`) | **Extraída automaticamente do 1º parágrafo do post** (`_includes/meta-description.html`). O que você escreve na 1ª linha de prosa vira o snippet no Google e nos cards de compartilhamento. **Você controla isso pelo texto** — ver seção abaixo. |
+| Bloco "Leia também" (links internos estruturados) | Renderizado a partir de `_data/relacionados.yml[NNNN]`. **Este arquivo você edita** (além dos links inline no corpo). |
 
 As duas primeiras linhas do README **têm formato fixo**:
 
@@ -49,9 +55,9 @@ Mês abreviado em PT-BR: `Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez`
 
 | Arquétipo | Quando | Exemplos | Marca registrada |
 |---|---|---|---|
-| **Conceito para Pythonistas** | Ensinar um recurso de Rust (ownership, traits, enums, closures…) | 0005, 0008, 0009, 0011, 0015 | Bloco Rust seguido do equivalente Python; "Erros comuns de Pythonistas"; tabelas comparativas; "O que aprendemos". Slug termina em `-pythonistas`. |
-| **Benchmark / Comparação** | Provar performance com números reais | 0001, 0002, 0016 | Ambiente de execução detalhado, tabela de métricas, gráfico em `imgs/`, análise, "quando usar cada um". |
-| **Opinião / Caso real** | Tese provocativa + prova prática | 0004, 0016, 0017 | Abertura incômoda ("Seu ORM está mentindo"), caso concreto, checklist acionável, muitas vezes série (Parte II). |
+| **Conceito para Pythonistas** | Ensinar um recurso de Rust (ownership, traits, enums, closures, strings…) | 0005, 0008, 0009, 0011, 0015, 0022 | Bloco Rust seguido do equivalente Python; "Erros comuns de Pythonistas"; tabelas comparativas; "O que aprendemos". Slug termina em `-pythonistas`. |
+| **Benchmark / Comparação** | Provar performance com números reais | 0001, 0002, 0016, 0019, 0021 | Ambiente de execução detalhado, tabela de métricas, gráfico em `imgs/`, análise, "quando usar cada um". |
+| **Opinião / Caso real** | Tese provocativa + prova prática | 0004, 0017, 0018, 0020 | Abertura incômoda ("Seu ORM está mentindo", "Eu apaguei meu Celery"), caso concreto, checklist acionável, "O que esse caso ensina", muitas vezes série. |
 
 ## Anatomia do corpo
 
@@ -64,9 +70,28 @@ Mês abreviado em PT-BR: `Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez`
 7. **Tabelas comparativas** `| Característica | Python | Rust |`.
 8. **Exemplo prático completo** — versão Rust e versão Python lado a lado.
 9. **(Opcional) Exercício** com dica.
-10. **"O que aprendemos? 📚"** — resumo em bullets.
-11. **"Próximos passos"** — provoca o próximo post da jornada.
+10. **Fecho de aprendizado** — "O que aprendemos? 📚" (conceito) ou "O que esse caso ensina" (benchmark/opinião): resumo do que fica.
+11. **Gancho para o próximo passo** — provoca o próximo post da jornada; se citar um post existente, **linke-o** (não só mencione).
 12. **CTA do livro** — parágrafo final levando a `https://desbravandorust.com.br` (ver Lead-gen).
+
+## O primeiro parágrafo é a sua meta description (regra nova, crítica)
+
+O layout **extrai automaticamente a 1ª linha de prosa do post** e a usa como
+`<meta name="description">`, `og:description` e `twitter:description` — ou seja,
+é o texto que aparece no Google e nos cards de LinkedIn/WhatsApp. A extração é
+**baseada em linha** (pega a primeira linha não vazia que não começa com `#` nem
+`!`), corta em **160 caracteres**. Consequências práticas ao escrever o gancho:
+
+- **Escreva o 1º parágrafo como UMA linha física** (sem quebra manual no meio).
+  Se você quebrar o parágrafo em várias linhas, só a 1ª linha vira a description.
+- **Faça a 1ª frase valer sozinha como resumo**: clara, com a palavra-chave do
+  tema, atraente fora de contexto. Os ~155 primeiros caracteres são o que o
+  leitor vê no Google — não desperdice com "Esta é a última parada de uma jornada…".
+- **Não comece o corpo com lista, citação (`>`), tabela (`|`) ou um link
+  `[texto](url)`** — a description sairia truncada ou sem sentido. Comece com
+  prosa. (Referência cruzada inline pode vir logo na sequência, não como 1ª linha.)
+- A capa `![Cover](imgs/cover.png)` e a linha de autor são puladas
+  automaticamente — pode mantê-las antes do parágrafo normalmente.
 
 ## Tom e voz
 
@@ -76,10 +101,13 @@ Mês abreviado em PT-BR: `Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez`
 - Honesto: mostra trade-offs de Rust e reconhece onde Python ganha (ex.: 0001 reteste com 8 workers). Isso gera credibilidade — e credibilidade vende.
 - Código **completo e executável**, não pseudocódigo.
 
-## Referências cruzadas (obrigatório: 1–2 por post)
+## Referências cruzadas (dois mecanismos — faça os dois)
 
-Linke posts relacionados para segurar o leitor no site e reforçar a jornada.
-Use **link relativo** ao diretório do post:
+Existem **dois** caminhos de link interno, e cada post novo deve usar ambos:
+
+**1. Links inline no corpo (obrigatório: 1–2 por post).** Linke posts
+relacionados dentro do texto para segurar o leitor e reforçar a jornada. Use
+**link relativo** ao diretório do post:
 
 ```markdown
 No [post sobre Django ORM vs SQLx](../0004-django-orm-vs-sqlx) eu defendi que...
@@ -87,18 +115,50 @@ No [post sobre Django ORM vs SQLx](../0004-django-orm-vs-sqlx) eu defendi que...
 
 Para linkar uma seção específica, use a URL absoluta com âncora
 (`https://desbravandorust.com.br/posts/0001-performance-na-pratica/#ambiente-do-execu%C3%A7%C3%A3o`).
-Mapa rápido de temas → post para escolher a referência:
+
+> ⚠️ Se o corpo narra uma "jornada" citando outros posts ("mostrei o Axum
+> superar o FastAPI", "troquei o worker"), **transforme cada citação em um
+> link** — mencionar sem linkar desperdiça o reforço de SEO e de navegação.
+
+**2. Cluster estruturado em `_data/relacionados.yml` (obrigatório).** Alimenta o
+bloco automático "Leia também" no fim do post. Adicione a chave do post novo com
+3 números do mesmo cluster temático, **e** insira o número do post novo nas
+listas dos posts com que ele faz par (o mapa é aproximadamente mútuo):
+
+```yaml
+"0022": ["0005", "0006", "0012"]   # strings ↔ ownership, memória, lifetimes
+```
+
+Mapa rápido de temas → post (use para escolher tanto os links inline quanto o cluster):
 
 - Ownership/memória → 0005, 0006 · Erros → 0008 · Enums/pattern matching → 0007, 0015
-- Traits → 0009 · Concorrência → 0010 · Iteradores/closures → 0011 · Lifetimes → 0012
-- Smart pointers → 0013 · Macros → 0014 · Performance/API → 0001 · Dados → 0002
-- ORM/SQLx → 0004, 0017 · Rust+Python (PyO3) → 0016 · Cargo → 0003
+- Traits → 0009 · Concorrência → 0010, 0021 · Iteradores/closures → 0011 · Lifetimes → 0012
+- Smart pointers → 0013 · Macros → 0014 · Strings (String/&str) → 0022
+- Performance/API → 0001, 0019 · Dados → 0002 · ORM/SQLx → 0004, 0017 · Cargo → 0003
+- Rust+Python (PyO3/WASM) → 0016, 0020 · Rust no stack Python (fila/worker) → 0018
+- GIL / free-threading / paralelismo → 0021, 0010
 
 ## SEO
 
 - Slug em kebab-case com as palavras-chave do tema (o slug vira a URL).
 - Título com o termo que o leitor buscaria + "Rust"/"Python".
-- Sem front matter: o título vem do `#` e a descrição global já está no `_config.yml`.
+- Sem front matter: o título vem do `#`; a **description sai do 1º parágrafo**
+  (ver seção "O primeiro parágrafo é a sua meta description") — não é mais a
+  global do `_config.yml` para posts.
+- JSON-LD (`BlogPosting`/`BreadcrumbList`) e o cluster "Leia também" são gerados
+  automaticamente — o seu trabalho de SEO é o 1º parágrafo, o slug, o título e a
+  entrada em `_data/relacionados.yml`.
+
+## Depois de publicar: distribuição (opcional, mas recomendado)
+
+O tráfego orgânico do blog é o motor de vendas. Para transformar o post em
+alcance imediato:
+
+- `python3 scripts/social_snippet.py posts/NNNN-slug/README.md` gera um rascunho
+  de post de LinkedIn (gancho + trecho de código + hashtags + link) a partir do post.
+- `docs/playbook-distribuicao.md` traz a cadência, os moldes por arquétipo e o
+  calendário de distribuição. Regra de ouro: valor no corpo do post social, link
+  no 1º comentário.
 
 ## Lead-gen — foco na venda do livro (não pule)
 
@@ -108,9 +168,12 @@ Mapa rápido de temas → post para escolher a referência:
 
 ## Erros a evitar
 
-- ❌ Adicionar YAML front matter, botões de share ou card de compra manualmente (o layout já faz).
+- ❌ Adicionar YAML front matter, botões de share, card de compra **ou bloco de captura de e-mail** manualmente (o layout já injeta tudo isso).
 - ❌ Editar `index.html`/`blog/index.html` para listar o post (é automático).
 - ❌ Esquecer a linha de CTA em `cta_posts.yml` (cai no genérico e perde conversão).
+- ❌ Esquecer a entrada em `_data/relacionados.yml` (o bloco "Leia também" fica vazio e o post perde link interno estruturado).
+- ❌ **1º parágrafo fraco, multi-linha, ou começando com lista/citação/tabela/link** — ele vira a meta description do Google e dos cards sociais; escreva-o como uma única linha de prosa que valha sozinha.
+- ❌ Narrar a "jornada" citando outros posts **sem linká-los** (referência sem link é SEO desperdiçado).
 - ❌ Data fora do formato `Mês DD, YYYY` em PT-BR (quebra a data no blog).
 - ❌ Número de post que não seja o maior (fica fora dos "6 mais recentes" da home).
 - ❌ Código só em Rust sem o par em Python (o diferencial do blog é a comparação).
