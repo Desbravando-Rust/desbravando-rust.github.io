@@ -1,0 +1,16 @@
+{%- if page.description -%}
+{{- page.description | strip_newlines | strip -}}
+{%- elsif page.path contains 'posts/' -%}
+{%- assign desc = '' -%}
+{%- assign lines = page.content | newline_to_br | split: '<br />' -%}
+{%- for line in lines -%}
+  {%- assign t = line | strip -%}
+  {%- assign c = t | slice: 0, 1 -%}
+  {%- if desc == '' and t != '' and c != '#' and c != '!' -%}
+    {%- assign desc = t | markdownify | strip_html | strip_newlines | strip | truncate: 160 -%}
+  {%- endif -%}
+{%- endfor -%}
+{{- desc -}}
+{%- else -%}
+{{- site.description | strip_newlines | strip -}}
+{%- endif -%}

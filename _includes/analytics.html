@@ -59,3 +59,30 @@
     if (window.fbq) fbq('track', 'InitiateCheckout');
   });
 </script>
+<script>
+  (function () {
+    // view_price: usuário chegou ao bloco de compra
+    var priceEl = document.getElementById('comprar');
+    if (priceEl && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          if (window.gtag) gtag('event', 'view_price');
+          io.disconnect();
+        }
+      }, { threshold: 0.4 });
+      io.observe(priceEl);
+    }
+    // Cliques de interesse na amostra e de lead (link do Google Form)
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest) return;
+      var lead = e.target.closest('a[href^="https://forms.gle/"], a.js-lead');
+      if (lead) {
+        if (window.gtag) gtag('event', 'generate_lead', { method: 'amostra_form' });
+        if (window.fbq) fbq('track', 'Lead');
+        return;
+      }
+      var amostra = e.target.closest('a[href="/amostra/"]');
+      if (amostra && window.gtag) gtag('event', 'select_content', { content_type: 'amostra' });
+    });
+  })();
+</script>

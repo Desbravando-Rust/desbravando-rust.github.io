@@ -1,0 +1,18 @@
+# Clusters de tópico para links internos (sinal de autoridade p/ SEO).
+"0001": ["0003", "0016", "0004"]   # Axum ↔ Cargo, performance, SQLx
+"0002": ["0016", "0004", "0017"]   # Polars ↔ performance, SQLx, N+1
+"0003": ["0001", "0016", "0014"]   # Cargo ↔ Axum, performance, macros
+"0004": ["0017", "0002", "0016"]   # SQLx ↔ N+1, Polars, performance
+"0005": ["0006", "0012", "0013"]   # Ownership ↔ memória, lifetimes, smart pointers
+"0006": ["0005", "0012", "0013"]   # Memória ↔ ownership, lifetimes, smart pointers
+"0007": ["0008", "0015", "0009"]   # Enums ↔ Result/Option, pattern matching, traits
+"0008": ["0007", "0015", "0005"]   # Result/Option ↔ enums, pattern matching, ownership
+"0009": ["0011", "0007", "0014"]   # Traits ↔ iteradores, enums, macros
+"0010": ["0016", "0001", "0011"]   # Concorrência ↔ performance, Axum, iteradores
+"0011": ["0009", "0014", "0010"]   # Iteradores ↔ traits, macros, concorrência
+"0012": ["0005", "0006", "0013"]   # Lifetimes ↔ ownership, memória, smart pointers
+"0013": ["0006", "0012", "0005"]   # Smart pointers ↔ memória, lifetimes, ownership
+"0014": ["0009", "0011", "0015"]   # Macros ↔ traits, iteradores, pattern matching
+"0015": ["0007", "0008", "0014"]   # Pattern matching ↔ enums, Result/Option, macros
+"0016": ["0010", "0002", "0001"]   # Performance ↔ concorrência, Polars, Axum
+"0017": ["0004", "0002", "0016"]   # N+1 ↔ SQLx, Polars, performance

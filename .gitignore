@@ -3,3 +3,6 @@ temas.md
 _site/
 .jekyll-cache/
 docs/marketing
+__pycache__/
+*.pyc
+.superpowers/
