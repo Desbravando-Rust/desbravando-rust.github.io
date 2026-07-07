@@ -1,6 +1,8 @@
 # De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Fev 16, 2026
 
+![De Django ORM para SQLx: A Jornada de um backend que desaprendeu a confiar em mágica](imgs/cover.png)
+
 Este artigo é para quem viveu anos no conforto do Django ORM e está cogitando encarar SQLx em Rust. Vamos falar de produtividade, dor, performance e o que você realmente ganha (e perde) ao largar a ‘mágica’.
 
 Passei quase 20 anos confiando que o Django fazia magia com bancos de dados. Eu estava errado - não era magia, era abstração. E abstrações, descobri da pior forma, têm custo.
@@ -479,19 +481,13 @@ Se este artigo despertou sua curiosidade sobre como Rust e SQLx funcionam por ba
 
 **O Que Você Vai Aprender:**
 
-**SQLx do zero:** Desde queries simples até transactions complexas e streaming
+**SQLx do zero:** Desde queries simples até transactions complexas e streaming.
 
-**Async/Await em Rust:** Como Tokio funciona e por que é tão rápido comparado ao asyncio do Python
+**Async/Await em Rust:** Como Tokio funciona e por que é tão rápido comparado ao asyncio do Python.
 
-**Type Safety na prática:** Compile-time checking que salva seu deploy às 3h da manhã
+**Type Safety na prática:** Compile-time checking que salva seu deploy às 3h da manhã.
 
-**Migrations e Schema Management:** Ferramentas do ecossistema como sqlx-cli e como estruturar projetos reais
+**Migrations e Schema Management:** Ferramentas do ecossistema como sqlx-cli e como estruturar projetos reais.
 
-**Projetos completos:** Construa APIs de produção com Axum + SQLx + PostgreSQL, com testes, observabilidade e deploy
+**Projetos completos:** Construa APIs de produção com Axum + SQLx + PostgreSQL, com testes, observabilidade e deploy.
 
-
-
-### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
-
-
-<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

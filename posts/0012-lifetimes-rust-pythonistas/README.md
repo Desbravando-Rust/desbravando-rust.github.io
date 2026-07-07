@@ -1,6 +1,8 @@
 # Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Abr 16, 2026
 
+![Lifetimes em Rust: Desvendando o Tempo de Vida das Variáveis para Pythonistas](imgs/cover.png)
+
 ## Introdução: O Tempo de Vida das Variáveis
 
 Em Python, você nunca precisa se preocupar explicitamente com quanto tempo uma variável vai existir na memória. O garbage collector cuida de tudo automaticamente. Mas em Rust, entender *lifetimes* (tempos de vida) é essencial para escrever código seguro e eficiente sem um coletor de lixo.

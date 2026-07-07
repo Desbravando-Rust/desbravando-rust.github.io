@@ -4,3 +4,9 @@
 #   cargo: "Backend Engineer"
 #   texto: "Uma frase curta sobre o que o livro destravou para você."
 #   linkedin: "https://www.linkedin.com/in/fulano/"   # opcional — exibe o ícone do LinkedIn no depoimento
+
+# EXEMPLO de formato (descomente e substitua por depoimentos REAIS — nunca invente):
+# - nome: "Maria Silva"
+#   cargo: "Backend Engineer @ Empresa"
+#   texto: "Vim do Python travado em ownership. Em duas semanas com o livro eu estava escrevendo Rust sem lutar com o compilador."
+#   linkedin: "https://www.linkedin.com/in/maria-silva/"
