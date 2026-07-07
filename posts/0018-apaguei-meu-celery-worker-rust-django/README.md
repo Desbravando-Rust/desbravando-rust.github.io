@@ -156,7 +156,7 @@ Os números variam com o peso da tarefa, latência do banco e configuração do 
 ## Por que funciona tão bem?
 
 1. **Um processo, milhares de tarefas concorrentes.** O tokio agenda tudo em poucas threads do SO, sem um processo por worker.
-2. **Sem GIL no hot path.** A parte CPU-bound da tarefa paraleliza de verdade.
+2. **Sem GIL no hot path.** A parte CPU-bound da tarefa paraleliza de verdade — o mesmo salto que detalhei em [concorrência e paralelismo sem GIL](../0010-concorrencia-paralelismo-rust-threads-async-pythonistas).
 3. **Footprint minúsculo.** Sem interpretador para carregar, a RAM ociosa praticamente some — o que muda a conta de infra diretamente.
 
 ## O que você perde (e isso importa)
@@ -189,7 +189,7 @@ Por isso a recomendação **não** é "apague tudo num sábado".
 
 Python continua sendo um ótimo lugar para escrever **o que** o seu sistema faz. Mas o **como escalar** o trabalho pesado é uma decisão separada — e às vezes o veículo certo para isso é Rust. Você não precisou reescrever o Django. Você só trocou o motor da peça que mais doía.
 
-No próximo post eu levo essa lógica de "Rust na borda" ao extremo absoluto: um servidor segurando **um milhão de conexões simultâneas** — e o ponto onde o Python simplesmente não vai junto.
+No [próximo post da série](../0019-um-milhao-websockets-python-rust) eu levo essa lógica de "Rust na borda" ao extremo absoluto: um servidor segurando **um milhão de conexões simultâneas** — e o ponto onde o Python simplesmente não vai junto.
 
 ---
 
