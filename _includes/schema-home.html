@@ -1,0 +1,36 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Book",
+      "name": "Desbravando Rust",
+      "author": { "@type": "Person", "name": "{{ site.author }}" },
+      "inLanguage": "pt-BR",
+      "bookFormat": "https://schema.org/EBook",
+      {% if site.paginas != "" %}"numberOfPages": {{ site.paginas }},{% endif %}
+      "url": "{{ '/' | absolute_url }}",
+      "image": "{{ '/imgs/capa.jpg' | absolute_url }}",
+      "offers": {
+        "@type": "Offer",
+        "price": "{{ site.preco | remove: '.' | replace: ',', '.' }}",
+        "priceCurrency": "BRL",
+        "availability": "https://schema.org/InStock",
+        "url": "{{ site.kiwify_url }}"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for item in site.data.faq %}
+        {
+          "@type": "Question",
+          "name": {{ item.q | jsonify }},
+          "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | jsonify }} }
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  ]
+}
+</script>

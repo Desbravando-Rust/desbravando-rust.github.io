@@ -110,7 +110,7 @@ a { color: var(--rust-orange-soft); }
 
 .footer-links a:hover { color: var(--rust-orange-soft); }
 
-.footer-social { margin: 14px 0; }
+.footer-social { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 14px 0; }
 
 .footer-social a { color: var(--text-muted); display: inline-flex; transition: color 0.15s ease, transform 0.15s ease; }
 
@@ -142,7 +142,7 @@ a { color: var(--rust-orange-soft); }
 }
 /* Compartilhamento nos posts */
 .post ~ .share { max-width: 760px; margin: 24px auto 0; padding: 0 24px; }
-.post .share-top { margin: 0 0 32px; padding: 0; }
+.post .share-top { margin: 24px 0 32px; padding: 0; }
 /* Compartilhamento na home (seção de compra) */
 .buy-share-intro { text-align: center; color: var(--text-muted); margin-top: 32px; }
 .buy .share { justify-content: center; margin-top: 12px; }
@@ -532,3 +532,15 @@ section > .container > h2 { font-size: 1.9rem; margin-bottom: 8px; }
 .blog-index { padding-top: 56px; }
 
 .blog-index h1 { font-size: 2.2rem; margin-bottom: 8px; }
+
+/* ===== Bloco "Leia também" ===== */
+.related { margin: 40px 0; padding: 24px; background: var(--bg-card); border-radius: 12px; }
+.related h2 { font-size: 1.2rem; margin-bottom: 12px; }
+.related ul { list-style: none; padding: 0; display: grid; gap: 8px; }
+.related a { color: var(--rust-orange-soft); text-decoration: none; }
+.related a:hover { text-decoration: underline; }
+
+/* ===== Bloco "Captura de lead" nos posts ===== */
+.lead-capture { margin: 40px 0; padding: 28px 24px; text-align: center; background: rgba(247, 76, 0, 0.08); border: 1px solid rgba(247, 76, 0, 0.35); border-radius: 12px; }
+.lead-capture h2 { font-size: 1.3rem; margin-bottom: 8px; }
+.lead-capture p { color: var(--text-muted); margin-bottom: 16px; }

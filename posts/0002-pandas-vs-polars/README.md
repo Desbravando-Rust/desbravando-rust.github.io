@@ -1,11 +1,11 @@
 # Pandas vs Polars: Benchmark com 3 Milhões de Registros
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Nov 21, 2025
 
+![Pandas vs Polars: Benchmark com 3 Milhões de Registros](imgs/cover.png)
+
 Recentemente caiu na minha timeline um vídeo do [Lewis](https://www.youtube.com/c/codingwithlewis) apresentando um pacote do python que ele classificou como incrível:
 
-<a href="https://www.youtube.com/watch?v=3Re64c90ZnM" target="_blank">
-<img src="https://img.youtube.com/vi/3Re64c90ZnM/0.jpg">
-</a>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3Re64c90ZnM?si=AWRTQcvoA9rb7Km9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 O pacote em questão é o [Polars](https://pola.rs/). Como o próprio site oficial diz:
 > Polars is an open-source library for data manipulation, known for being one of the fastest data processing solutions on a single machine. It features a well-structured, typed API that is both expressive and easy to use.
@@ -1089,13 +1089,7 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 - **Performance real**: Entenda como Rust elimina o overhead que torna Python lento
 - **Safety sem garbage collector**: Como Rust garante segurança de memória em compile-time
 - **Concorrência sem medo**: Paralelização nativa sem data races (o que torna Polars tão rápido)
-- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
-
-
-### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
+- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo.
 
 
 Se os números não mentem e o Polars é 11x mais rápido que Pandas,  imagine o que você pode construir quando entende a linguagem que torna isso possível.
-
-
-<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>

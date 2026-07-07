@@ -1,6 +1,8 @@
 # Desmistificando Traits em Rust: Herança para Pythonistas
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Mar 28, 2026
 
+![Desmistificando Traits em Rust: Herança para Pythonistas](imgs/cover.png)
+
 👋 Bem-vindos, desbravadores! Se você vem do Python e está começando sua jornada em Rust, provavelmente já se deparou com o conceito de **traits**. Talvez você tenha pensado: "Isso parece com herança de classes do Python, mas não exatamente..."
 
 Neste post, vamos explorar como traits em Rust oferecem uma alternativa poderosa e flexível à herança tradicional de classes que você conhece do Python. Vamos desmistificar esse conceito fundamental com muitas comparações e exemplos práticos!
