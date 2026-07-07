@@ -10,7 +10,7 @@ Site de vendas + blog do livro **Desbravando Rust**, hospedado no GitHub Pages
 | Preço, link Kiwify, cupom, IDs de analytics | `_config.yml` (seções comentadas no topo) |
 | Depoimentos de leitores | `_data/depoimentos.yml` |
 | Sumário do livro | `_data/sumario.yml` |
-| Capítulo de amostra (PDF) | salvar como `assets/desbravando-rust-amostra.pdf` |
+| Capítulo de amostra (PDF) | entrega automática pelo Google Forms |
 | Textos da home | `index.html` (HTML simples, seções marcadas com comentários) |
 
 ## Como publicar um post novo

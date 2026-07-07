@@ -1069,7 +1069,7 @@ git commit -m "feat: índice do blog gerado automaticamente"
 
 **Interfaces:**
 - Consumes: layout `default`, include `cta.html`, classes `.btn`, `.container`.
-- Produces: `/amostra/` (isca de campanha; botão de download aponta para `assets/desbravando-rust-amostra.pdf` — o autor deve colocar o PDF nesse caminho) e `/404.html` com CTA.
+- Produces: `/amostra/` (isca de campanha; botão de download aponta para `https://forms.gle/kkhruXjTTctZz81Q9` — o autor deve configurar o Google Forms para envio por email e captura do Lead ou  `/404.html` com CTA.
 
 - [ ] **Step 1: Criar `amostra/index.md`**
 
@@ -1088,7 +1088,7 @@ description: >-
 Antes de decidir, sinta o estilo do livro: direto, prático e sempre comparando
 Rust com o Python que você já domina.
 
-<a class="btn btn-buy" href="/assets/desbravando-rust-amostra.pdf" download>Baixar capítulo em PDF</a>
+<a class="btn btn-buy" href="https://forms.gle/kkhruXjTTctZz81Q9" download>Baixar capítulo em PDF</a>
 
 Gostou do que leu? O livro completo aprofunda ownership, tratamento de erros,
 concorrência e três projetos completos.
@@ -1122,7 +1122,7 @@ Run:
 ```bash
 jekyll build --trace && grep -c "desbravando-rust-amostra.pdf" _site/amostra/index.html && grep -c "kDaL3Xq" _site/amostra/index.html && grep -c "kDaL3Xq" _site/404.html
 ```
-Expected: todos ≥ 1. Nota: o PDF em si ainda não existe — registrado como insumo pendente do autor (colocar em `assets/desbravando-rust-amostra.pdf`).
+Expected: todos ≥ 1. Nota: o PDF em si ainda não existe — registrado como insumo pendente do autor (colocar em `https://forms.gle/kkhruXjTTctZz81Q9`).
 
 - [ ] **Step 4: Commit**
 
@@ -1190,7 +1190,7 @@ Site de vendas + blog do livro **Desbravando Rust**, hospedado no GitHub Pages
 | Preço, link Kiwify, cupom, IDs de analytics | `_config.yml` (seções comentadas no topo) |
 | Depoimentos de leitores | `_data/depoimentos.yml` |
 | Sumário do livro | `_data/sumario.yml` |
-| Capítulo de amostra (PDF) | salvar como `assets/desbravando-rust-amostra.pdf` |
+| Capítulo de amostra (PDF) | Via Google Forms Scripts |
 | Textos da home | `index.html` (HTML simples, seções marcadas com comentários) |
 
 ## Como publicar um post novo

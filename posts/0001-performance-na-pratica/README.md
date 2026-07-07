@@ -1,6 +1,8 @@
 # Performance na prática: Um exemplo de real onde o Axum supera o FastAPI
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Nov 16, 2025
 
+![Performance na prática: Um exemplo de real onde o Axum supera o FastAPI](imgs/cover.png)
+
 Qual a stack perfeita para desenvolvimento? Essa é uma pergunta simples porém que trás muitas dúvidas, principalmente para quem está começando e a resposta nem sempre é óbvia: É a que resolve o problema da melhor maneira possível, consumindo menos recursos.
 
 Claro que sempre existirão trade-offs, como por exemplo a curva de aprendizado, que pode ser maior uma determinada linguagem, principalmente quando esta é o Rust devido a sua forma única de trabalhar e as decisões de design da própria linguagem que é bem única em alguns pontos.
@@ -479,10 +481,4 @@ Se este artigo despertou sua curiosidade sobre como Polars consegue ser tão rá
 - **Performance real**: Entenda como Rust elimina o overhead que torna Python lento
 - **Safety sem garbage collector**: Como Rust garante segurança de memória em compile-time
 - **Concorrência sem medo**: Paralelização nativa sem data races (o que torna Polars tão rápido)
-- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo
-
-
-### [Clique aqui e garanta seu exemplar agora!](https://desbravandorust.com.br/)
-
-
-<a href="https://desbravandorust.com.br/" target="_blank"><img src="../../imgs/capa.jpg" alt="Capa do Livro Desbravando Rust" width="120" align="left"></a>
+- **Projetos práticos**: Construa aplicações reais, incluindo processamento de dados como vimos neste artigo.

@@ -1,6 +1,8 @@
 # Macros em Rust: Automatizando Código Além do que Python Permite
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Mai 12, 2026
 
+![Macros em Rust: Automatizando Código Além do que Python Permite](imgs/cover.png)
+
 Metaprogramação é a arte de escrever código que gera ou manipula outro código. Se você vem do Python, provavelmente já usou decoradores, metaclasses ou funções de geração de código para automatizar tarefas repetitivas. O Rust também oferece poderosas ferramentas de metaprogramação, mas com uma abordagem fundamentalmente diferente e mais segura: as macros.
 
 Enquanto Python permite modificar o código em tempo de execução, Rust opera em tempo de compilação através de seu poderoso sistema de macros. Isso oferece vantagens significativas: verificação de tipos antecipada, maior segurança e melhor performance, já que todo o código é expandido antes do programa rodar.
