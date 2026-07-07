@@ -4,7 +4,9 @@
 ![Cover](imgs/cover.png)
 
 
-Esta é a última parada de uma jornada que começou mostrando o Rust acelerando um endpoint, passou por trocar o worker de tarefas e chegou a segurar um milhão de conexões. Agora vamos ao truque mais ambicioso de todos — e talvez o mais subestimado: escrever uma regra de negócio **uma única vez**, em Rust, e rodá-la **igual** no navegador do usuário e no seu back-end Python.
+Escreva uma regra de negócio **uma única vez** em Rust e rode-a idêntica no navegador do usuário (via WASM) e no seu back-end Python (via PyO3): a mesma validação de CPF, o mesmo cálculo de desconto, sem reimplementar a lógica em duas linguagens.
+
+Esta é a última parada de uma jornada que começou [acelerando um endpoint](../0001-performance-na-pratica), passou por [trocar o worker de tarefas por Rust](../0018-apaguei-meu-celery-worker-rust-django) e chegou a [segurar um milhão de conexões](../0019-um-milhao-websockets-python-rust). Agora vamos ao truque mais ambicioso de todos — e talvez o mais subestimado.
 
 Sem duplicação. Sem "validou no front mas o back recusou". Uma fonte da verdade, dois destinos de compilação.
 
