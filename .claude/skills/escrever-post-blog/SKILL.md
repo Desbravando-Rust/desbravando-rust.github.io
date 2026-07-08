@@ -1,6 +1,6 @@
 ---
 name: escrever-post-blog
-description: Use ao escrever um novo post para o blog Desbravando Rust (repositório desbravandorust.github.io) a partir de um tema. Cobre estrutura, tom, comparações Python↔Rust, referências cruzadas entre posts, SEO e os arquivos de marketing (cta_posts.yml) que geram leads para a venda do livro.
+description: Use ao escrever um novo post para o blog Desbravando Rust (repositório desbravandorust.github.io) a partir de um tema. Cobre estrutura, tom, comparações Python↔Rust, referências cruzadas entre posts, SEO, o cross-post no dev.to (tags/tema em devto_temas.yml) e os arquivos de marketing (cta_posts.yml) que geram leads para a venda do livro.
 ---
 
 # Escrever post do blog Desbravando Rust
@@ -23,8 +23,9 @@ termina levando à compra.
 6. Adicionar **1–2 referências cruzadas inline** a posts relacionados (ver Referências cruzadas).
 7. Adicionar a entrada em `_data/relacionados.yml` (chave `"NNNN"` com 3 posts do mesmo cluster) **e** incluir `NNNN` na lista dos posts relacionados que fazem par (ver Referências cruzadas).
 8. Adicionar a linha de CTA contextual em `_data/cta_posts.yml` na chave `"NNNN"`.
-9. Se houver imagens, colocá-las em `posts/NNNN-slug/imgs/` e referenciar como `imgs/arquivo.png`.
-10. Verificar: `index.html` e `/blog/` **atualizam sozinhos** — só confira que `NNNN` é o maior número (aparece primeiro na home, que lista os 6 mais recentes).
+9. Adicionar o **tema do dev.to** em `_data/devto_temas.yml` na chave `"NNNN"` (1 palavra, sem espaço — vira a 4ª tag no dev.to). **Sem isso o post é publicado só com as 3 tags fixas** (ver "Publicar no dev.to").
+10. Se houver imagens, colocá-las em `posts/NNNN-slug/imgs/` e referenciar como `imgs/arquivo.png` (relativo — nunca URL absoluta).
+11. Verificar: `index.html` e `/blog/` **atualizam sozinhos** — só confira que `NNNN` é o maior número (aparece primeiro na home, que lista os 6 mais recentes).
 
 ## Mecânica do Jekyll (o que é automático vs manual)
 
@@ -160,6 +161,33 @@ alcance imediato:
   calendário de distribuição. Regra de ouro: valor no corpo do post social, link
   no 1º comentário.
 
+## Publicar no dev.to (cross-post canônico)
+
+`scripts/publica_devto.py` republica o post no dev.to com `canonical_url`
+apontando de volta pro blog. Ele **já resolve sozinho** os problemas que davam
+retrabalho — **não ajuste o corpo por causa deles**:
+
+| O script faz automaticamente | Problema que evita |
+|---|---|
+| Remove o 1º `# H1` (título) e a 1ª imagem (capa) do corpo antes de enviar | o dev.to já renderiza `title` e `cover_image` no topo — sem isso saíam **título e capa duplicados** |
+| Absolutiza imagens: `imgs/x.png` → `https://desbravandorust.com.br/posts/NNNN-slug/imgs/x.png` (com o prefixo numérico!) | o dev.to não reescreve caminho relativo — **imagem quebrada** no proxy |
+| Remove `{% raw %}` / `{% endraw %}` | são guardas do Jekyll; no dev.to viram Liquid inválido (**"Unknown tag endraw"**) |
+| `published_at` sempre entre aspas no front matter de agendamento | sem aspas o YAML do Forem lê como `Time` e rejeita (**422 "Title can't be blank"**) |
+| Monta as tags `braziliandevs, python, rust` + o tema do post | — |
+
+**O ÚNICO passo manual ao criar um post novo é adicionar o tema em
+`_data/devto_temas.yml`** (checklist item 9), chave `"NNNN"`, 1 palavra sem
+espaço (ex.: `"0023": ownership`). **Sem essa entrada o post publica só com as 3
+tags fixas** — foi o que mais gerou retrabalho.
+
+Para o auto-tratamento acima funcionar, o corpo (a Anatomia já garante) precisa:
+- **Título como 1º `# H1`** e **capa como 1ª imagem markdown** (`![Cover](imgs/cover.png)`) — é assim que o script os identifica pra remover a duplicata.
+- **Imagens sempre relativas** (`imgs/arquivo.png`), nunca URL absoluta escrita à mão.
+
+Obs.: a API do dev.to faz **POST** (cria artigo novo) a cada execução — não
+atualiza o anterior. Ao republicar após corrigir algo, **apague o rascunho/preview
+antigo** pra não duplicar o artigo.
+
 ## Lead-gen — foco na venda do livro (não pule)
 
 1. **`_data/cta_posts.yml`**: adicione a chave `"NNNN"` com uma frase que amarra o tema do post ao livro. Padrão observado: pergunta sobre o que a pessoa acabou de curtir + o que o livro entrega. Ex.: `"0018": "Curtiu entender <tema>? O livro tem um capítulo dedicado a <benefício>."`
@@ -172,6 +200,7 @@ alcance imediato:
 - ❌ Editar `index.html`/`blog/index.html` para listar o post (é automático).
 - ❌ Esquecer a linha de CTA em `cta_posts.yml` (cai no genérico e perde conversão).
 - ❌ Esquecer a entrada em `_data/relacionados.yml` (o bloco "Leia também" fica vazio e o post perde link interno estruturado).
+- ❌ **Esquecer o tema em `_data/devto_temas.yml`** (o post é cross-postado no dev.to só com as 3 tags fixas, sem a 4ª tag do tema).
 - ❌ **1º parágrafo fraco, multi-linha, ou começando com lista/citação/tabela/link** — ele vira a meta description do Google e dos cards sociais; escreva-o como uma única linha de prosa que valha sozinha.
 - ❌ Narrar a "jornada" citando outros posts **sem linká-los** (referência sem link é SEO desperdiçado).
 - ❌ Data fora do formato `Mês DD, YYYY` em PT-BR (quebra a data no blog).

@@ -6,3 +6,4 @@ docs/marketing
 __pycache__/
 *.pyc
 .superpowers/
+error.log
