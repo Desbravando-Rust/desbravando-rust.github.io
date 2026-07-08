@@ -41,6 +41,7 @@ termina levando à compra.
 | JSON-LD (`BlogPosting` + `BreadcrumbList`) | Gerado automaticamente por `schema-post.html`. Nada a fazer no corpo. |
 | **Meta description** (`<meta description>` + `og:`/`twitter:`) | **Extraída automaticamente do 1º parágrafo do post** (`_includes/meta-description.html`). O que você escreve na 1ª linha de prosa vira o snippet no Google e nos cards de compartilhamento. **Você controla isso pelo texto** — ver seção abaixo. |
 | Bloco "Leia também" (links internos estruturados) | Renderizado a partir de `_data/relacionados.yml[NNNN]`. **Este arquivo você edita** (além dos links inline no corpo). |
+| **Feed RSS/Atom** (`/feed.xml`, distribuição p/ readers, dev.to, RSS-to-email) | **Automático** — `feed.xml` lê `site.pages` de `posts/`, ordena por path invertido, pega os 20 mais recentes. **Nada a fazer por post.** Mas ele reusa a **data da byline** (`<updated>`) e o **1º parágrafo** (`<summary>`, excerpt-only, 200 chars) — então as duas regras abaixo passam a alimentar também o feed. |
 
 As duas primeiras linhas do README **têm formato fixo**:
 
@@ -50,7 +51,10 @@ As duas primeiras linhas do README **têm formato fixo**:
 ```
 
 Mês abreviado em PT-BR: `Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez`
-(ex.: `Jul 04, 2026`). Use a data de hoje.
+(ex.: `Jul 04, 2026`). Use a data de hoje. **Dia sempre com 2 dígitos** (`Jul 04`,
+não `Jul 4`): além do blog, essa linha vira a data (`<updated>`) do post no
+`/feed.xml`, e o parser assume dia/mês zero-padded — dia com 1 dígito faz a data
+do feed cair no build-time.
 
 ## Arquétipos de post (escolha 1)
 
@@ -78,8 +82,11 @@ Mês abreviado em PT-BR: `Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez`
 ## O primeiro parágrafo é a sua meta description (regra nova, crítica)
 
 O layout **extrai automaticamente a 1ª linha de prosa do post** e a usa como
-`<meta name="description">`, `og:description` e `twitter:description` — ou seja,
-é o texto que aparece no Google e nos cards de LinkedIn/WhatsApp. A extração é
+`<meta name="description">`, `og:description`, `twitter:description` **e o
+`<summary>` do post no `/feed.xml`** (o feed é excerpt-only: só esse resumo vai
+pros readers/dev.to, sem o conteúdo cheio, pra o leitor clicar e cair no funil) —
+ou seja, é o texto que aparece no Google, nos cards de LinkedIn/WhatsApp e no
+leitor de RSS de quem assina. A extração é
 **baseada em linha** (pega a primeira linha não vazia que não começa com `#` nem
 `!`), corta em **160 caracteres**. Consequências práticas ao escrever o gancho:
 
