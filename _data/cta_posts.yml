@@ -17,3 +17,4 @@
 "0015": "Gostou de pattern matching? É um dos superpoderes de Rust que o livro explora a fundo."
 "0016": "Curtiu ganhar performance no mundo real? O livro foca em Rust aplicado, com foco em performance."
 "0017": "Gostou de caçar o N+1 com SQLx? O livro aprofunda acesso a dados performático em Rust."
+"0018": "Trocou o Celery por uma fila em Rust? O livro mostra como integrar Rust ao seu stack Python sem reescrever tudo."
