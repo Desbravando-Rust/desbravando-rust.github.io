@@ -92,7 +92,6 @@ Subimos cada servidor numa máquina com 8GB de RAM e abrimos conexões WebSocket
 | FastAPI + uvicorn | ~48.000 | ~46KB |
 | Axum + tokio | **~1.000.000+** | **~2,4KB** |
 
-![Conexões simultâneas e memória por conexão: FastAPI vs Axum](imgs/benchmark.png)
 
 **Latência de broadcast com 50k conexões ativas**
 
