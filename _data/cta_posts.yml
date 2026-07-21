@@ -18,3 +18,5 @@
 "0016": "Curtiu ganhar performance no mundo real? O livro foca em Rust aplicado, com foco em performance."
 "0017": "Gostou de caçar o N+1 com SQLx? O livro aprofunda acesso a dados performático em Rust."
 "0018": "Trocou o Celery por uma fila em Rust? O livro mostra como integrar Rust ao seu stack Python sem reescrever tudo."
+"0019": "Curtiu ver o teto do Python em WebSockets? O livro cobre concorrência sem GIL e async em Rust com projetos práticos."
+
