@@ -116,22 +116,75 @@ description: >-
 </section>
 
 <!-- ============ VEJA POR DENTRO ============ -->
-{% assign previews = site.static_files | where_exp: "f", "f.path contains '/imgs/preview/'" | sort: "path" %}
-{% if previews.size > 0 %}
 <section class="peek">
   <div class="container">
     <h2>Veja por dentro</h2>
     <p class="section-sub">Páginas reais do livro — Rust sempre lado a lado com o Python que você já conhece.</p>
+    <button type="button" class="peek-hero js-peek" data-index="0">
+      <img src="/imgs/preview/print-espiada.png" alt="Espiada nas páginas do livro Desbravando Rust" loading="lazy">
+    </button>
+    <p class="peek-note">Clique nas páginas abaixo para ampliar e inspecionar à vontade.</p>
     <div class="peek-grid">
-      {% for f in previews %}
-      <a class="peek-shot" href="{{ f.path }}" target="_blank" rel="noopener">
-        <img src="{{ f.path }}" alt="Página do livro Desbravando Rust" loading="lazy">
-      </a>
-      {% endfor %}
+      <button type="button" class="peek-shot js-peek" data-index="1">
+        <img src="/imgs/preview/print-abertura.png" alt="Abertura de capítulo do livro Desbravando Rust" loading="lazy">
+      </button>
+      <button type="button" class="peek-shot js-peek" data-index="2">
+        <img src="/imgs/preview/print-erro.png" alt="Tratamento de erros no livro Desbravando Rust" loading="lazy">
+      </button>
+      <button type="button" class="peek-shot js-peek" data-index="3">
+        <img src="/imgs/preview/print-tabela.png" alt="Comparação Python x Rust em tabela no livro Desbravando Rust" loading="lazy">
+      </button>
     </div>
   </div>
 </section>
-{% endif %}
+
+<!-- Lightbox das páginas do livro -->
+<div class="lightbox" id="peek-lightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Páginas do livro">
+  <button type="button" class="lightbox-close" aria-label="Fechar">&times;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" aria-label="Página anterior">&#8249;</button>
+  <img class="lightbox-img" src="" alt="">
+  <button type="button" class="lightbox-nav lightbox-next" aria-label="Próxima página">&#8250;</button>
+</div>
+<script>
+(function () {
+  var shots = Array.prototype.slice.call(document.querySelectorAll('.js-peek img'));
+  if (!shots.length) return;
+  var box = document.getElementById('peek-lightbox');
+  var bigImg = box.querySelector('.lightbox-img');
+  var current = 0;
+
+  function show(i) {
+    current = (i + shots.length) % shots.length;
+    bigImg.src = shots[current].src;
+    bigImg.alt = shots[current].alt;
+  }
+  function open(i) {
+    show(i);
+    box.hidden = false;
+    box.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    box.hidden = true;
+    box.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.js-peek').forEach(function (btn) {
+    btn.addEventListener('click', function () { open(+btn.dataset.index); });
+  });
+  box.querySelector('.lightbox-close').addEventListener('click', close);
+  box.querySelector('.lightbox-prev').addEventListener('click', function () { show(current - 1); });
+  box.querySelector('.lightbox-next').addEventListener('click', function () { show(current + 1); });
+  box.addEventListener('click', function (e) { if (e.target === box) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (box.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') show(current - 1);
+    else if (e.key === 'ArrowRight') show(current + 1);
+  });
+})();
+</script>
 
 <!-- ============ AUTOR ============ -->
 <section class="author">
