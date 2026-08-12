@@ -12,8 +12,8 @@ github_url: "https://github.com/zejuniortdr/"   # GitHub do autor (aparece na se
 
 # ================= VENDA — edite aqui =================
 kiwify_url: "https://pay.kiwify.com.br/18ZoOt1"
-preco: "89,90"
-preco_antigo: ""   # preencha (ex: "129,90") para exibir "de R$ 129,90 por R$ 89,90"
+preco: "69,90"
+preco_antigo: "89,90"   # preencha (ex: "129,90") para exibir "de R$ 129,90 por R$ 89,90"
 cupom: ""          # preencha (ex: "LINKEDIN10") para exibir a faixa de cupom no topo do site
 cupom_texto: ""    # ex: "10% de desconto para a comunidade do LinkedIn"
 

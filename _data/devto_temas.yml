@@ -1,0 +1,20 @@
+# 4ª tag (tema) de cada post no dev.to, indexada pelo número (####).
+# As 3 fixas (braziliandevs, python, rust) são sempre adicionadas pelo script.
+# Post sem entrada aqui sai só com as 3 fixas. Edite à vontade — 1 palavra, sem espaços.
+"0001": performance
+"0002": datascience
+"0003": cargo
+"0004": orm
+"0005": ownership
+"0006": memory
+"0007": enums
+"0008": errorhandling
+"0009": traits
+"0010": concurrency
+"0011": iterators
+"0012": lifetimes
+"0013": smartpointers
+"0014": macros
+"0015": patternmatching
+"0016": pyo3
+"0017": database

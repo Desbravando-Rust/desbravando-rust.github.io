@@ -1,0 +1,62 @@
+---
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Feed Atom escrito à mão: os posts são site.pages (posts/NNNN/README.md via
+  jekyll-readme-index), não site.posts, então jekyll-feed não os enxerga.
+  Só o resumo entra em <summary> (excerpt_only) para o leitor clicar e cair no
+  funil de venda. Data vem da byline "Por ... em Mmm DD, YYYY".
+  ponytail: assume dia/mês da byline sempre zero-padded (Abr 01) — se um post
+  fugir do formato a data cai no build time; padronize a byline se acontecer.
+{%- endcomment -%}
+{%- assign blog_posts = site.pages | where_exp: "p", "p.path contains 'posts/'" | sort: "path" | reverse -%}
+{%- assign m_abbr = "Jan,Fev,Mar,Abr,Mai,Jun,Jul,Ago,Set,Out,Nov,Dez" | split: "," -%}
+{%- assign m_num = "01,02,03,04,05,06,07,08,09,10,11,12" | split: "," -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | strip_newlines | strip | xml_escape }}</subtitle>
+  <link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/atom+xml"/>
+  <link href="{{ '/blog/' | absolute_url }}" rel="alternate" type="text/html"/>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>{{ '/feed.xml' | absolute_url }}</id>
+  <author><name>{{ site.author | xml_escape }}</name></author>
+  {%- for p in blog_posts limit: 20 %}
+  {%- comment -%} data: extrai a byline e parseia "Mmm DD, YYYY" {%- endcomment -%}
+  {%- assign byline = '' -%}
+  {%- assign lines = p.content | newline_to_br | split: '<br />' -%}
+  {%- for line in lines -%}
+    {%- assign lt = line | strip -%}
+    {%- if byline == '' and lt contains 'Por [' -%}{%- assign byline = lt -%}{%- endif -%}
+  {%- endfor -%}
+  {%- assign iso = site.time | date_to_xmlschema -%}
+  {%- if byline contains ' em ' -%}
+    {%- assign dp = byline | split: ' em ' | last | strip | split: ' ' -%}
+    {%- assign day = dp[1] | remove: ',' -%}
+    {%- assign year = dp[2] -%}
+    {%- assign mnum = '' -%}
+    {%- for i in (0..11) -%}{%- if m_abbr[i] == dp[0] -%}{%- assign mnum = m_num[i] -%}{%- endif -%}{%- endfor -%}
+    {%- if mnum != '' and day and year -%}
+      {%- assign iso = year | append: '-' | append: mnum | append: '-' | append: day | append: 'T12:00:00-03:00' -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- comment -%} resumo: 1º parágrafo real (mesma lógica de meta-description.html) {%- endcomment -%}
+  {%- assign desc = '' -%}
+  {%- for line in lines -%}
+    {%- assign t = line | strip -%}
+    {%- assign c = t | slice: 0, 1 -%}
+    {%- if desc == '' and t != '' and c != '#' and c != '!' -%}
+      {%- assign desc = t | markdownify | strip_html | strip_newlines | strip | truncate: 200 -%}
+    {%- endif -%}
+  {%- endfor -%}
+  <entry>
+    <title>{{ p.title | xml_escape }}</title>
+    <link href="{{ p.url | absolute_url }}" rel="alternate" type="text/html"/>
+    <id>{{ p.url | absolute_url }}</id>
+    <updated>{{ iso }}</updated>
+    <published>{{ iso }}</published>
+    <summary>{{ desc | xml_escape }}</summary>
+  </entry>
+  {%- endfor %}
+</feed>
