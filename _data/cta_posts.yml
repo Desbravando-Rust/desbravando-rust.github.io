@@ -20,3 +20,4 @@
 "0018": "Trocou o Celery por uma fila em Rust? O livro mostra como integrar Rust ao seu stack Python sem reescrever tudo."
 "0019": "Curtiu ver o teto do Python em WebSockets? O livro cobre concorrência sem GIL e async em Rust com projetos práticos."
 "0020": "Gostou de rodar a mesma lógica no front e no Python via Rust? O livro te dá a base pra escrever esse núcleo compartilhado com segurança."
+"0021": "Python sem GIL mudou o jogo? O livro mostra onde Rust ainda ganha: paralelismo real, segurança e performance previsível."
