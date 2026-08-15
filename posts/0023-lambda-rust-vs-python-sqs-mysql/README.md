@@ -24,6 +24,25 @@ Isso é pouco código, mas é o tipo de pouco código onde um deslize vira CVE. 
 
 ## Os dois projetos lado a lado
 
+O fluxo de ponta a ponta é idêntico nas duas versões — o que muda é o que cada uma precisa fazer sozinha versus o que ganha de graça do ecossistema:
+
+```mermaid
+flowchart LR
+    SQS[("SQS queue")] --> RustLambda & PythonLambda
+
+    subgraph Rust["message-rustler (Rust)"]
+        RustLambda["handle_batch"] --> RustAuth["aws-sigv4<br/>(assinatura manual)"]
+        RustAuth --> RustDB[("MySQL<br/>via sqlx::Pool")]
+    end
+
+    subgraph Python["python-queue (Python)"]
+        PythonLambda["handle_batch"] --> PythonAuth["boto3.generate_db_auth_token<br/>(biblioteca pronta)"]
+        PythonAuth --> PythonDB[("MySQL<br/>conexão por invocação")]
+    end
+
+    RustDB & PythonDB --> DLQ[("DLQ<br/>após maxReceiveCount")]
+```
+
 | | `message-rustler` (Rust) | `python-queue` (Python) |
 | --- | ---: | ---: |
 | Linhas em `src/` | 743 (código + testes inline) | 244 (só aplicação) |
