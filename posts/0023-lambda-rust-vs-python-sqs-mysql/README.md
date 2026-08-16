@@ -9,7 +9,7 @@ Peguei uma Lambda AWS em Rust que consome SQS e faz `UPDATE` dinâmico num MySQL
 
 No [post sobre trocar o Celery por um worker em Rust](../0018-apaguei-meu-celery-worker-rust-django) eu defendi a tese padrão deste blog: trocar a peça pesada por Rust economiza RAM e CPU. Dessa vez fiz o caminho contrário de propósito. Peguei um projeto real do nosso workspace — `message-rustler`, uma Lambda que processa mensagens de uma fila SQS e atualiza registros num banco — e me perguntei: e se essa Lambda nunca tivesse sido escrita em Rust? Quanto código, quantas dependências e quanto cuidado manual eu precisaria a mais (ou a menos) fazendo em Python puro, sem sair do runtime nativo da AWS?
 
-*Valeu, [@fsilvajoel](https://github.com/fsilvajoel), pela discussão recente que puxou esse experimento inteiro — sem ela esse post não existia.*
+*Esse post começou numa discussão com [@fsilvajoel](https://github.com/fsilvajoel): ele defendia uma API síncrona no lugar de uma Lambda consumindo fila — por que aceitar a complexidade de SQS, retry e DLQ se um endpoint HTTP simples resolve o mesmo problema de negócio? A pergunta não tinha resposta óbvia, e foi o estalo que faltava pra eu parar de especular e construir os dois lados: o `message-rustler` original (fila) e, agora, essa reimplementação em Python — pra comparar de verdade, com código, em vez de opinar de graça. Valeu, Joel.*
 
 ## O problema que as duas versões resolvem
 
