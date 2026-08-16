@@ -21,4 +21,4 @@
 "0019": "Curtiu ver o teto do Python em WebSockets? O livro cobre concorrência sem GIL e async em Rust com projetos práticos."
 "0020": "Gostou de rodar a mesma lógica no front e no Python via Rust? O livro te dá a base pra escrever esse núcleo compartilhado com segurança."
 "0021": "Python sem GIL mudou o jogo? O livro mostra onde Rust ainda ganha: paralelismo real, segurança e performance previsível."
-"0023": "Curtiu comparar complexidade real entre Rust e Python numa Lambda? O livro ensina a decidir com rigor onde cada linguagem compensa no seu stack."
+"0022": "Curtiu comparar complexidade real entre Rust e Python numa Lambda? O livro ensina a decidir com rigor onde cada linguagem compensa no seu stack."
