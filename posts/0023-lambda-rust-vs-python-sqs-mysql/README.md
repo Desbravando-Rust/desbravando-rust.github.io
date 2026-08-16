@@ -228,3 +228,8 @@ Se você for repetir: os dois Dockerfiles de benchmark (RIE puro, sem supervisor
 5. **Benchmark honesto desconfia do próprio harness antes de desconfiar do resultado.** Minha primeira rodada dizia que Python era mais rápido — e o motivo não era Python, era eu medindo o binário Rust atrás de uma ferramenta de dev (`cargo lambda watch`) que o lado Python nunca teve. Refazer com o mesmo emulador (RIE) dos dois lados foi o que revelou o número real: Rust ganha throughput, latência e start, e mantém a vantagem de ~4,5x menos memória que já era limpa desde o início.
 
 Se você trabalha num stack majoritariamente Python e está decidindo se vale a pena trazer Rust pra dentro dele — ou o inverso, como fiz aqui — este é exatamente o tipo de raciocínio que o livro [Desbravando Rust](https://desbravandorust.com.br) ensina a fazer com rigor: não "qual linguagem é mais rápida", mas "o que cada uma me obriga a acertar sozinho, e o que ela acerta por mim".
+
+## Código
+
+- [`message-rustler`](https://github.com/Desbravando-Rust/message-rustler) — a Lambda original em Rust
+- [`python-queue`](https://github.com/Desbravando-Rust/python-queue) — a reimplementação em Python deste post
