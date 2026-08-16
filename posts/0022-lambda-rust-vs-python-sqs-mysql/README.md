@@ -2,14 +2,14 @@
 
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Ago 15, 2026
 
-![Cover](imgs/cover.png)
 
+*Esse post nasceu de uma troca com [@fsilvajoel](https://github.com/fsilvajoel) sobre arquiteturas alternativas pra esse mesmo problema — foi o estalo que faltava pra eu parar de especular e construir os dois lados: o `message-rustler` original e, agora, essa reimplementação em Python. Valeu, Joel.*
 
 Peguei uma Lambda AWS em Rust que consome SQS e faz `UPDATE` dinâmico num MySQL, reescrevi do zero em Python sem reaproveitar código, e comparei dependências, linhas e onde cada linguagem me fez errar.
 
 No [post sobre trocar o Celery por um worker em Rust](../0018-apaguei-meu-celery-worker-rust-django) eu defendi a tese padrão deste blog: trocar a peça pesada por Rust economiza RAM e CPU. Dessa vez fiz o caminho contrário de propósito. Peguei um projeto real do nosso workspace — `message-rustler`, uma Lambda que processa mensagens de uma fila SQS e atualiza registros num banco — e me perguntei: e se essa Lambda nunca tivesse sido escrita em Rust? Quanto código, quantas dependências e quanto cuidado manual eu precisaria a mais (ou a menos) fazendo em Python puro, sem sair do runtime nativo da AWS?
 
-*Esse post nasceu de uma troca com [@fsilvajoel](https://github.com/fsilvajoel) sobre arquiteturas alternativas pra esse mesmo problema — foi o estalo que faltava pra eu parar de especular e construir os dois lados: o `message-rustler` original e, agora, essa reimplementação em Python. Valeu, Joel.*
+![Cover](imgs/cover.png)
 
 ## O problema que as duas versões resolvem
 
