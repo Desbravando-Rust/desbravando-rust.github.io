@@ -183,31 +183,36 @@ def lambda_handler(event: dict, context) -> dict:
 
 É deliberadamente mais simples — abre mão de reaproveitar a conexão entre mensagens do mesmo lote, ao custo de um handshake a mais por invocação. Decidi medir essa diferença em vez de especular.
 
-## Benchmark local: números reais, sem AWS
+## Benchmark local: números reais, sem AWS (e sem ferramenta de dev atrapalhando)
 
-Nunca fiz deploy de nenhuma das duas versões — não tenho conta AWS de produção pra este experimento. Então o que eu podia medir com honestidade era o **runtime local de cada uma rodando de verdade**: o binário `--release` do Rust atrás do `cargo lambda watch` (mesmo mecanismo do [post da fila em Rust](../0018-apaguei-meu-celery-worker-rust-django)), e o handler Python real atrás do [Lambda Runtime Interface Emulator](https://github.com/aws/aws-lambda-runtime-interface-emulator) da própria AWS — o mesmo emulador que roda por trás de `sam local` e de imagens de container Lambda. As duas expõem o mesmo contrato HTTP (`POST /2015-03-31/functions/.../invocations`), então bati as duas com o mesmo script Python (stdlib só, sem libs de benchmark), no mesmo host, contra o mesmo MySQL 8.0 local.
+Nunca fiz deploy de nenhuma das duas versões — não tenho conta AWS de produção pra este experimento. Então o que eu podia medir com honestidade era o **runtime local de cada uma rodando de verdade**. Minha primeira tentativa usou o `cargo lambda watch` pro lado Rust — a ferramenta de dev que o próprio post [sobre a fila em Rust](../0018-apaguei-meu-celery-worker-rust-django) usa. O resultado saiu estranho: Python mais rápido que Rust em throughput, por uma margem grande demais pra eu simplesmente publicar sem desconfiar.
 
-**Metodologia:** 5 invocações de aquecimento descartadas, depois 200 invocações sequenciais com lote de 5 mensagens cada (1.000 mensagens no total por rodada), medindo o tempo de cada chamada HTTP de ponta a ponta — parsing, validação de whitelist, `UPDATE` no MySQL, resposta. Rodei 2 vezes cada uma pra não publicar um número de sorte.
+Desconfiei com razão. `cargo lambda watch` é uma ferramenta de **desenvolvimento**: mantém um processo supervisor rodando por cima do binário da função, com hot-reload e uma camada de proxy — nada disso existe na Lambda de verdade. O lado Python, desde o início, rodava atrás do [Lambda Runtime Interface Emulator](https://github.com/aws/aws-lambda-runtime-interface-emulator) (RIE) da própria AWS — o emulador mais fino que existe, o mesmo que roda por trás de `sam local` e de imagens de container Lambda em produção. Eu estava comparando um binário Rust carregando um supervisor extra contra um binário Python sem supervisor nenhum. Refiz o lado Rust: peguei o binário nativo (`cargo build --release`) e coloquei atrás do **mesmo RIE**, sem `cargo lambda watch` no meio — as duas linguagens, exatamente o mesmo emulador, o mesmo contrato HTTP (`POST /2015-03-31/functions/.../invocations`).
 
-| Métrica | Rust (`--release`) | Python |
+**Metodologia:** 5 invocações de aquecimento descartadas, depois 200 invocações sequenciais com lote de 5 mensagens cada (1.000 mensagens no total por rodada), medindo o tempo de cada chamada HTTP de ponta a ponta — parsing, validação de whitelist, `UPDATE` no MySQL, resposta. Throughput rodado 2 vezes, tempo de start 3 vezes, pra não publicar número de sorte. Script em `scripts/bench.py`, stdlib só, sem libs de benchmark.
+
+| Métrica | Rust (nativo, atrás do RIE) | Python (atrás do RIE) |
 | --- | ---: | ---: |
-| Throughput (msgs/s) — rodada 1 | 156,2 | 213,9 |
-| Throughput (msgs/s) — rodada 2 | 140,4 | 195,5 |
-| Latência média | ~32-36ms | ~23-25ms |
-| Latência p95 | ~65-66ms | ~26-28ms |
-| Memória do processo da função (RSS) | ~10,2 MB | ~45,4 MB |
-| Tempo de start até responder (build/imagem já quentes) | 0,51s | 0,54s |
-| Tamanho do artefato de deploy (zip) | 6,4 MB | 3,9 MB |
+| Throughput (msgs/s) — rodada 1 | 229,6 | 203,8 |
+| Throughput (msgs/s) — rodada 2 | 236,1 | 197,9 |
+| Latência média | ~21ms | ~25ms |
+| Latência p95 | ~25ms | ~27ms |
+| Memória do processo da função (RSS) | ~10,0 MB | ~44,5 MB |
+| Overhead do próprio RIE (igual nos dois) | ~12,7 MB | ~12,6 MB |
+| Tempo de start até responder (3 rodadas) | 0,29 / 0,29 / 0,32s | 0,48 / 0,48 / 0,47s |
+| Tamanho do artefato de deploy (zip) | 4,5 MB | 3,9 MB |
 
-Dois resultados me surpreenderam de verdade:
+Com a assimetria removida, o resultado virou o que eu esperava — mas só porque medi de novo em vez de aceitar o primeiro número:
 
-**Python foi mais rápido e mais consistente no throughput.** Não uma vez — nas duas rodadas, com folga (~40% mais mensagens/segundo, p95 quase 3x menor). Antes de aceitar isso como "Python venceu", tenho que ser honesto sobre a assimetria da medição: o `cargo lambda watch` é uma ferramenta de **desenvolvimento** — ele reconstrói o binário a cada mudança de código, mantém um processo supervisor rodando por cima do binário da função, e adiciona uma camada de proxy que a AWS de verdade não tem. O RIE, por outro lado, é o próprio emulador que a AWS distribui pra simular o serviço de produção o mais fielmente possível. Não é a mesma "distância" da realidade dos dois lados — é bem provável que parte (ou toda) a vantagem do Python aqui seja o supervisor do `cargo-lambda` roubando ciclos, não Rust perdendo pra Python. Reporto o número porque é o que medi, não porque bate com a expectativa do blog — mas não vou fingir que ele prova "Python é mais rápido em Lambda" fora deste harness local específico.
+**Rust ganha em throughput, latência e tempo de start.** ~15-20% mais mensagens/segundo, latência média ~4ms menor, e principalmente: **inicia quase 2x mais rápido** (0,3s contra 0,48s) — sem interpretador pra carregar, sem `import boto3`/`pymysql`/`cryptography` pra resolver, o binário estático já sobe pronto. Esse número de start é o mais honesto proxy de cold start que dá pra medir localmente, e é onde a diferença estrutural entre as duas linguagens mais aparece.
 
-**Rust usa ~4,5x menos memória, isso sim se sustenta.** Aqui a comparação é mais justa: RSS do processo da função em si (excluindo os dois supervisores de desenvolvimento, que não existem na Lambda de verdade) — 10,2 MB de binário Rust estático contra 45,4 MB de interpretador Python com `pymysql`, `boto3` e `cryptography` carregados. Isso bate com o padrão que já vimos em [outros posts do blog](../0018-apaguei-meu-celery-worker-rust-django) e é o tipo de número que se traduz direto em conta de infraestrutura quando você multiplica por milhares de invocações concorrentes.
+**Rust usa ~4,5x menos memória — isso não mudou entre as duas medições.** RSS do processo da função em si, com o overhead do RIE isolado à parte (e agora simétrico: ~12,7 MB dos dois lados, prova que a comparação está limpa) — 10,0 MB de binário Rust contra 44,5 MB de interpretador Python com `pymysql`, `boto3` e `cryptography` carregados. Bate com o padrão de [outros posts do blog](../0018-apaguei-meu-celery-worker-rust-django) e é o tipo de número que vira conta de infraestrutura quando multiplicado por milhares de invocações concorrentes.
 
-**Tempo de start e tamanho do zip empataram tecnicamente.** 0,51s vs 0,54s é ruído de uma medição única — não vou vestir isso de conclusão. E o zip do Python saiu menor (sem `boto3`, que a Lambda já dá de graça) que o do Rust (binário estático linkando `tokio`+`sqlx`+TLS+SDK da AWS inteiros).
+**O tamanho do zip quase empatou** — 4,5 MB (binário estático Rust, sem SDK da AWS porque o cliente `rds-db` vem do próprio `aws-sigv4`/`aws-config`, não do SDK completo) contra 3,9 MB (Python sem `boto3`, que a Lambda já dá de graça).
 
-Se você for repetir este benchmark, o script está em `scripts/bench.py` numa branch `bench/local-throughput` em cada repositório — nunca mergeada, porque não precisei tocar em nenhuma linha do código de produção pra medir; só bati HTTP no que já estava rodando.
+A lição real aqui não é nenhum número da tabela — é que o **primeiro benchmark que rodei estava medindo a ferramenta de dev errada, não a linguagem**, e só percebi porque o resultado contrariava tudo que eu já tinha visto nos [outros benchmarks deste blog](../0019-um-milhao-websockets-python-rust). Se o número tivesse confirmado minha expectativa eu talvez não tivesse desconfiado — o que é exatamente o tipo de viés que benchmark honesto tem que vigiar contra si mesmo.
+
+Se você for repetir: os dois Dockerfiles de benchmark (RIE puro, sem supervisor de dev) estão numa branch `bench/local-throughput` em cada repositório — nunca mergeada, porque só existem pra medir, não fazem parte do runtime de produção de nenhum dos dois projetos.
 
 ## O que esse caso ensina
 
@@ -215,6 +220,6 @@ Se você for repetir este benchmark, o script está em `scripts/bench.py` numa b
 2. **Tipagem forte não é sobre performance aqui — é sobre completude.** O `Result<(), ()>` do Rust não me deixou esquecer um caminho de erro. O `except (A, B, C)` do Python me deixou, e só a revisão pegou.
 3. **Whitelist de tabela/coluna é o único lugar que precisa ser idêntico.** Todo o resto — driver, autenticação, runtime — pode divergir sem risco, desde que essa fronteira específica (nome de identificador SQL nunca vindo do payload) seja tratada com o mesmo rigor nas duas linguagens.
 4. **"Reescrevi do zero" é o teste mais honesto de complexidade real.** Migrar código costuma esconder decisões antigas. Recomeçar do zero, com o mesmo problema, expõe o que cada linguagem exige de você — e o que ela te dá de graça.
-5. **Benchmark honesto admite quando o resultado incomoda.** Eu esperava Rust ganhar throughput e ele perdeu — pra uma ferramenta de dev que provavelmente não representa a AWS de verdade com a mesma fidelidade dos dois lados. A memória, essa sim, veio limpa: ~4,5x menos. Publicar os dois números, com o mesmo cuidado, é mais útil do que publicar só o que confirma a tese do blog.
+5. **Benchmark honesto desconfia do próprio harness antes de desconfiar do resultado.** Minha primeira rodada dizia que Python era mais rápido — e o motivo não era Python, era eu medindo o binário Rust atrás de uma ferramenta de dev (`cargo lambda watch`) que o lado Python nunca teve. Refazer com o mesmo emulador (RIE) dos dois lados foi o que revelou o número real: Rust ganha throughput, latência e start, e mantém a vantagem de ~4,5x menos memória que já era limpa desde o início.
 
 Se você trabalha num stack majoritariamente Python e está decidindo se vale a pena trazer Rust pra dentro dele — ou o inverso, como fiz aqui — este é exatamente o tipo de raciocínio que o livro [Desbravando Rust](https://desbravandorust.com.br) ensina a fazer com rigor: não "qual linguagem é mais rápida", mas "o que cada uma me obriga a acertar sozinho, e o que ela acerta por mim".
