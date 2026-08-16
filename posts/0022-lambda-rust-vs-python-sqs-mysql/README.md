@@ -1,13 +1,13 @@
-# Reescrevi minha Lambda de Rust em Python puro: 15 dependências viraram 1, e o Rust ainda venceu
+# Construí a mesma Lambda em Rust e em Python puro: 14 dependências contra 1, e o Rust ainda venceu
 
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Ago 15, 2026
 
 
-*Esse post nasceu de uma troca com [@fsilvajoel](https://github.com/fsilvajoel) sobre arquiteturas alternativas pra esse mesmo problema e foi o estalo que faltava pra eu parar de especular e construir os dois lados: o `message-rustler` original e, agora, essa reimplementação em Python. Valeu, Joel.*
+*Esse post nasceu de uma troca com [@fsilvajoel](https://github.com/fsilvajoel) sobre arquiteturas alternativas pra um problema de Lambda + SQS + MySQL, e foi o estalo que faltava pra eu parar de especular e construir os dois lados do zero, só pra comparar: o `message-rustler` em Rust e o `python-queue` em Python. Valeu, Joel.*
 
-Peguei uma Lambda AWS em Rust que consome SQS e faz `UPDATE` dinâmico num MySQL, reescrevi do zero em Python sem reaproveitar código, e comparei dependências, linhas e onde cada linguagem me fez errar.
+Construí do zero uma Lambda AWS que consome SQS e faz `UPDATE` dinâmico num MySQL em duas linguagens, Rust e Python puro, sem reaproveitar código entre elas, e comparei dependências, linhas e onde cada linguagem me fez errar.
 
-No [post sobre trocar o Celery por um worker em Rust](../0018-apaguei-meu-celery-worker-rust-django) eu defendi a tese padrão deste blog: trocar a peça pesada por Rust economiza RAM e CPU. Dessa vez fiz o caminho contrário de propósito. Peguei um projeto real do nosso workspace (`message-rustler`), uma Lambda que processa mensagens de uma fila SQS e atualiza registros num banco, e me perguntei: e se essa Lambda nunca tivesse sido escrita em Rust? Quanto código, quantas dependências e quanto cuidado manual eu precisaria a mais (ou a menos) fazendo em Python puro, sem sair do runtime nativo da AWS?
+No [post sobre trocar o Celery por um worker em Rust](../0018-apaguei-meu-celery-worker-rust-django) eu defendi a tese padrão deste blog: trocar a peça pesada por Rust economiza RAM e CPU. Dessa vez fiz o caminho contrário de propósito. A partir da mesma ideia (uma Lambda que processa mensagens de uma fila SQS e atualiza registros num banco), construí os dois lados lado a lado e me perguntei: se essa Lambda nunca fosse escrita em Rust, quanto código, quantas dependências e quanto cuidado manual eu precisaria a mais (ou a menos) fazendo em Python puro, sem sair do runtime nativo da AWS?
 
 ![Cover](imgs/cover.png)
 
@@ -53,11 +53,13 @@ flowchart LR
 | Linhas em `src/` | 743 (código + testes inline) | 244 (só aplicação) |
 | Linhas em `tests/` | (testes vivem dentro de cada módulo) | 356 |
 | Testes automatizados | 17 | 32 |
-| Dependências diretas (runtime) | 15 crates | 1 pacote (`PyMySQL`) |
+| Dependências diretas (runtime) | 14 crates | 1 pacote (`PyMySQL`) |
 | Autenticação IAM no RDS Proxy | SigV4 assinado à mão (`aws-sigv4`) | `boto3.client("rds").generate_db_auth_token(...)` |
 | Runtime assíncrono | `tokio` (obrigatório pro `lambda_runtime`) | nenhum, handler síncrono |
 
-A diferença mais visível é a coluna de dependências. O Rust não exagerou: `lambda_runtime`, `aws_lambda_events`, `tokio`, `serde`/`serde_json`/`serde_yaml`, `sqlx`, `async-trait`, `aws-config`, `aws-credential-types`, `aws-sigv4`, `http`, `thiserror`, `tracing`/`tracing-subscriber`: cada uma resolve um problema real. Numa Lambda Python, boa parte desse problema já vem resolvido pelo runtime gerenciado da AWS. `boto3` já está instalado no container de execução. O evento SQS já chega como `dict`, então indexar `event["Records"]` basta. E como cada invocação processa um batch e devolve, não tem por que existir um runtime assíncrono no meio do caminho.
+A diferença mais visível é a coluna de dependências. O Rust não exagerou: `lambda_runtime`, `aws_lambda_events`, `tokio`, `serde`/`serde_json`, `sqlx`, `async-trait`, `aws-config`, `aws-credential-types`, `aws-sigv4`, `http`, `thiserror`, `tracing`/`tracing-subscriber`: cada uma resolve um problema real. A whitelist de tabelas/colunas (`config/whitelist.json`) é JSON dos dois lados, então nenhuma das duas linguagens carrega uma dependência a mais só pra ler o próprio arquivo de config; a versão inicial deste post tinha `serde_yaml` no lado Rust por causa de um formato de config que não precisava ser diferente do Python, e a comparação de dependências saiu injusta por causa disso. Numa Lambda Python, boa parte desse problema já vem resolvido pelo runtime gerenciado da AWS. `boto3` já está instalado no container de execução. O evento SQS já chega como `dict`, então indexar `event["Records"]` basta. E como cada invocação processa um batch e devolve, não tem por que existir um runtime assíncrono no meio do caminho.
+
+A outra linha que chama atenção é a de testes: 32 em Python contra 17 em Rust, quase o dobro. Isso não é o Python sendo testado com mais rigor, é o Python sendo testado com mais medo. O compilador do Rust garante em tempo de compilação uma categoria inteira de bug que em Python só um teste explícito consegue pegar: se o `sqlx` decidir devolver amanhã um tipo de erro novo, o `Result<(), ()>` do handler simplesmente não compila até alguém decidir o que fazer com ele, então boa parte dos 17 testes do Rust sobra livre pra cobrir só comportamento (regras da whitelist, formato de erro, integração), não a existência dos branches de erro. Em Python não existe essa rede de segurança embutida (o próprio bug deste post, o `TypeError` do PyMySQL escapando do `except`, passou por 32 testes verdes sem ninguém notar); cada garantia que o compilador do Rust dá de graça, o Python só reproduz com um teste dedicado provando que aquele caminho de erro existe e é tratado. Os 15 testes a mais em Python não sobram de zelo, cobrem justamente a lacuna que o tipo do retorno do Rust fecha sozinho.
 
 ## Onde a diferença de dependência aparece: autenticação IAM
 
@@ -137,7 +139,7 @@ except (MessageParseError, WhitelistError, RepoError) as exc:
     failures.append({"itemIdentifier": message_id})
 ```
 
-Parece completo: cobre erro de parsing, erro de whitelist, erro de banco. Só que uma mensagem tecnicamente válida, com um objeto aninhado dentro de `fields` (`{"status": {"a": 1}}` em vez de `{"status": "shipped"}`), passa pelo parsing e pela whitelist sem erro, e só explode dentro do PyMySQL, como `TypeError`, um tipo de exceção que eu simplesmente não tinha listado. Sem estar naquela tupla, o erro escapava do `handle_batch` inteiro, derrubava a invocação da Lambda, e o SQS reentregava o lote inteiro, incluindo mensagens que já tinham sido processadas com sucesso, até todas caírem juntas na DLQ. Isso anula na prática o propósito do `ReportBatchItemFailures`: reportar só o que falhou.
+Parece completo: cobre erro de parsing, erro de whitelist e erro de banco. Só que uma mensagem tecnicamente válida, com um objeto aninhado dentro de `fields` (`{"status": {"a": 1}}` em vez de `{"status": "shipped"}`), passa pelo parsing e pela whitelist sem erro, e só explode dentro do PyMySQL, como `TypeError`, um tipo de exceção que eu simplesmente não tinha listado. Sem estar naquela tupla, o erro escapava do `handle_batch` inteiro, derrubava a invocação da Lambda, e o SQS reentregava o lote inteiro, incluindo mensagens que já tinham sido processadas com sucesso, até todas caírem juntas na DLQ. Isso anula na prática o propósito do `ReportBatchItemFailures`: reportar só o que falhou.
 
 A versão Rust tem a mesma superfície de risco, mas a assinatura do código força você a olhar pra ela:
 
@@ -198,22 +200,22 @@ Desconfiei com razão. `cargo lambda watch` é uma ferramenta de desenvolvimento
 
 | Métrica | Rust (nativo, atrás do RIE) | Python (atrás do RIE) |
 | --- | ---: | ---: |
-| Throughput (msgs/s), rodada 1 | 229,6 | 203,8 |
-| Throughput (msgs/s), rodada 2 | 236,1 | 197,9 |
-| Latência média | ~21ms | ~25ms |
-| Latência p95 | ~25ms | ~27ms |
-| Memória do processo da função (RSS) | ~10,0 MB | ~44,5 MB |
-| Overhead do próprio RIE (igual nos dois) | ~12,7 MB | ~12,6 MB |
-| Tempo de start até responder (3 rodadas) | 0,29 / 0,29 / 0,32s | 0,48 / 0,48 / 0,47s |
-| Tamanho do artefato de deploy (zip) | 4,5 MB | 3,9 MB |
+| Throughput (msgs/s), rodada 1 | 214,2 | 196,1 |
+| Throughput (msgs/s), rodada 2 | 216,6 | 193,7 |
+| Latência média | ~23ms | ~26ms |
+| Latência p95 | ~26ms | ~30ms |
+| Memória do processo da função (RSS) | ~9,5 MB | ~46,1 MB |
+| Overhead do próprio RIE (igual nos dois) | ~11,3 MB | ~11,5 MB |
+| Tempo de start até responder (3 rodadas) | 0,29 / 0,29 / 0,29s | 0,49 / 0,45 / 0,43s |
+| Tamanho do artefato de deploy (zip) | 6,3 MB | 5,0 MB |
 
 Com a assimetria removida, o resultado virou o que eu esperava, mas só porque medi de novo em vez de aceitar o primeiro número.
 
-Rust ganha em throughput, latência e tempo de start: ~15-20% mais mensagens/segundo, latência média ~4ms menor, e inicia quase 2x mais rápido (0,3s contra 0,48s), sem interpretador pra carregar e sem `import boto3`/`pymysql`/`cryptography` pra resolver: o binário estático já sobe pronto. Esse número de start é o mais honesto proxy de cold start que dá pra medir localmente, e é onde a diferença estrutural entre as duas linguagens mais aparece.
+Rust ganha em throughput, latência e tempo de start: ~10% mais mensagens/segundo, latência média ~2-3ms menor, e inicia ~1,6x mais rápido (0,29s contra ~0,46s), sem interpretador pra carregar e sem `import boto3`/`pymysql`/`cryptography` pra resolver: o binário estático já sobe pronto. Esse número de start é o mais honesto proxy de cold start que dá pra medir localmente, e é onde a diferença estrutural entre as duas linguagens mais aparece.
 
-A memória não mudou entre as duas medições: Rust continua usando ~4,5x menos. RSS do processo da função em si, com o overhead do RIE isolado à parte (e agora simétrico, ~12,7 MB dos dois lados, prova que a comparação está limpa), fica em 10,0 MB de binário Rust contra 44,5 MB de interpretador Python com `pymysql`, `boto3` e `cryptography` carregados. Bate com o padrão de [outros posts do blog](../0018-apaguei-meu-celery-worker-rust-django) e é o tipo de número que vira conta de infraestrutura quando multiplicado por milhares de invocações concorrentes.
+A memória segue com a mesma assimetria de sempre: Rust usa ~4,9x menos. RSS é a memória física que o processo da função realmente ocupa em RAM neste instante (Resident Set Size), diferente do quanto de memória virtual ele reservou, é o número que aparece de verdade no consumo de infraestrutura. Isolei o processo da função (o binário Rust ou o interpretador Python) do processo do próprio RIE (o emulador do Lambda Runtime Interface Emulator, que roda em ambos os containers e não é código de nenhuma das duas linguagens): o overhead do RIE ficou quase simétrico, ~11,3 MB no lado Rust contra ~11,5 MB no lado Python, o que confirma que a comparação está isolando só o que cada linguagem carrega. Descontado esse overhead comum, sobra 9,5 MB de RSS pro binário Rust contra 46,1 MB pro interpretador Python com `pymysql` e `cryptography` carregados. Bate com o padrão de [outros posts do blog](../0018-apaguei-meu-celery-worker-rust-django) e é o tipo de número que vira conta de infraestrutura quando multiplicado por milhares de invocações concorrentes.
 
-O tamanho do zip quase empatou: 4,5 MB de binário estático Rust (sem SDK da AWS, porque o cliente `rds-db` vem do próprio `aws-sigv4`/`aws-config`, não do SDK completo) contra 3,9 MB de Python sem `boto3`, que a Lambda já dá de graça.
+O tamanho do zip não empata: 6,3 MB de binário estático Rust (sem SDK da AWS, porque o cliente `rds-db` vem do próprio `aws-sigv4`/`aws-config`, não do SDK completo) contra 5,0 MB de Python com `pymysql` e `cryptography` empacotados (o `boto3` a Lambda já dá de graça, não entra no zip).
 
 A lição real aqui não é nenhum número da tabela. É que o primeiro benchmark que rodei estava medindo a ferramenta de dev errada, não a linguagem, e só percebi porque o resultado contrariava tudo que eu já tinha visto nos [outros benchmarks deste blog](../0019-um-milhao-websockets-python-rust). Se o número tivesse confirmado minha expectativa, talvez eu não tivesse desconfiado, exatamente o tipo de viés que um benchmark honesto precisa vigiar em si mesmo.
 
@@ -225,7 +227,7 @@ Se você for repetir: os dois Dockerfiles de benchmark (RIE puro, sem supervisor
 2. **Tipagem forte não é sobre performance aqui: é sobre completude.** O `Result<(), ()>` do Rust não me deixou esquecer um caminho de erro. O `except (A, B, C)` do Python me deixou, e só a revisão pegou.
 3. **Whitelist de tabela/coluna é o único lugar que precisa ser idêntico.** Todo o resto (driver, autenticação, runtime) pode divergir sem risco, desde que essa fronteira específica (nome de identificador SQL nunca vindo do payload) seja tratada com o mesmo rigor nas duas linguagens.
 4. **"Reescrevi do zero" é o teste mais honesto de complexidade real.** Migrar código costuma esconder decisões antigas. Recomeçar do zero, com o mesmo problema, expõe o que cada linguagem exige de você, e o que ela te dá de graça.
-5. **Benchmark honesto desconfia do próprio harness antes de desconfiar do resultado.** Minha primeira rodada dizia que Python era mais rápido, e o motivo não era Python, era eu medindo o binário Rust atrás de uma ferramenta de dev (`cargo lambda watch`) que o lado Python nunca teve. Refazer com o mesmo emulador (RIE) dos dois lados foi o que revelou o número real: Rust ganha throughput, latência e start, e mantém a vantagem de ~4,5x menos memória que já era limpa desde o início.
+5. **Benchmark honesto desconfia do próprio harness antes de desconfiar do resultado.** Minha primeira rodada dizia que Python era mais rápido, e o motivo não era Python, era eu medindo o binário Rust atrás de uma ferramenta de dev (`cargo lambda watch`) que o lado Python nunca teve. Refazer com o mesmo emulador (RIE) dos dois lados foi o que revelou o número real: Rust ganha throughput, latência e start, e mantém a vantagem de ~4,9x menos memória que já era limpa desde o início.
 
 Se você trabalha num stack majoritariamente Python e está decidindo se vale a pena trazer Rust pra dentro dele, ou o inverso, como fiz aqui, este é exatamente o tipo de raciocínio que o livro [Desbravando Rust](https://desbravandorust.com.br) ensina a fazer com rigor: não "qual linguagem é mais rápida", mas "o que cada uma me obriga a acertar sozinho, e o que ela acerta por mim".
 
