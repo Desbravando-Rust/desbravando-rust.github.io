@@ -1,6 +1,9 @@
-# Reescrevi minha Lambda de Rust em Python puro — e o resultado me surpreendeu
+# Reescrevi minha Lambda de Rust em Python puro: 15 dependências viraram 1 — e o Rust ainda venceu
 
 ###### Por [@zejuniortdr](https://github.com/zejuniortdr/) em Ago 15, 2026
+
+![Cover](imgs/cover.png)
+
 
 Peguei uma Lambda AWS em Rust que consome SQS e faz `UPDATE` dinâmico num MySQL, reescrevi do zero em Python sem reaproveitar código, e comparei dependências, linhas e onde cada linguagem me fez errar.
 
