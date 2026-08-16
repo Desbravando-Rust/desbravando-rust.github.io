@@ -181,7 +181,33 @@ def lambda_handler(event: dict, context) -> dict:
         connection.close()
 ```
 
-É deliberadamente mais simples — e mais lento em tese pra lotes grandes, já que reabre a conexão (e o handshake TLS) a cada invocação em vez de reaproveitar entre mensagens do mesmo lote. Não medi essa diferença em produção real — não fiz deploy de nenhuma das duas versões pra comparar throughput ao vivo, então não vou fingir que tenho um número de "X vezes mais rápido" pra te dar aqui. O que dá pra afirmar com confiança é o que realmente contei: menos dependência, menos código de infraestrutura pra manter, ao custo de uma escolha arquitetural mais simples que você precisa saber que fez.
+É deliberadamente mais simples — abre mão de reaproveitar a conexão entre mensagens do mesmo lote, ao custo de um handshake a mais por invocação. Decidi medir essa diferença em vez de especular.
+
+## Benchmark local: números reais, sem AWS
+
+Nunca fiz deploy de nenhuma das duas versões — não tenho conta AWS de produção pra este experimento. Então o que eu podia medir com honestidade era o **runtime local de cada uma rodando de verdade**: o binário `--release` do Rust atrás do `cargo lambda watch` (mesmo mecanismo do [post da fila em Rust](../0018-apaguei-meu-celery-worker-rust-django)), e o handler Python real atrás do [Lambda Runtime Interface Emulator](https://github.com/aws/aws-lambda-runtime-interface-emulator) da própria AWS — o mesmo emulador que roda por trás de `sam local` e de imagens de container Lambda. As duas expõem o mesmo contrato HTTP (`POST /2015-03-31/functions/.../invocations`), então bati as duas com o mesmo script Python (stdlib só, sem libs de benchmark), no mesmo host, contra o mesmo MySQL 8.0 local.
+
+**Metodologia:** 5 invocações de aquecimento descartadas, depois 200 invocações sequenciais com lote de 5 mensagens cada (1.000 mensagens no total por rodada), medindo o tempo de cada chamada HTTP de ponta a ponta — parsing, validação de whitelist, `UPDATE` no MySQL, resposta. Rodei 2 vezes cada uma pra não publicar um número de sorte.
+
+| Métrica | Rust (`--release`) | Python |
+| --- | ---: | ---: |
+| Throughput (msgs/s) — rodada 1 | 156,2 | 213,9 |
+| Throughput (msgs/s) — rodada 2 | 140,4 | 195,5 |
+| Latência média | ~32-36ms | ~23-25ms |
+| Latência p95 | ~65-66ms | ~26-28ms |
+| Memória do processo da função (RSS) | ~10,2 MB | ~45,4 MB |
+| Tempo de start até responder (build/imagem já quentes) | 0,51s | 0,54s |
+| Tamanho do artefato de deploy (zip) | 6,4 MB | 3,9 MB |
+
+Dois resultados me surpreenderam de verdade:
+
+**Python foi mais rápido e mais consistente no throughput.** Não uma vez — nas duas rodadas, com folga (~40% mais mensagens/segundo, p95 quase 3x menor). Antes de aceitar isso como "Python venceu", tenho que ser honesto sobre a assimetria da medição: o `cargo lambda watch` é uma ferramenta de **desenvolvimento** — ele reconstrói o binário a cada mudança de código, mantém um processo supervisor rodando por cima do binário da função, e adiciona uma camada de proxy que a AWS de verdade não tem. O RIE, por outro lado, é o próprio emulador que a AWS distribui pra simular o serviço de produção o mais fielmente possível. Não é a mesma "distância" da realidade dos dois lados — é bem provável que parte (ou toda) a vantagem do Python aqui seja o supervisor do `cargo-lambda` roubando ciclos, não Rust perdendo pra Python. Reporto o número porque é o que medi, não porque bate com a expectativa do blog — mas não vou fingir que ele prova "Python é mais rápido em Lambda" fora deste harness local específico.
+
+**Rust usa ~4,5x menos memória, isso sim se sustenta.** Aqui a comparação é mais justa: RSS do processo da função em si (excluindo os dois supervisores de desenvolvimento, que não existem na Lambda de verdade) — 10,2 MB de binário Rust estático contra 45,4 MB de interpretador Python com `pymysql`, `boto3` e `cryptography` carregados. Isso bate com o padrão que já vimos em [outros posts do blog](../0018-apaguei-meu-celery-worker-rust-django) e é o tipo de número que se traduz direto em conta de infraestrutura quando você multiplica por milhares de invocações concorrentes.
+
+**Tempo de start e tamanho do zip empataram tecnicamente.** 0,51s vs 0,54s é ruído de uma medição única — não vou vestir isso de conclusão. E o zip do Python saiu menor (sem `boto3`, que a Lambda já dá de graça) que o do Rust (binário estático linkando `tokio`+`sqlx`+TLS+SDK da AWS inteiros).
+
+Se você for repetir este benchmark, o script está em `scripts/bench.py` numa branch `bench/local-throughput` em cada repositório — nunca mergeada, porque não precisei tocar em nenhuma linha do código de produção pra medir; só bati HTTP no que já estava rodando.
 
 ## O que esse caso ensina
 
@@ -189,5 +215,6 @@ def lambda_handler(event: dict, context) -> dict:
 2. **Tipagem forte não é sobre performance aqui — é sobre completude.** O `Result<(), ()>` do Rust não me deixou esquecer um caminho de erro. O `except (A, B, C)` do Python me deixou, e só a revisão pegou.
 3. **Whitelist de tabela/coluna é o único lugar que precisa ser idêntico.** Todo o resto — driver, autenticação, runtime — pode divergir sem risco, desde que essa fronteira específica (nome de identificador SQL nunca vindo do payload) seja tratada com o mesmo rigor nas duas linguagens.
 4. **"Reescrevi do zero" é o teste mais honesto de complexidade real.** Migrar código costuma esconder decisões antigas. Recomeçar do zero, com o mesmo problema, expõe o que cada linguagem exige de você — e o que ela te dá de graça.
+5. **Benchmark honesto admite quando o resultado incomoda.** Eu esperava Rust ganhar throughput e ele perdeu — pra uma ferramenta de dev que provavelmente não representa a AWS de verdade com a mesma fidelidade dos dois lados. A memória, essa sim, veio limpa: ~4,5x menos. Publicar os dois números, com o mesmo cuidado, é mais útil do que publicar só o que confirma a tese do blog.
 
 Se você trabalha num stack majoritariamente Python e está decidindo se vale a pena trazer Rust pra dentro dele — ou o inverso, como fiz aqui — este é exatamente o tipo de raciocínio que o livro [Desbravando Rust](https://desbravandorust.com.br) ensina a fazer com rigor: não "qual linguagem é mais rápida", mas "o que cada uma me obriga a acertar sozinho, e o que ela acerta por mim".
