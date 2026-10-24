@@ -21,3 +21,4 @@
 "0020": ["0016", "0018", "0001"]   # WASM+PyO3 ↔ PyO3/CNPJ, fila Rust, Axum
 "0021": ["0010", "0016", "0002"]   # GIL/Rayon ↔ concorrência, performance, Polars
 "0022": ["0018", "0008", "0017"]   # Lambda Rust vs Python ↔ fila Rust/Celery, Result/Option, N+1/SQLx
+"0023": ["0003", "0014", "0022"]   # Supply chain/cargo deny ↔ Cargo, macros (build-time), Lambda/binário
