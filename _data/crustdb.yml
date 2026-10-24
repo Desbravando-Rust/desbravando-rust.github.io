@@ -1,0 +1,18 @@
+# Dados da página /tools/crustdb/ — edite aqui a cada release.
+# version vazio = estado pré-release (CTA "Acompanhe no GitHub").
+repo: "https://github.com/Desbravando-Rust/crustdb"
+version: ""            # ex: "0.1.0" (sem o "v"; a tag é v{{version}})
+release_date: ""       # ex: "2026-11-10"
+release_notes_url: ""  # vazio = linka {{repo}}/releases
+checksums_url: ""      # SHA256SUMS da release (vazio = oculto)
+# Nome exato do asset na release (packaging/build-appimage.sh gera com a versão no nome).
+# Link = {{repo}}/releases/download/v{{version}}/{{file}}
+downloads:
+  - label: "AppImage"
+    arch: "x86_64"
+    file: ""           # ex: "crustdb-0.1.0-x86_64.AppImage"
+    primary: true
+  - label: "tar.gz"
+    arch: "x86_64"
+    file: ""           # ex: "crustdb-0.1.0-x86_64-linux.tar.gz"
+    primary: false

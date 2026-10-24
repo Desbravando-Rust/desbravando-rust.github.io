@@ -1,0 +1,235 @@
+---
+title: cRustDB, cliente nativo para PostgreSQL e MySQL
+description: >-
+  cRustDB é um cliente desktop nativo para Linux, escrito em Rust, para
+  PostgreSQL, MySQL e MariaDB: leve, com TLS, túnel SSH e proteção contra
+  comandos destrutivos.
+---
+{% assign cr = site.data.crustdb %}
+{% assign released = false %}{% if cr.version != "" %}{% assign released = true %}{% endif %}
+<style>{% capture crcss %}{% include crustdb.scss %}{% endcapture %}{{ crcss | scssify }}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "cRustDB",
+  "description": {{ page.description | strip_newlines | strip | jsonify }},
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Linux",
+  "url": "{{ page.url | absolute_url }}",
+  "image": "{{ '/imgs/crustdb/logo.png' | absolute_url }}",
+  "codeRepository": "{{ cr.repo }}",
+  "license": "{{ cr.repo }}/blob/main/LICENSE",
+  {% if released %}"softwareVersion": "{{ cr.version }}",{% endif %}
+  "author": { "@type": "Person", "name": "{{ site.author }}" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+}
+</script>
+
+<div class="cr">
+  <section aria-labelledby="cr-title">
+    <div class="container">
+      <div class="cr-hero">
+        <div>
+          {% if released %}
+          <span class="cr-badge"><b>v{{ cr.version }}</b> · Linux x86_64</span>
+          {% else %}
+          <span class="cr-badge"><b>Pré-release</b> · v1 implementada, empacotamento em andamento</span>
+          {% endif %}
+          <h1 id="cr-title">O cliente de banco que abre em <span>117&nbsp;ms</span> e não deixa você apagar produção sem querer.</h1>
+          <p class="cr-lead">cRustDB é um cliente desktop nativo para PostgreSQL, MySQL e MariaDB, escrito em Rust com egui. Navegue pelos dados num grid somente leitura e rode SQL com confirmação antes de qualquer comando destrutivo.</p>
+          <div class="cr-ctas">
+            {% if released %}
+            {% for d in cr.downloads %}{% if d.primary %}
+            <a class="btn btn-buy js-crustdb" data-cr="download-{{ d.label | slugify }}" href="{{ cr.repo }}/releases/download/v{{ cr.version }}/{{ d.file }}">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>
+              Baixar {{ d.label }}
+            </a>
+            {% endif %}{% endfor %}
+            <a class="btn btn-ghost js-crustdb" data-cr="github-hero" href="{{ cr.repo }}" rel="noopener" target="_blank">Ver no GitHub</a>
+            {% else %}
+            <a class="btn btn-buy js-crustdb" data-cr="github-hero" href="{{ cr.repo }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+              Acompanhe no GitHub
+            </a>
+            <a class="btn btn-ghost" href="#instalar">Compilar do código-fonte</a>
+            {% endif %}
+          </div>
+          <p class="cr-platforms">Linux x86_64 · X11 e Wayland · PostgreSQL · MySQL · MariaDB</p>
+        </div>
+        <img class="cr-logo" src="/imgs/crustdb/logo.png" width="220" height="220" alt="Logo do cRustDB: um caranguejo laranja abraçando um cilindro de banco de dados">
+      </div>
+
+      <div class="cr-proof">
+        <div><b>117&nbsp;ms</b><span>da abertura ao primeiro frame</span></div>
+        <div><b>7,9&nbsp;ms</b><span>por frame rolando 100 mil linhas</span></div>
+        <div><b>172&nbsp;MB</b><span>de memória com 100 mil × 20 células</span></div>
+      </div>
+      <p class="cr-proof-src">Medições do build release em Linux x86_64. Metodologia e metas no <a href="{{ cr.repo }}#performance" rel="noopener" target="_blank">README</a>.</p>
+
+      <figure class="cr-shot-main">
+        <!-- TODO: screenshot principal (imgs/crustdb/hero.png) -->
+        <div class="cr-shot" role="img" aria-label="Espaço reservado para o screenshot principal do cRustDB">Screenshot em breve</div>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="cr-features">
+    <div class="container">
+      <span class="cr-label">01 / Destaques</span>
+      <h2 id="cr-features">Feito para o dia a dia com banco de verdade</h2>
+      <p class="section-sub">Tudo que a v1 entrega, sem plugin e sem conta.</p>
+      <ul class="cr-features">
+        <li><h3>Conexões seguras</h3><p>TLS 1.2+ via rustls (de disable a verify-full) e túnel SSH com senha, chave ou agent, checando known_hosts.</p></li>
+        <li><h3>Senhas no keyring do sistema</h3><p>Sem keyring, o app pergunta a cada conexão. Nenhuma senha vai para o disco.</p></li>
+        <li><h3>Árvore de objetos sob demanda</h3><p>Bancos, schemas, tabelas, views, funções e triggers carregados só quando você abre.</p></li>
+        <li><h3>Grid virtualizado</h3><p>Paginação, ordenação, filtros parametrizados e visão de estrutura e DDL de cada tabela.</p></li>
+        <li><h3>Editor SQL completo</h3><p>Highlight, autocomplete, cancelamento de query, histórico e arquivos .sql. Begin, Commit e Rollback à mão.</p></li>
+        <li><h3>Proteção contra o DELETE sem WHERE</h3><p>Comandos destrutivos pedem confirmação. Exportação CSV em streaming e cancelável.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="cr-dbs">
+    <div class="container">
+      <span class="cr-label">02 / Bancos</span>
+      <h2 id="cr-dbs">Bancos suportados</h2>
+      <p class="section-sub">Várias conexões abertas na mesma janela, com import de URL (<code>postgres://</code>, <code>mysql://</code>, <code>mariadb://</code>).</p>
+      <table class="cr-db">
+        <thead><tr><th scope="col">Banco</th><th scope="col">Versão mínima</th></tr></thead>
+        <tbody>
+          <tr><td>PostgreSQL</td><td>12</td></tr>
+          <tr><td>MySQL</td><td>5.6.5</td></tr>
+          <tr><td>MariaDB</td><td>10.0.5</td></tr>
+          <tr class="is-planned"><td>SQLite</td><td>planejado (v2)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="cr-shots">
+    <div class="container">
+      <span class="cr-label">03 / Screenshots</span>
+      <h2 id="cr-shots">Por dentro do app</h2>
+      <div class="cr-gallery">
+        <figure>
+          <!-- TODO: screenshot grid (imgs/crustdb/grid.png) -->
+          <div class="cr-shot" role="img" aria-label="Espaço reservado para o screenshot do grid de dados">Screenshot em breve</div>
+          <figcaption>Grid de dados com filtros e ordenação</figcaption>
+        </figure>
+        <figure>
+          <!-- TODO: screenshot editor (imgs/crustdb/editor.png) -->
+          <div class="cr-shot" role="img" aria-label="Espaço reservado para o screenshot do editor SQL">Screenshot em breve</div>
+          <figcaption>Editor SQL com autocomplete e histórico</figcaption>
+        </figure>
+        <figure>
+          <!-- TODO: screenshot conexao (imgs/crustdb/conexao.png) -->
+          <div class="cr-shot" role="img" aria-label="Espaço reservado para o screenshot da configuração de conexão">Screenshot em breve</div>
+          <figcaption>Conexão com TLS e túnel SSH</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar" aria-labelledby="cr-install">
+    <div class="container">
+      <span class="cr-label">04 / Instalar</span>
+      <h2 id="cr-install">Instale o cRustDB</h2>
+      <p class="section-sub">Código-fonte aberto sob a <a href="{{ cr.repo }}/blob/main/LICENSE" rel="noopener" target="_blank">Business Source License 1.1</a>. Cada versão vira Apache-2.0 quatro anos após o lançamento.</p>
+      <div class="cr-install">
+        <div class="cr-card">
+          <h3>Release<span class="cr-tag">recomendado</span></h3>
+          <p>Binário pronto para Linux x86_64. Usa os drivers gráficos do sistema (Vulkan ou OpenGL).</p>
+          {% if released %}
+          <div class="cr-dl">
+            {% for d in cr.downloads %}
+            <a class="btn {% if d.primary %}btn-buy{% else %}btn-ghost{% endif %} js-crustdb" data-cr="download-{{ d.label | slugify }}" href="{{ cr.repo }}/releases/download/v{{ cr.version }}/{{ d.file }}">Baixar {{ d.label }} · {{ d.arch }}</a>
+            {% endfor %}
+          </div>
+          <p class="cr-meta">
+            v{{ cr.version }}{% if cr.release_date != "" %} · {{ cr.release_date | date: "%d/%m/%Y" }}{% endif %}<br>
+            <a href="{% if cr.release_notes_url != "" %}{{ cr.release_notes_url }}{% else %}{{ cr.repo }}/releases{% endif %}" rel="noopener" target="_blank">Notas da versão</a>{% if cr.checksums_url != "" %}<a href="{{ cr.checksums_url }}" rel="noopener" target="_blank">Checksums SHA-256</a>{% endif %}<a href="{{ cr.repo }}/releases" rel="noopener" target="_blank">Todas as versões</a>
+          </p>
+          {% else %}
+          <p class="cr-notice"><b>Primeira release em breve.</b> Ative o Watch (Releases only) no repositório para ser avisado quando sair o AppImage.</p>
+          <a class="btn btn-ghost js-crustdb" data-cr="github-watch" href="{{ cr.repo }}" rel="noopener" target="_blank">Acompanhe no GitHub</a>
+          {% endif %}
+        </div>
+
+        <div class="cr-card">
+          <h3>Compilar do código-fonte</h3>
+          <p>O <code>rustup</code> instala a toolchain fixada em <code>rust-toolchain.toml</code>.</p>
+          <div class="cr-term">
+            <div class="cr-term-bar">
+              <span>bash</span>
+              <button type="button" class="cr-copy" data-copy-target="cr-build">Copiar</button>
+            </div>
+<pre id="cr-build"><span>$ </span>sudo apt-get install -y libxkbcommon-dev libwayland-dev
+<span>$ </span>git clone {{ cr.repo }}.git
+<span>$ </span>cd crustdb
+<span>$ </span>cargo build --release
+<span>$ </span>cargo run -p crustdb-app</pre>
+          </div>
+          <p class="cr-req" aria-live="polite" id="cr-copy-status">Requer Linux x86_64 e <a href="https://rustup.rs/" rel="noopener" target="_blank">rustup</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="cr-community">
+    <div class="container">
+      <div class="cr-community">
+        <span class="cr-label">05 / Comunidade</span>
+        <h2 id="cr-community">O roadmap é aberto</h2>
+        <p>Achou um bug ou sente falta de algo? Abra uma issue. O suporte a SQLite na v2 (<a href="{{ cr.repo }}/issues/26" rel="noopener" target="_blank">#26</a>) nasceu assim.</p>
+        <div class="cr-ctas">
+          <a class="btn btn-buy js-crustdb" data-cr="issues" href="{{ cr.repo }}/issues" rel="noopener" target="_blank">Abrir uma issue</a>
+          <a class="btn btn-ghost js-crustdb" data-cr="issues-open" href="{{ cr.repo }}/issues?q=is%3Aissue%20state%3Aopen" rel="noopener" target="_blank">Ver o que está em aberto</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Autor">
+    <div class="container">
+      <div class="cr-byline">
+        <a class="cr-byline-cover" href="/" tabindex="-1" aria-hidden="true">
+          <img src="/imgs/capa.jpg" width="96" height="146" loading="lazy" alt="">
+        </a>
+        <div class="cr-byline-text">
+          <span class="cr-label">Do mesmo autor</span>
+          <h2>Desbravando Rust</h2>
+          <p>O guia prático para pythonistas que querem dominar Rust: ownership, erros, concorrência e projetos reais como este.</p>
+          <div class="cr-byline-actions">
+            <a class="btn btn-ghost" href="/">Conheça o livro</a>
+            <a href="/amostra/">Ler um capítulo grátis</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    var status = document.getElementById('cr-copy-status');
+    var original = status.innerHTML;
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest) return;
+      var btn = e.target.closest('.cr-copy');
+      if (btn) {
+        // Copia só os comandos: remove os prompts "$ " antes de ler o texto
+        var pre = document.getElementById(btn.dataset.copyTarget).cloneNode(true);
+        pre.querySelectorAll('span').forEach(function (s) { s.remove(); });
+        navigator.clipboard.writeText(pre.textContent).then(function () {
+          btn.textContent = 'Copiado!';
+          status.textContent = 'Comandos copiados para a área de transferência.';
+          setTimeout(function () { btn.textContent = 'Copiar'; status.innerHTML = original; }, 2000);
+        });
+        return;
+      }
+      var link = e.target.closest('.js-crustdb');
+      if (link && window.gtag) gtag('event', 'select_content', { content_type: 'crustdb', item_id: link.dataset.cr });
+    });
+  })();
+</script>
