@@ -1,18 +1,34 @@
 # Dados da página /tools/crustdb/ — edite aqui a cada release.
 # version vazio = estado pré-release (CTA "Acompanhe no GitHub").
 repo: "https://github.com/Desbravando-Rust/crustdb"
-version: ""            # ex: "0.1.0" (sem o "v"; a tag é v{{version}})
-release_date: ""       # ex: "2026-11-10"
+version: "0.1.0-rc5"            # ex: "0.1.0" (sem o "v"; a tag é v{{version}})
+release_date: "2026-11-01"       # ex: "2026-11-10"
 release_notes_url: ""  # vazio = linka {{repo}}/releases
 checksums_url: ""      # SHA256SUMS da release (vazio = oculto)
-# Nome exato do asset na release (packaging/build-appimage.sh gera com a versão no nome).
-# Link = {{repo}}/releases/download/v{{version}}/{{file}}
+# file = URL completa do asset na release. desc = texto curto do bloco Linux em /tools/crustdb/#download.
 downloads:
   - label: "AppImage"
+    desc: "Qualquer distro. Marque como executável e rode."
     arch: "x86_64"
-    file: ""           # ex: "crustdb-0.1.0-x86_64.AppImage"
+    file: "https://github.com/Desbravando-Rust/cRustDB/releases/download/v0.1.0-rc5/crustdb-0.1.0-rc5-x86_64.AppImage"
     primary: true
   - label: "tar.gz"
+    desc: "Binário para descompactar onde quiser."
     arch: "x86_64"
-    file: ""           # ex: "crustdb-0.1.0-x86_64-linux.tar.gz"
+    file: "https://github.com/Desbravando-Rust/cRustDB/releases/download/v0.1.0-rc5/crustdb-0.1.0-rc5-x86_64-linux.tar.gz"
+    primary: false
+  - label: ".deb"
+    desc: "Debian, Ubuntu e derivados."
+    arch: "x86_64"
+    file: "https://github.com/Desbravando-Rust/cRustDB/releases/download/v0.1.0-rc5/crustdb-0.1.0-rc5-x86_64.deb"
+    primary: false
+  - label: ".rpm"
+    desc: "Fedora, RHEL e openSUSE."
+    arch: "x86_64"
+    file: "https://github.com/Desbravando-Rust/cRustDB/releases/download/v0.1.0-rc5/crustdb-0.1.0-rc5-x86_64.rpm"
+    primary: false
+  - label: "Flatpak"
+    desc: "Em sandbox. Instale com flatpak install --user."
+    arch: "x86_64"
+    file: "https://github.com/Desbravando-Rust/cRustDB/releases/download/v0.1.0-rc5/crustdb-0.1.0-rc5-x86_64.flatpak"
     primary: false
