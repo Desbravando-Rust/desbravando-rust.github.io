@@ -61,6 +61,8 @@ defaults:
       sitemap: false   # mantém o PDF de amostra fora do sitemap
 
 exclude:
+  # ponytail: cRustDB fora do ar até o app ficar pronto; remova a linha para publicar
+  - tools/crustdb
   - docs
   - scripts
   - temas.md
